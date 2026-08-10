@@ -1,0 +1,11 @@
+{
+  "data": "adni",
+  "variant": "mofe_tbfd",
+  "adni_image_imputation": "mean",
+  "more_fewer_rank_loss_weight": 0.1,
+  "branch_distill_loss_weight": 0.05,
+  "branch_distill_temperature": 2.0,
+  "branch_distill_start_epoch": 6,
+  "branch_accuracy_ema_decay": 0.9,
+  "base_config": "adni_mofe_mean.json"
+}

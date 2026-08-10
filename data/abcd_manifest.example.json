@@ -1,0 +1,42 @@
+{
+  "dataset": "abcd",
+  "id_column": "participant_id",
+  "label": {
+    "path": "./labels.parquet",
+    "column": "diagnostic_burden_3class",
+    "session_column": "session_id",
+    "session_value": "ses-00A",
+    "class_values": [0, 1, 2]
+  },
+  "splits": "./splits.json",
+  "modalities": [
+    {
+      "code": "I",
+      "name": "imaging",
+      "path": "./imaging.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "G",
+      "name": "genetic",
+      "path": "./genetic.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "C",
+      "name": "cognition_health",
+      "path": "./cognition_health.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "B",
+      "name": "behavior_environment",
+      "path": "./behavior_environment.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    }
+  ]
+}

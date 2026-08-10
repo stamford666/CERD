@@ -1,0 +1,7 @@
+{
+  "data": "adni",
+  "variant": "mofe",
+  "adni_image_imputation": "median",
+  "more_fewer_rank_loss_weight": 0.1,
+  "base_config": "adni_mofe_mean.json"
+}

@@ -1,0 +1,18 @@
+{
+  "data": "adni",
+  "variant": "mofe",
+  "adni_image_imputation": "mean",
+  "modality": "IGCB",
+  "train_epochs": 50,
+  "warm_up_epochs": 5,
+  "batch_size": 32,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.01,
+  "num_patches": 16,
+  "hidden_dim": 128,
+  "num_layers_fus": 1,
+  "num_layers_pred": 1,
+  "num_experts": 16,
+  "top_k": 4,
+  "more_fewer_rank_loss_weight": 0.1
+}
