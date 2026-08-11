@@ -15,14 +15,14 @@ def class_weights(labels, train_ids, power: float, device):
     return torch.as_tensor(weights, dtype=torch.float32, device=device)
 
 
-def balanced_train_loader(loader: DataLoader, power: float) -> DataLoader:
+def balanced_train_loader(loader: DataLoader, power: float, seed: int = 0) -> DataLoader:
     if power <= 0:
         return loader
     dataset_labels = np.asarray(loader.dataset.label_new, dtype=np.int64)
     counts = np.bincount(dataset_labels).astype(np.float64)
     per_class = np.power(1.0 / np.maximum(counts, 1.0), power)
     sample_weights = torch.as_tensor(per_class[dataset_labels], dtype=torch.double)
-    generator = torch.Generator().manual_seed(0)
+    generator = torch.Generator().manual_seed(int(seed))
     sampler = WeightedRandomSampler(
         sample_weights, num_samples=len(dataset_labels), replacement=True, generator=generator
     )

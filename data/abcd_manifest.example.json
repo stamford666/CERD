@@ -2,41 +2,79 @@
   "dataset": "abcd",
   "id_column": "participant_id",
   "label": {
-    "path": "./labels.parquet",
-    "column": "diagnostic_burden_3class",
-    "session_column": "session_id",
-    "session_value": "ses-00A",
-    "class_values": [0, 1, 2]
+    "path": "labels.parquet",
+    "column": "target",
+    "class_values": [0, 1]
   },
-  "splits": "./splits.json",
+  "splits": "splits.json",
   "modalities": [
     {
-      "code": "I",
-      "name": "imaging",
-      "path": "./imaging.parquet",
+      "code": "S",
+      "name": "structural_mri",
+      "path": "structural_mri.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "R",
+      "name": "resting_fmri",
+      "path": "resting_fmri.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "D",
+      "name": "diffusion_mri",
+      "path": "diffusion_mri.parquet",
       "max_missing": 0.8,
       "min_variance": 1e-8
     },
     {
       "code": "G",
       "name": "genetic",
-      "path": "./genetic.parquet",
+      "path": "genetic.parquet",
       "max_missing": 0.8,
       "min_variance": 1e-8
     },
     {
-      "code": "C",
-      "name": "cognition_health",
-      "path": "./cognition_health.parquet",
+      "code": "N",
+      "name": "neurocognition",
+      "path": "neurocognition.parquet",
       "max_missing": 0.8,
       "min_variance": 1e-8
     },
     {
-      "code": "B",
-      "name": "behavior_environment",
-      "path": "./behavior_environment.parquet",
+      "code": "P",
+      "name": "physical_health",
+      "path": "physical_health.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "M",
+      "name": "mental_health",
+      "path": "mental_health.parquet",
+      "max_missing": 0.8,
+      "min_variance": 1e-8
+    },
+    {
+      "code": "E",
+      "name": "environment",
+      "path": "environment.parquet",
       "max_missing": 0.8,
       "min_variance": 1e-8
     }
-  ]
+  ],
+  "provenance": {
+    "task": "bed_2y",
+    "predictor_session": "ses-00A",
+    "outcome_sessions": ["ses-00A", "ses-01A", "ses-02A"],
+    "outcome_assessment": "all three outcome visits required",
+    "target_definition": "symptom-derived probable full BED at any assessed visit from baseline through year 2",
+    "control_definition": "assessed BED-negative; other eating or psychiatric disorders are not excluded",
+    "clinical_diagnosis": false,
+    "incident_onset": false,
+    "split_protocol": "target-stratified, family-disjoint train/validation/test split; sites may be shared across partitions",
+    "leakage_control": "baseline predictors only; K-SADS eating-disorder variables and direct eating-disorder proxies excluded"
+  }
 }

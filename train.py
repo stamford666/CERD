@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Train the CERD main method on ABCD or ADNI.
 
-The runner contains no baseline adapters. Checkpoints are selected only by
-validation Macro-F1, and test predictions use raw-softmax argmax.
+The runner contains no baseline adapters. Binary ABCD checkpoints are selected
+by validation AUPRC and their decision threshold is calibrated on validation
+only; multiclass checkpoints are selected by validation Macro-F1.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from cerd.losses import (
     BranchClassAccuracyEMA,
     LogitAdjustedCrossEntropy,
     branch_auxiliary_loss,
+    combination_indices_from_mask,
     dual_boundary_rank_loss,
     masked_branch_tcl_loss,
     modality_dropout_mask,
@@ -31,7 +33,11 @@ from cerd.losses import (
     self_distillation_loss,
     trusted_branch_fusion_distillation_loss,
 )
-from cerd.metrics import metric_bundle
+from cerd.metrics import (
+    binary_predictions_at_threshold,
+    metric_bundle,
+    tune_binary_threshold,
+)
 from cerd.model import AGMGFlexMoE
 from cerd.sampling import balanced_train_loader, class_weights
 
@@ -45,7 +51,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--variant", default="auto", choices=VARIANTS)
     parser.add_argument("--dataset-manifest", default=None)
     parser.add_argument("--adni-data-root", default="data/adni")
-    parser.add_argument("--modality", default="IGCB")
+    parser.add_argument(
+        "--modality",
+        default=None,
+        help="modality codes (default: SRDGNPME for ABCD, IGCB for ADNI)",
+    )
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--output-dir", default="outputs")
@@ -97,9 +107,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
+    if getattr(args, "modality", None) is None:
+        args.modality = "SRDGNPME" if args.data == "abcd" else "IGCB"
     if args.variant == "auto":
-        args.variant = "dbr" if args.data == "abcd" else "mofe"
-    args.batch_size = args.batch_size or (128 if args.data == "abcd" else 32)
+        # DBR encodes the two boundaries around the middle class and is only
+        # defined for a three-class endpoint.  MoFe is valid for both the new
+        # binary ABCD BED endpoint and the three-class ADNI endpoint.
+        args.variant = "mofe"
+    args.batch_size = args.batch_size or (64 if args.data == "abcd" else 32)
     args.weight_decay = (
         args.weight_decay if args.weight_decay is not None else (0.0 if args.data == "abcd" else 0.01)
     )
@@ -128,6 +143,19 @@ def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
     args.initial_filling = "mean"
     args.use_common_ids = False
     return args
+
+
+def validate_objective_compatibility(args: argparse.Namespace, num_classes: int) -> None:
+    """Reject objectives whose mathematical assumptions do not match the target."""
+
+    if num_classes < 2:
+        raise ValueError("CERD classification requires at least two classes")
+    if args.dual_boundary_rank_loss_weight > 0 and num_classes != 3:
+        raise ValueError(
+            "dual-boundary ranking requires exactly three classes; use "
+            "--variant mofe/core for a binary target or set "
+            "--dual-boundary-rank-loss-weight 0"
+        )
 
 
 def seed_everything(seed: int) -> None:
@@ -251,10 +279,18 @@ def train_epoch(
                     )
 
         dropped_observed = modality_dropout_mask(observed, args.modality_dropout_prob)
+        dropped_combinations = combination_indices_from_mask(
+            dropped_observed,
+            args.modality,
+            # The manifest-driven ABCD adapter canonicalizes modality codes
+            # before enumerating combinations.  The legacy ADNI adapter keeps
+            # the requested code order during enumeration.
+            sort_codes_before_enumeration=args.data == "abcd",
+        )
         dropped = model(
             *tokens,
             observed_mask=dropped_observed,
-            expert_indices=combinations,
+            expert_indices=dropped_combinations,
             return_importance=False,
             return_recon_loss=False,
         )
@@ -364,6 +400,7 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         observed,
         full_modality_index,
     ) = load_and_preprocess_data(args, modality_dict)
+    validate_objective_compatibility(args, num_classes)
     train_sorted, train_shuffled, validation_loader, test_loader = create_loaders(
         data_dict,
         observed,
@@ -380,7 +417,7 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         args.preprocessed,
         args.use_common_ids,
     )
-    train_balanced = balanced_train_loader(train_shuffled, args.sampler_power)
+    train_balanced = balanced_train_loader(train_shuffled, args.sampler_power, args.seed)
 
     model = AGMGFlexMoE(
         num_modalities=len(modality_dict),
@@ -430,7 +467,8 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         else None
     )
 
-    best_macro_f1 = -1.0
+    selection_name = "positive_auprc" if num_classes == 2 else "macro_f1"
+    best_selection_score = -1.0
     best_epoch = 0
     best_model: dict[str, torch.Tensor] | None = None
     best_encoders: dict[str, dict[str, torch.Tensor]] | None = None
@@ -460,8 +498,9 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         history.append(
             {"epoch": epoch, "losses": losses, "validation": validation, "class_accuracy_ema": ema_values}
         )
-        if float(validation["macro_f1"]) > best_macro_f1:
-            best_macro_f1 = float(validation["macro_f1"])
+        selection_score = float(validation[selection_name])
+        if selection_score > best_selection_score:
+            best_selection_score = selection_score
             best_epoch = epoch
             best_validation = copy.deepcopy(validation)
             best_model = cpu_state(model)
@@ -469,7 +508,8 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         print(
             f"epoch={epoch:02d} loss={losses['loss']:.4f} "
             f"val_acc={float(validation['accuracy']):.4f} "
-            f"val_macro_f1={float(validation['macro_f1']):.4f}"
+            f"val_macro_f1={float(validation['macro_f1']):.4f} "
+            f"val_auprc={float(validation['macro_auprc']):.4f}"
         )
 
     if best_model is None or best_encoders is None or best_validation is None:
@@ -480,8 +520,29 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
     replay_validation, validation_labels, validation_probabilities = evaluate(
         model, encoders, modality_dict, validation_loader, args, device
     )
-    if abs(float(replay_validation["macro_f1"]) - best_macro_f1) > 1e-12:
+    if abs(float(replay_validation[selection_name]) - best_selection_score) > 1e-12:
         raise RuntimeError("best-checkpoint validation replay mismatch")
+
+    binary_decision = None
+    if num_classes == 2:
+        decision_threshold, validation_decision_f1 = tune_binary_threshold(
+            validation_labels,
+            validation_probabilities,
+        )
+        validation_predictions = binary_predictions_at_threshold(
+            validation_probabilities,
+            decision_threshold,
+        )
+        binary_decision = {
+            "threshold": decision_threshold,
+            "selection_metric": "validation macro-F1",
+            "selection_score": validation_decision_f1,
+            "validation_metrics": metric_bundle(
+                validation_labels,
+                validation_probabilities,
+                validation_predictions,
+            ),
+        }
 
     output_dir = Path(args.output_dir).expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -509,13 +570,18 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         "variant": args.variant,
         "seed": args.seed,
         "protocol": {
-            "checkpoint_selection": "validation macro-F1",
-            "prediction_rule": "raw softmax argmax",
+            "checkpoint_selection": f"validation {selection_name}",
+            "prediction_rule": (
+                "validation-selected probability threshold"
+                if num_classes == 2
+                else "raw softmax argmax"
+            ),
             "epochs": args.train_epochs,
             "test_used_for_selection": False,
         },
         "best_epoch": best_epoch,
         "validation": replay_validation,
+        "binary_decision": binary_decision,
         "test": None,
         "elapsed_seconds": time.perf_counter() - started,
         "checkpoint": checkpoint_path.name,
@@ -526,12 +592,37 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         test, test_labels, test_probabilities = evaluate(
             model, encoders, modality_dict, test_loader, args, device
         )
+        test_predictions = test_probabilities.argmax(axis=1)
+        if num_classes == 2:
+            if binary_decision is None:
+                raise RuntimeError("binary decision threshold was not initialized")
+            test_predictions = binary_predictions_at_threshold(
+                test_probabilities,
+                float(binary_decision["threshold"]),
+            )
+            test = metric_bundle(test_labels, test_probabilities, test_predictions)
         result["test"] = test
         np.savez_compressed(
             output_dir / f"{stem}_test.npz",
             labels=test_labels,
             probabilities=test_probabilities,
+            predictions=test_predictions,
         )
+        if args.data == "abcd" and num_classes == 2:
+            np.savez_compressed(
+                output_dir / f"cerd_seed{args.seed}.npz",
+                method=np.asarray("CERD"),
+                seed=np.asarray(args.seed, dtype=np.int64),
+                experiment_tag=np.asarray("abcd_bed2y"),
+                validation_labels=validation_labels,
+                validation_probabilities=validation_probabilities,
+                test_labels=test_labels,
+                test_probabilities=test_probabilities,
+                test_predictions=test_predictions,
+                decision_threshold=np.asarray(
+                    binary_decision["threshold"], dtype=np.float64
+                ),
+            )
     result_path = output_dir / f"{stem}.json"
     result_path.write_text(
         json.dumps(result, indent=2, sort_keys=True, allow_nan=False), encoding="utf-8"

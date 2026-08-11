@@ -2,11 +2,43 @@ import torch
 
 from cerd.losses import (
     BranchClassAccuracyEMA,
+    combination_indices_from_mask,
     dual_boundary_rank_loss,
     masked_branch_tcl_loss,
     more_fewer_rank_loss,
     trusted_branch_fusion_distillation_loss,
 )
+
+
+def test_combination_indices_match_abcd_canonical_enumeration():
+    # Mask columns retain the requested S/R/D order, while the ABCD adapter
+    # enumerates the canonical sorted code order D/R/S.
+    observed = torch.tensor(
+        [
+            [1, 1, 1],
+            [1, 1, 0],
+            [1, 0, 1],
+            [0, 1, 1],
+            [1, 0, 0],
+        ],
+        dtype=torch.bool,
+    )
+    indices = combination_indices_from_mask(
+        observed,
+        "SRD",
+        sort_codes_before_enumeration=True,
+    )
+    assert indices.tolist() == [0, 3, 2, 1, 6]
+
+
+def test_combination_indices_preserve_legacy_adni_enumeration():
+    observed = torch.tensor([[1, 1], [1, 0], [0, 1]], dtype=torch.bool)
+    indices = combination_indices_from_mask(
+        observed,
+        "BA",
+        sort_codes_before_enumeration=False,
+    )
+    assert indices.tolist() == [0, 1, 2]
 
 
 def test_dual_boundary_prefers_correct_ordering():

@@ -8,6 +8,16 @@ __pycache__/
 .venv/
 venv/
 env/
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
 
 outputs/
 logs/
@@ -28,6 +38,14 @@ data/*
 *.tsv
 *.parquet
 *.h5ad
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.feather
+*.arrow
+*.safetensors
 *.nii
 *.nii.gz
 *.bed
@@ -37,5 +55,8 @@ data/*
 *.pvar
 *.psam
 *.log
+
+wandb/
+mlruns/
 
 .DS_Store
