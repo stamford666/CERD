@@ -1,6 +1,7 @@
 {
   "data": "abcd",
-  "task": "probable_bed_through_year2",
+  "task": "baseline_parent_ksads_full_adhd_present_or_past",
+  "experiment_tag": "abcd_adhd",
   "variant": "mofe",
   "modality": "SRDGNPME",
   "train_epochs": 50,

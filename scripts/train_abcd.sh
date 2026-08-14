@@ -9,7 +9,7 @@ fi
 manifest_path=$1
 device_index=${2:-0}
 evaluate_test=${3:-false}
-output_dir=${4:-outputs/abcd_bed2y}
+output_dir=${4:-outputs/abcd_adhd}
 
 case "$evaluate_test" in
   true) test_flag=--evaluate-test ;;

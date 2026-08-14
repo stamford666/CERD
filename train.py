@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Train the CERD main method on ABCD or ADNI.
 
-The runner contains no baseline adapters. Binary ABCD checkpoints are selected
+The runner contains no baseline adapters. Binary ABCD-ADHD checkpoints are selected
 by validation AUPRC and their decision threshold is calibrated on validation
 only; multiclass checkpoints are selected by validation Macro-F1.
 """
@@ -112,7 +112,7 @@ def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
     if args.variant == "auto":
         # DBR encodes the two boundaries around the middle class and is only
         # defined for a three-class endpoint.  MoFe is valid for both the new
-        # binary ABCD BED endpoint and the three-class ADNI endpoint.
+        # binary ABCD endpoint and the three-class ADNI endpoint.
         args.variant = "mofe"
     args.batch_size = args.batch_size or (64 if args.data == "abcd" else 32)
     args.weight_decay = (
@@ -613,7 +613,7 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
                 output_dir / f"cerd_seed{args.seed}.npz",
                 method=np.asarray("CERD"),
                 seed=np.asarray(args.seed, dtype=np.int64),
-                experiment_tag=np.asarray("abcd_bed2y"),
+                experiment_tag=np.asarray("abcd_adhd"),
                 validation_labels=validation_labels,
                 validation_probabilities=validation_probabilities,
                 test_labels=test_labels,

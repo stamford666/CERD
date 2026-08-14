@@ -1,0 +1,31 @@
+{
+  "dataset": "abcd",
+  "id_column": "participant_id",
+  "label": {
+    "path": "labels.parquet",
+    "column": "target",
+    "class_values": [0, 1]
+  },
+  "splits": "splits.json",
+  "modalities": [
+    {"code": "S", "name": "structural_mri", "path": "structural_mri.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "R", "name": "resting_fmri", "path": "resting_fmri.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "D", "name": "diffusion_mri", "path": "diffusion_mri.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "G", "name": "genetic", "path": "genetic.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "N", "name": "neurocognition", "path": "neurocognition.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "P", "name": "physical_health", "path": "physical_health.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "M", "name": "mental_health", "path": "mental_health.parquet", "max_missing": 0.8, "min_variance": 1e-8},
+    {"code": "E", "name": "environment", "path": "environment.parquet", "max_missing": 0.8, "min_variance": 1e-8}
+  ],
+  "provenance": {
+    "task": "adhd",
+    "predictor_session": "ses-00A",
+    "outcome_sessions": ["ses-00A"],
+    "informant": "parent",
+    "target_definition": "baseline parent K-SADS full ADHD present or past",
+    "control_definition": "assessed controls negative on available full, partial-remission, and unspecified ADHD fields",
+    "clinical_diagnosis": false,
+    "split_protocol": "target-stratified, genetic-family-disjoint train/validation/test split",
+    "leakage_control": "exclude target-defining K-SADS fields, direct or aggregate ADHD proxies, and target-revealing source tables before creating modality files"
+  }
+}

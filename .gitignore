@@ -27,7 +27,7 @@ checkpoints/
 
 data/*
 !data/README.md
-!data/abcd_manifest.example.json
+!data/abcd_adhd_manifest.example.json
 
 *.pt
 *.pth

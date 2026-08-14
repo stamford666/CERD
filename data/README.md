@@ -7,20 +7,19 @@ official access process and keep it outside version control.
 ## ABCD
 
 Pass a manifest with `--dataset-manifest`. Start from
-`abcd_manifest.example.json`. The manifest points to the binary label table,
+`abcd_adhd_manifest.example.json`. The manifest points to the binary label table,
 immutable train/validation/test split, and eight baseline (`ses-00A`) modality
 tables: structural MRI, resting-state fMRI, diffusion MRI, ancestry/population
 structure, neurocognition, physical health, mental health, and environment.
 Feature filtering, median imputation, and standardization are fitted on training
 subjects only.
 
-The endpoint is a cumulative symptom-derived **probable BED** phenotype observed
-at any administered visit from baseline through year 2. It is neither a
-clinical diagnosis nor an incident-onset endpoint. Eligible participants must
-have an administered outcome module at all three visits. Controls are assessed
-BED-negative; other eating or psychiatric disorders are not excluded. The
-predictor tables must exclude K-SADS eating-disorder fields, direct
-eating-disorder instruments/proxies, and their composite scores.
+The current experiment uses baseline parent K-SADS **full ADHD present-or-past**
+as the positive research endpoint. Controls are assessed negative on the
+available full, partial-remission, and unspecified ADHD fields. This is an
+algorithmic research endpoint, not a clinical diagnosis. Predictor tables must
+exclude target-defining K-SADS fields, target-revealing source tables, direct
+ADHD proxies, and aggregate scores that could reconstruct those proxies.
 
 Expected split keys are `training`, `validation`, and `testing`. Build these
 splits once, stratify by the binary target, and keep genetic-family members in
@@ -29,8 +28,8 @@ site-held-out evaluation. The loader verifies participant-level split
 disjointness; family/site checks belong in the protected data-preparation audit
 because those identifiers are not distributed here.
 
-The released label table uses `target = 1` for probable BED and `target = 0`
-for assessed BED-negative controls. Do not place participant identifiers,
+The label table uses `target = 1` for full ADHD present-or-past and `target = 0`
+for assessed available-field-negative controls. Do not place participant identifiers,
 protected splits, derived tables, predictions, or checkpoints under version
 control.
 

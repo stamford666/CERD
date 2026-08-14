@@ -30,7 +30,7 @@ def _read_manifest(args: Any) -> tuple[dict[str, Any], Path]:
     if not path.is_file():
         raise FileNotFoundError(
             f"ABCD manifest not found: {path}. Pass --dataset-manifest PATH; "
-            "see data/abcd_manifest.example.json."
+            "see data/abcd_adhd_manifest.example.json."
         )
     with path.open(encoding="utf-8") as handle:
         manifest = json.load(handle)

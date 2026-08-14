@@ -1,237 +1,106 @@
-# CERD: Multimodal Probable BED Classification in ABCD
+# CERD: Missingness-aware multimodal classification
 
-CERD is a missingness-aware generative reliability mixture-of-experts model for
-subject-level multimodal classification with naturally incomplete inputs. This
-repository releases the **main method only**. Baseline implementations,
-protected ABCD data, checkpoints, participant-level predictions, and tuning
-artifacts are not distributed.
+CERD combines conditional missing-modality generation, sparse mixture-of-experts fusion, and reliability/evidence-weighted prediction for incomplete multimodal data. This repository releases the **main method only**; baseline implementations, protected data, checkpoints, and participant-level predictions are not included.
 
-## Results at a glance
+## Results
 
-Learned-method entries report mean ± population standard deviation over
-three complete runs (seeds 0, 1, and 2). All metrics except MCC are
-percentages. BED AP is the primary metric; its no-skill reference is the 2.23%
-BED prevalence in the test partition.
+Learned entries are test mean ± population SD over three complete 50-epoch runs (seeds 0/1/2). All metrics except MCC are percentages. Model/profile/checkpoint selection and binary thresholds use validation data only.
 
-| Method | Profile | BED AP | AUROC | BED-F1 | BalAcc | Macro-F1 | Accuracy | Weighted-F1 | Sensitivity | Specificity | MCC |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Always negative | — | 2.23 | 50.00 | 0.00 | 50.00 | 49.44 | 97.77 | 96.67 | 0.00 | 100.00 | 0.000 |
-| Flex-MoE (official-code-derived) | mild | 8.23 ± 0.71 | 77.29 ± 0.68 | 10.11 ± 5.30 | 54.84 ± 3.79 | 54.03 ± 2.42 | 96.01 ± 0.91 | 96.00 ± 0.36 | 11.76 ± 8.66 | 97.93 ± 1.12 | 0.087 ± 0.049 |
-| I²MoE (official-code adapter) | strong | 10.34 ± 1.98 | 70.69 ± 2.47 | 14.53 ± 7.17 | 58.50 ± 5.23 | 56.15 ± 3.30 | 95.66 ± 1.14 | 95.91 ± 0.44 | 19.61 ± 11.85 | 97.39 ± 1.43 | 0.134 ± 0.066 |
-| MoE++-corrected (I²MoE-code adapter) | mild | 7.30 ± 0.67 | 75.86 ± 1.64 | 6.81 ± 4.94 | 52.72 ± 2.06 | 52.52 ± 2.28 | 96.53 ± 0.79 | 96.20 ± 0.29 | 6.86 ± 5.00 | 98.57 ± 0.92 | 0.053 ± 0.043 |
-| AnyMod (reimplementation) | mild | 8.15 ± 0.96 | 73.54 ± 3.70 | 7.39 ± 1.70 | 52.41 ± 0.85 | 52.89 ± 0.72 | 96.86 ± 0.67 | 96.38 ± 0.31 | 5.88 ± 2.40 | 98.93 ± 0.74 | 0.069 ± 0.007 |
-| AGDiC-inspired | moderate | 9.04 ± 1.13 | 76.78 ± 0.14 | 11.19 ± 1.08 | 54.47 ± 0.63 | 54.62 ± 0.52 | 96.20 ± 0.11 | 96.13 ± 0.04 | 10.78 ± 1.39 | 98.15 ± 0.14 | 0.093 ± 0.010 |
-| ACADiff-inspired | strong | 6.43 ± 1.05 | 71.98 ± 2.20 | 8.58 ± 6.11 | 53.30 ± 2.50 | 53.46 ± 2.96 | 96.73 ± 0.48 | 96.34 ± 0.16 | 7.84 ± 5.55 | 98.75 ± 0.60 | 0.071 ± 0.058 |
-| **CERD-MoFe (ours)** | mild | 7.83 ± 0.73 | 74.23 ± 1.10 | 0.00 ± 0.00 | 49.89 ± 0.07 | 49.38 ± 0.03 | 97.56 ± 0.13 | 96.57 ± 0.07 | 0.00 ± 0.00 | 99.78 ± 0.14 | -0.007 ± 0.002 |
+### ABCD ADHD
 
-The always-negative classifier shows why Accuracy and Weighted-F1 are
-misleading for this rare phenotype. Three-seed variation measures training
-randomness, not sampling uncertainty; the test set contains only 34 positives.
-CERD's validation-selected absolute thresholds did not identify a test BED
-case; the zero sensitivity is reported without test-set threshold retuning.
+Baseline parent K-SADS full ADHD present-or-past versus assessed available-field-negative controls. The family-disjoint cohort has 11,671 participants; train/validation/test = 8,325/1,679/1,667 with 1,145/228/245 positives. This is an algorithmic research endpoint, not a clinical diagnosis. ADHD-AUPRC is primary; no-skill AP is the 14.70% test prevalence.
 
-## Task
+| Method | Acc | BalAcc | Macro-F1 | W-F1 | ADHD-F1 | Sens. | Spec. | AUROC | ADHD-AUPRC | MCC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Always negative | 85.30 | 50.00 | 46.03 | 78.54 | 0.00 | 0.00 | 100.00 | 50.00 | 14.70 | 0.000 |
+| Flex-MoE (official-code-derived adaptation) | 86.40 ± 0.53 | 68.21 ± 0.89 | 70.00 ± 0.17 | 85.66 ± 0.21 | 47.81 ± 0.72 | 42.45 ± 2.91 | 93.98 ± 1.12 | 83.35 ± 0.26 | 50.32 ± 1.09 | 0.407 ± 0.001 |
+| I²MoE (official-code adapter) | 86.32 ± 0.27 | 66.87 ± 1.70 | 68.92 ± 1.20 | 85.34 ± 0.30 | 45.66 ± 2.52 | 39.32 ± 4.34 | 94.42 ± 0.97 | 83.58 ± 0.03 | 50.73 ± 0.32 | 0.389 ± 0.017 |
+| **MoE++-corrected (I²MoE-code adapter)** | 86.60 ± 0.46 | **69.23 ± 1.44** | **70.83 ± 0.69** | **85.97 ± 0.20** | **49.39 ± 1.60** | 44.63 ± 4.02 | 93.83 ± 1.18 | **84.26 ± 0.08** | **52.36 ± 0.80** | **0.423 ± 0.010** |
+| AnyMod (reimplementation) | 85.46 ± 0.42 | 68.73 ± 1.60 | 69.57 ± 1.04 | 85.09 ± 0.38 | 47.58 ± 2.09 | **45.03 ± 3.95** | 92.43 ± 0.92 | 81.95 ± 0.80 | 46.35 ± 0.82 | 0.394 ± 0.020 |
+| AGDiC-inspired | 86.02 ± 0.37 | 68.61 ± 0.63 | 69.97 ± 0.13 | 85.47 ± 0.15 | 48.01 ± 0.51 | 43.95 ± 2.04 | 93.27 ± 0.78 | 82.06 ± 0.54 | 49.70 ± 0.86 | 0.403 ± 0.001 |
+| ACADiff-inspired (fair masked denoising) | 86.18 ± 0.25 | 68.14 ± 1.04 | 69.76 ± 0.53 | 85.49 ± 0.03 | 47.48 ± 1.26 | 42.59 ± 2.87 | 93.69 ± 0.78 | 81.99 ± 0.29 | 48.25 ± 1.44 | 0.401 ± 0.007 |
+| **CERD (ours)** | **86.90 ± 0.20** | 67.66 ± 1.74 | 69.97 ± 1.27 | 85.89 ± 0.32 | 47.42 ± 2.63 | 40.41 ± 4.33 | **94.91 ± 0.88** | 84.06 ± 0.28 | 51.21 ± 0.63 | 0.412 ± 0.017 |
 
-We use baseline (`ses-00A`) multimodal features to classify a **cumulative,
-symptom-derived probable binge-eating disorder (BED) phenotype** observed at
-any administered visit from baseline through Year 2.
+CERD is first in Accuracy and Specificity and second in ADHD-AUPRC/AUROC. In the frozen confirmatory analysis, no CERD-vs-baseline AUPRC comparison survived Holm correction; CERD versus MoE++-corrected was −1.15 percentage points (95% family/seed bootstrap CI −4.09 to +1.81). We therefore do **not** claim significant superiority on this endpoint.
 
-A participant is positive when the parent K-SADS eating-disorder module
-supports probable full BED at baseline, Year 1, or Year 2: binge eating, at
-least three associated characteristics, marked distress, and a frequency of at
-least once per week for three months. Periods meeting recurrent compensatory
-behavior criteria or an anorexia-like symptom pattern are excluded. Released
-K-SADS diagnosis-score (`*_dx`) variables are never used.
+### ADNI
 
-This endpoint is not a clinician-confirmed diagnosis and not a strict
-incident-onset endpoint. Controls are assessed BED-negative; they may have
-other eating or psychiatric disorders. Eligibility requires an administered ED
-module at all three outcome visits.
+Three-class IGCB task: 2,116 participants; train/validation/test = 1,480/318/318. Binary-only sensitivity/specificity are not forced onto this multiclass task.
 
-| Cohort | Participants | Probable BED | Assessed BED-negative |
-|---|---:|---:|---:|
-| Full eligible cohort | 10,724 | 257 (2.40%) | 10,467 (97.60%) |
-| Training | 7,655 | 194 | 7,461 |
-| Validation | 1,541 | 29 | 1,512 |
-| Test | 1,528 | 34 | 1,494 |
-
-The split is target-stratified and grouped by genetic family, so no family
-appears in more than one partition. Sites may occur across partitions; this is
-therefore not a held-out-site evaluation.
-
-## Inputs
-
-Only baseline predictors are used. Counts below are raw numeric features before
-training-only filtering.
-
-| Code | Modality | Raw features |
-|---|---|---:|
-| S | Structural MRI | 71 |
-| R | Resting-state fMRI | 68 |
-| D | Diffusion MRI | 71 |
-| G | Genetic ancestry/population-structure PCs | 32 |
-| N | Neurocognition | 147 |
-| P | Physical health and development | 58 |
-| M | Non-ED mental-health measures | 182 |
-| E | Demographic, family, and neighborhood environment | 136 |
-
-All K-SADS eating-disorder fields and direct ED instruments are excluded from
-the predictors. We additionally remove four direct CBCL eating/weight proxies
-(`Overeating`, `Overweight`, `Doesn't eat well`, and `Vomiting`) and every CBCL
-sum, T-score, or count that could algebraically reintroduce those items.
-Feature filtering, median imputation, and scaling are fitted on training
-participants only. Physical-health predictors include anthropometrics, so this
-is a multimodal clinical prediction task rather than an imaging-only claim.
+| Method | Accuracy | BalAcc | Macro-F1 | Weighted-F1 | Macro-AUROC | Macro-AUPRC |
+|---|---:|---:|---:|---:|---:|---:|
+| Flex-MoE (official-code-derived adaptation) | 62.16 ± 1.04 | 60.30 ± 1.79 | 59.97 ± 1.40 | 61.03 ± 0.99 | 76.98 ± 0.78 | 61.42 ± 1.13 |
+| I²MoE (official-code adapter) | 64.05 ± 1.86 | 62.77 ± 2.80 | 61.83 ± 1.54 | 61.91 ± 1.36 | 79.35 ± 1.33 | 66.67 ± 1.65 |
+| MoE++-corrected (I²MoE-code adapter) | 59.75 ± 0.44 | 59.55 ± 1.41 | 58.85 ± 1.68 | 59.07 ± 1.49 | 79.23 ± 1.14 | 65.63 ± 1.83 |
+| AnyMod (reimplementation) | 64.78 ± 3.78 | 63.95 ± 3.12 | 63.55 ± 3.50 | 64.24 ± 3.59 | 79.77 ± 1.73 | 66.20 ± 2.21 |
+| AGDiC-inspired | 58.60 ± 2.75 | 55.49 ± 1.65 | 56.54 ± 1.94 | 58.13 ± 2.44 | 75.10 ± 1.11 | 59.58 ± 2.45 |
+| ACADiff-inspired (fair masked denoising) | 55.87 ± 0.39 | 53.69 ± 0.88 | 52.14 ± 0.98 | 53.07 ± 0.96 | 71.10 ± 1.01 | 55.75 ± 0.51 |
+| **CERD (ours)** | **64.88 ± 1.19** | **64.23 ± 0.41** | **63.75 ± 1.02** | **64.26 ± 1.27** | **80.29 ± 0.71** | **67.37 ± 1.22** |
 
 ## Method
 
 ```text
-baseline multimodal features + observed-modality mask
-                         │
-                         ▼
-             modality-specific token encoders
-                         │
-          conditional cross-attention generation
-                 for unavailable modalities
-                         │
-            observed and generated embeddings
-                         │
-                Transformer + sparse MoE
-                         │
-          joint, unimodal, and pairwise heads
-                         │
-             reliability × evidence fusion
-                         ▼
-                  BED probability
+multimodal features + observed-modality mask
+                  │
+       modality-specific encoders
+                  │
+ conditional cross-attention generation
+       for unavailable modalities
+                  │
+ observed + generated modality tokens
+                  │
+       Transformer + sparse MoE
+                  │
+ joint / unimodal / pairwise predictions
+                  │
+       reliability × evidence fusion
+                  ▼
+              prediction
 ```
 
-CERD jointly optimizes classification, sparse-router balancing, conditional
-reconstruction, branch supervision, artificial modality dropout, and
-full-to-reduced-view self-distillation. The binary BED task uses the MoFe
-(more-vs-fewer observed modalities) objective. The ordered three-class DBR
-objective is not used; explicitly requesting DBR for a binary target is
-rejected with an error.
+Training jointly uses classification, sparse-router balancing, conditional reconstruction, branch supervision, artificial modality dropout, and full-to-reduced-view self-distillation. The MoFe objective is valid for binary ABCD and three-class ADNI; dual-boundary ranking is rejected for binary targets.
 
-## Baselines
+## Baselines and protocol
 
-The six comparison implementations are not included in this main-method
-release. All are run through one shared data, optimization, checkpoint, and
-evaluation interface. The qualifiers below are part of the reported method
-names and should not be removed.
+The repository does not contain baseline code. Reported names deliberately retain implementation qualifiers:
 
-| Reported name | Year | Distinguishing mechanism | Local implementation |
-|---|---:|---|---|
-| [Flex-MoE](https://papers.nips.cc/paper_files/paper/2024/hash/b2f2af5403042b1344f4e93b35fb67d9-Abstract-Conference.html) | 2024 | Missing-modality bank and sparse expert routing | Official-code-derived adaptation |
-| [I²MoE](https://proceedings.mlr.press/v267/xin25c.html) | 2025 | Uniqueness, synergy, and redundancy interaction experts | Official-code adapter |
-| [MoE++-corrected](https://proceedings.iclr.cc/paper_files/paper/2025/hash/7efe88bb4138d602e56637cfcf713654-Abstract-Conference.html) | 2025 | Learned, constant, copy, and zero experts | Corrected I²MoE-code adapter, not the original LLM implementation |
-| [AnyMod](https://papers.miccai.org/miccai-2024/814-Paper1760.html) | 2024 | Modality queries, task anchors, and Transformer fusion | Reimplementation |
-| [AGDiC-inspired](https://papers.miccai.org/miccai-2025/0059-Paper0965.html) | 2025 | Flow-based recovery and adaptive graph relations | Inspired token-space implementation |
-| [ACADiff-inspired](https://arxiv.org/abs/2603.09931) | 2026 | Conditional latent diffusion completion | Inspired token-space implementation |
+| Method | Distinguishing mechanism |
+|---|---|
+| [Flex-MoE](https://papers.nips.cc/paper_files/paper/2024/hash/b2f2af5403042b1344f4e93b35fb67d9-Abstract-Conference.html) | missing-modality bank and sparse routing |
+| [I²MoE](https://proceedings.mlr.press/v267/xin25c.html) | uniqueness/synergy/redundancy interaction experts |
+| [MoE++-corrected](https://proceedings.iclr.cc/paper_files/paper/2025/hash/7efe88bb4138d602e56637cfcf713654-Abstract-Conference.html) | learned, constant, copy, and zero experts |
+| [AnyMod](https://papers.miccai.org/miccai-2024/814-Paper1760.html) | modality queries, task anchors, Transformer fusion |
+| [AGDiC-inspired](https://papers.miccai.org/miccai-2025/0059-Paper0965.html) | recovery plus adaptive graph relations |
+| [ACADiff-inspired](https://arxiv.org/abs/2603.09931) | fair masked latent denoising/completion |
 
-## Evaluation protocol
+For ABCD-ADHD, all seven methods shared four validation-only imbalance profiles (`neutral`, `mild`, `moderate`, `strong`), selected by three-seed mean ADHD-AUPRC. The frozen profiles were Flex-MoE `neutral`, I²MoE `strong`, MoE++ `neutral`, AnyMod `neutral`, AGDiC `moderate`, ACADiff `mild`, and CERD `mild`. CERD additionally disclosed six validation-only structure candidates; `base+mild` won. The seven configurations were frozen before the single formal 7×3 test batch. Checkpoints maximize validation ADHD-AUPRC, and decision thresholds maximize validation Macro-F1. Confirmatory inference used 10,000 whole-family paired randomizations, 10,000 family/seed bootstraps, and Holm correction across six comparisons.
 
-Each method receives the same participants, eight feature tables, natural
-modality masks, training-only preprocessing, 50-epoch budget, and three
-predeclared imbalance profiles. For each method, one profile is selected using
-seed-0 validation BED AP only; that method-specific profile is then frozen and
-the method is retrained with seeds 0, 1, and 2.
-
-- Checkpoint: highest validation positive-class average precision (BED AP).
-- Decision rule: one absolute BED-probability threshold selected on validation
-  Macro-F1 and applied unchanged to test predictions.
-- Test isolation: test labels and score distributions do not select the
-  profile, checkpoint, or threshold.
-- Reporting: mean ± population standard deviation over three complete runs.
-
-Architecture-specific validated/default settings are fixed within each method;
-the shared imbalance grid is `mild` (0.35/0.15), `moderate` (0.50/0.25), and
-`strong` (0.50/0.50) sampler/class-weight powers.
-
-The fixed batch sizes for Flex-MoE/I²MoE/MoE++/AnyMod/AGDiC/ACADiff/CERD are
-32/64/128/128/128/128/64, respectively. I²MoE uses 64 because its interaction
-transformer exceeds the available GPU memory at batch 128; this choice is fixed
-before validation and used unchanged in formal runs.
-
-## Installation and training
-
-Python 3.10+ and a CUDA-enabled PyTorch environment are recommended.
+## Run the main method
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 git clone https://github.com/laekov/fastmoe.git
-cd fastmoe
-USE_NCCL=0 python setup.py install
-cd ..
+cd fastmoe && USE_NCCL=0 python setup.py install && cd ..
 pip install -e .
+
+# Validation only. Change false to true only after selection is frozen.
+scripts/train_abcd.sh /path/to/abcd_adhd_manifest.json 0 false outputs/abcd_adhd
+scripts/train_adni.sh /path/to/adni 0 false outputs/adni
 ```
 
-One validation-only run:
+ABCD uses eight baseline modalities (`SRDGNPME`): structural MRI, resting fMRI, diffusion MRI, genetic ancestry/population structure, neurocognition, physical health, non-target mental health, and environment. Target-defining K-SADS ADHD fields and direct/aggregate ADHD proxies must be excluded. Preprocessing is fitted on training participants only. Start from [`data/abcd_adhd_manifest.example.json`](data/abcd_adhd_manifest.example.json); configuration records are under [`configs/`](configs/).
 
-```bash
-python train.py \
-  --data abcd \
-  --variant mofe \
-  --modality SRDGNPME \
-  --dataset-manifest /path/to/abcd_bed_manifest.json \
-  --train-epochs 50 \
-  --warm-up-epochs 5 \
-  --batch-size 64 \
-  --lr 0.0001 \
-  --weight-decay 0 \
-  --sampler-power 0.35 \
-  --class-weight-power 0.15 \
-  --num-layers-pred 2 \
-  --more-fewer-rank-loss-weight 0.1 \
-  --dual-boundary-rank-loss-weight 0 \
-  --seed 0 \
-  --device 0 \
-  --no-evaluate-test
-```
-
-The JSON files under `configs/` are human-readable experiment records; they are
-not loaded automatically. Keep the selected sampler/class-weight powers in the
-command, `scripts/train_abcd.sh`, and the record synchronized. The three-seed
-script interface is
-`scripts/train_abcd.sh MANIFEST [DEVICE] [EVALUATE_TEST] [OUTPUT_DIR]`; set its
-third positional argument to `true` only after model selection is frozen.
-Protected split IDs and participant-level outputs must remain outside version
-control.
-
-## Repository layout
+## Layout and limitations
 
 ```text
-cerd/model.py       CERD encoders, conditional generators, and reliability fusion
-cerd/moe.py         sparse MoE/router implementation
-cerd/losses.py      CERD training objectives
-cerd/metrics.py     binary-safe metrics and validation threshold selection
-cerd/data.py        dataset dispatch
+cerd/model.py       encoders, generators, reliability/evidence fusion
+cerd/moe.py         sparse MoE/router
+cerd/losses.py      CERD objectives
+cerd/metrics.py     metrics and validation-only binary thresholding
 cerd/datasets/      manifest-driven ABCD adapter
-train.py            validation-locked training and optional formal evaluation
-configs/            human-readable main-method configuration records
-scripts/            three-seed launch examples
-tests/              unit tests without research data
+train.py            validation-locked training and optional formal test
 ```
 
-## Data and release limitation
-
-ABCD data are not distributed; see [`data/README.md`](data/README.md) and the
-manifest template. The exact ABCD release identifier is not embedded in the
-protected local manifest and must be verified with the data administrator
-before publication. The [ABCD Release 6.0 notes](https://docs.abcdstudy.org/latest/documentation/release_notes/6_0.html)
-warned that released eating-disorder diagnosis scores were overly restrictive,
-so this study derives the research phenotype directly from symptom fields and
-does not use released `*_dx` scores. [Release 7.0](https://docs.abcdstudy.org/latest/documentation/release_notes/7_0.html)
-later reingested and cleaned diagnostic and symptom data. The endpoint should
-therefore be described only as symptom-derived probable BED, and the experiment
-should be repeated after the precise source release is confirmed.
-
-Legacy ADNI loaders and ordered three-class objectives remain in the package for
-method portability, but no ADNI experiment or result is part of this ABCD BED
-release.
-
-## Acknowledgement
-
-CERD builds on the sparse-routing foundations of Flex-MoE and FastMoE. See
-[`NOTICE.md`](NOTICE.md) for upstream attribution.
+ABCD and ADNI data are controlled-access and are not redistributed. Confirm endpoint definitions, release versions, and class semantics with the relevant data dictionaries before publication. See [`data/README.md`](data/README.md) and [`NOTICE.md`](NOTICE.md).

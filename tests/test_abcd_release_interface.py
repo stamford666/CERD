@@ -22,12 +22,12 @@ EXPECTED_MODALITIES = {
 }
 
 
-def test_committed_abcd_interfaces_describe_binary_bed_task():
+def test_committed_abcd_interfaces_describe_binary_adhd_task():
     manifest = json.loads(
-        (ROOT / "data" / "abcd_manifest.example.json").read_text(encoding="utf-8")
+        (ROOT / "data" / "abcd_adhd_manifest.example.json").read_text(encoding="utf-8")
     )
     config = json.loads(
-        (ROOT / "configs" / "abcd_bed2y_mofe.json").read_text(encoding="utf-8")
+        (ROOT / "configs" / "abcd_adhd_mofe.json").read_text(encoding="utf-8")
     )
 
     assert manifest["label"]["column"] == "target"
@@ -36,20 +36,17 @@ def test_committed_abcd_interfaces_describe_binary_bed_task():
         item["code"]: item["name"] for item in manifest["modalities"]
     } == EXPECTED_MODALITIES
     assert manifest["provenance"]["predictor_session"] == "ses-00A"
-    assert manifest["provenance"]["outcome_sessions"] == [
-        "ses-00A",
-        "ses-01A",
-        "ses-02A",
-    ]
+    assert manifest["provenance"]["outcome_sessions"] == ["ses-00A"]
     assert manifest["provenance"]["clinical_diagnosis"] is False
-    assert manifest["provenance"]["incident_onset"] is False
+    assert manifest["provenance"]["informant"] == "parent"
 
     referenced_paths = [manifest["label"]["path"], manifest["splits"]]
     referenced_paths.extend(item["path"] for item in manifest["modalities"])
     assert all(not Path(value).is_absolute() for value in referenced_paths)
 
     assert config["data"] == "abcd"
-    assert config["task"] == "probable_bed_through_year2"
+    assert config["task"] == "baseline_parent_ksads_full_adhd_present_or_past"
+    assert config["experiment_tag"] == "abcd_adhd"
     assert config["variant"] == "mofe"
     assert config["modality"] == "SRDGNPME"
     assert config["dual_boundary_rank_loss_weight"] == 0.0

@@ -327,7 +327,7 @@ class ReconProjector(nn.Module):
 class AttentiveTokenPooler(nn.Module):
     """
     Token-level importance pooling for each modality.
-    Inspired by the moe_eating_disorder model, but kept modality-local.
+    Uses modality-local encoding before the shared fusion stack.
     """
     def __init__(
         self,
