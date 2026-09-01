@@ -257,7 +257,15 @@ class FlexMoE(nn.Module):
 # Generators + flags + recon
 # =========================
 class ConditionalGenerator(nn.Module):
-    def __init__(self, hidden_dim: int, num_patches: int, num_heads: int = 4, num_layers: int = 2, dropout: float = 0.1):
+    def __init__(
+        self,
+        hidden_dim: int,
+        num_patches: int,
+        num_heads: int = 4,
+        num_layers: int = 2,
+        dropout: float = 0.1,
+        use_output_gate: bool = True,
+    ):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.num_patches = num_patches
@@ -282,7 +290,10 @@ class ConditionalGenerator(nn.Module):
                 ),
             }))
 
+        # Always construct the gate so disabling it does not change parameter
+        # names, RNG consumption, or initialization of later modules.
         self.gate = nn.Sequential(nn.Linear(hidden_dim, hidden_dim), nn.Sigmoid())
+        self.use_output_gate = bool(use_output_gate)
 
     def forward(self, ctx_tokens: torch.Tensor):
         B = ctx_tokens.shape[0]
@@ -294,8 +305,9 @@ class ConditionalGenerator(nn.Module):
             x, _ = layer["xattn"](q_norm, kv_norm, kv_norm, need_weights=False)
             q = q + layer["drop"](x)
             q = q + layer["ffn"](layer["ln_ffn"](q))
-        g = self.gate(q)
-        return q * g
+        if not self.use_output_gate:
+            return q
+        return q * self.gate(q)
 
 
 class ModalityFlagEmbedding(nn.Module):
@@ -751,14 +763,14 @@ def uncertainty_weighted_ordinal_mix(
 def sample_observed_reconstruction_groups(
     observed_mask: torch.Tensor,
     targets_per_sample: int,
+    context_dropout_probability: float = 0.0,
 ) -> dict[tuple[int, tuple[int, ...]], torch.Tensor]:
     """Group per-sample observed reconstruction tasks by target and context.
 
-    Every eligible sample has at least two naturally observed modalities.  A
-    target is sampled only from those observed modalities, and all remaining
-    observed modalities form a non-empty conditioning context.  Grouping equal
-    ``(target, context-pattern)`` tasks preserves batched generator execution
-    without making eligibility depend on the other samples in the minibatch.
+    At zero context dropout, each observed target uses all other observed
+    modalities (the backward-compatible leave-one-out path).  With positive
+    dropout, one non-empty proper observed subset is shared as context and its
+    complement supplies reconstruction targets for that sample.
     """
     if observed_mask.ndim != 2:
         raise ValueError("observed_mask must have shape (batch, modalities)")
@@ -767,6 +779,15 @@ def sample_observed_reconstruction_groups(
         raise ValueError("targets_per_sample must be non-negative")
     if targets_per_sample == 0 or observed_mask.shape[0] == 0:
         return {}
+
+    context_dropout_probability = float(context_dropout_probability)
+    if (
+        not math.isfinite(context_dropout_probability)
+        or not 0.0 <= context_dropout_probability <= 1.0
+    ):
+        raise ValueError(
+            "context_dropout_probability must be finite and in [0, 1]"
+        )
 
     observed_mask = observed_mask.bool()
     batch_size, num_modalities = observed_mask.shape
@@ -787,6 +808,17 @@ def sample_observed_reconstruction_groups(
         if needs_sampling
         else None
     )
+    # This draw exists only on the opt-in subset path, keeping the p=0 RNG
+    # trajectory exactly compatible with historical leave-one-out training.
+    subset_priorities = (
+        torch.rand(
+            batch_size,
+            num_modalities,
+            device=observed_mask.device,
+        ).detach().cpu().tolist()
+        if context_dropout_probability > 0
+        else None
+    )
     grouped_rows: dict[tuple[int, tuple[int, ...]], list[int]] = {}
     for sample_index, pattern in enumerate(patterns):
         observed_modalities = [
@@ -796,25 +828,61 @@ def sample_observed_reconstruction_groups(
         ]
         if len(observed_modalities) < 2:
             continue
-        target_count = min(targets_per_sample, len(observed_modalities))
-        if target_count == len(observed_modalities):
-            target_modalities = observed_modalities
-        else:
-            if priorities is None:
-                raise RuntimeError("Target priorities were not initialized")
-            target_modalities = sorted(
-                observed_modalities,
-                key=lambda modality_index: priorities[sample_index][modality_index],
-            )[:target_count]
-        for target_modality in target_modalities:
-            context_modalities = tuple(
+        if subset_priorities is not None:
+            row_priorities = subset_priorities[sample_index]
+            context_modalities = [
                 modality_index
                 for modality_index in observed_modalities
-                if modality_index != target_modality
+                if row_priorities[modality_index]
+                >= context_dropout_probability
+            ]
+            if not context_modalities:
+                context_modalities = [
+                    max(
+                        observed_modalities,
+                        key=lambda modality_index: row_priorities[modality_index],
+                    )
+                ]
+            if len(context_modalities) == len(observed_modalities):
+                context_modalities.remove(
+                    min(
+                        observed_modalities,
+                        key=lambda modality_index: row_priorities[modality_index],
+                    )
+                )
+            target_modalities = [
+                modality_index
+                for modality_index in observed_modalities
+                if modality_index not in context_modalities
+            ]
+            target_modalities = sorted(
+                target_modalities,
+                key=lambda modality_index: row_priorities[modality_index],
+            )[:targets_per_sample]
+            context_modalities = tuple(sorted(context_modalities))
+        else:
+            target_count = min(targets_per_sample, len(observed_modalities))
+            if target_count == len(observed_modalities):
+                target_modalities = observed_modalities
+            else:
+                if priorities is None:
+                    raise RuntimeError("Target priorities were not initialized")
+                target_modalities = sorted(
+                    observed_modalities,
+                    key=lambda modality_index: priorities[sample_index][modality_index],
+                )[:target_count]
+        for target_modality in target_modalities:
+            current_context_modalities = (
+                tuple(
+                    modality_index
+                    for modality_index in observed_modalities
+                    if modality_index != target_modality
+                )
+                if subset_priorities is None
+                else context_modalities
             )
-            # Eligibility above guarantees a real observed context.
             grouped_rows.setdefault(
-                (target_modality, context_modalities), []
+                (target_modality, current_context_modalities), []
             ).append(sample_index)
 
     return {
@@ -891,6 +959,12 @@ class AGMGFlexMoE(nn.Module):
         # therefore preserves the historical module tree, RNG trajectory, and
         # state dict exactly.
         dual_local_boundary_loss_weight: float = 0.0,
+        *,
+        # Method-revision extensions are keyword-only so every historical
+        # positional constructor call keeps the exact pre-extension mapping.
+        recon_context_dropout_probability: float = 0.0,
+        generator_only_task_grad: bool = False,
+        generator_output_gate: bool = True,
     ):
         super().__init__()
         self.num_modalities = num_modalities
@@ -910,10 +984,38 @@ class AGMGFlexMoE(nn.Module):
         self.recon_normalized_token_loss_weight = float(
             recon_normalized_token_loss_weight
         )
+        if (
+            not math.isfinite(float(recon_context_dropout_probability))
+            or not 0.0 <= float(recon_context_dropout_probability) <= 1.0
+        ):
+            raise ValueError(
+                "recon_context_dropout_probability must be finite and in [0, 1]"
+            )
+        self.recon_context_dropout_probability = float(
+            recon_context_dropout_probability
+        )
+        if (
+            self.recon_context_dropout_probability > 0
+            and not self.pattern_aware_reconstruction
+        ):
+            raise ValueError(
+                "positive reconstruction context dropout requires "
+                "pattern-aware reconstruction"
+            )
         self.vectorized_generation = vectorized_generation
         self.recon_targets_per_sample = max(0, int(recon_targets_per_sample))
         self.use_generators = bool(use_generators)
         self.generator_task_grad = bool(generator_task_grad)
+        self.generator_only_task_grad = bool(generator_only_task_grad)
+        self.generator_output_gate = bool(generator_output_gate)
+        if self.generator_task_grad and self.generator_only_task_grad:
+            raise ValueError(
+                "generator_task_grad and generator_only_task_grad are mutually exclusive"
+            )
+        if self.generator_only_task_grad and not self.use_generators:
+            raise ValueError(
+                "generator_only_task_grad requires use_generators=True"
+            )
         self.ordinal_fusion_weight = float(ordinal_fusion_weight)
         self.ordinal_aux_loss_weight = float(ordinal_aux_loss_weight)
         if ordinal_head_type not in {"proportional", "continuation"}:
@@ -985,7 +1087,14 @@ class AGMGFlexMoE(nn.Module):
         )
 
         self.generators = nn.ModuleList([
-            ConditionalGenerator(hidden_dim, num_patches, num_heads=gen_num_heads, num_layers=gen_num_layers, dropout=0.1)
+            ConditionalGenerator(
+                hidden_dim,
+                num_patches,
+                num_heads=gen_num_heads,
+                num_layers=gen_num_layers,
+                dropout=0.1,
+                use_output_gate=self.generator_output_gate,
+            )
             for _ in range(num_modalities)
         ]) if self.use_generators else nn.ModuleList()
         self.flag_embeds = nn.ModuleList([ModalityFlagEmbedding(hidden_dim) for _ in range(num_modalities)])
@@ -1225,8 +1334,12 @@ class AGMGFlexMoE(nn.Module):
                     [tokens_list[j].index_select(0, sample_idx) for j in context_modalities],
                     dim=1,
                 )
+                if self.generator_only_task_grad:
+                    context = context.detach()
                 generated = self.generators[m](context)
-                if not self.generator_task_grad:
+                if not (
+                    self.generator_task_grad or self.generator_only_task_grad
+                ):
                     generated = generated.detach()
                 filled_for_cls[m][sample_idx] = generated
                 generated_mask[sample_idx, m] = True
@@ -1269,6 +1382,7 @@ class AGMGFlexMoE(nn.Module):
         groups = sample_observed_reconstruction_groups(
             observed_mask,
             self.recon_targets_per_sample,
+            self.recon_context_dropout_probability,
         )
         losses = []
         for (target_modality, context_modalities), sample_idx in groups.items():
@@ -1325,8 +1439,17 @@ class AGMGFlexMoE(nn.Module):
                     if ctx is None:
                         gen_flag[m][idx] = 1
                         continue
+                    if self.generator_only_task_grad:
+                        ctx = ctx.detach()
                     gen = self.generators[m](ctx.unsqueeze(0)).squeeze(0)
-                    filled_for_cls[m][idx] = gen if self.generator_task_grad else gen.detach()
+                    filled_for_cls[m][idx] = (
+                        gen
+                        if (
+                            self.generator_task_grad
+                            or self.generator_only_task_grad
+                        )
+                        else gen.detach()
+                    )
                     gen_flag[m][idx] = 1
                     generated_mask[idx, m] = True
 

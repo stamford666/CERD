@@ -23,6 +23,12 @@ for seed in 0 1 2; do
     --variant mofe \
     --adni-data-root "$data_root" \
     --output-dir "$output_dir" \
+    --no-pattern-aware-reconstruction \
+    --recon-context-dropout-probability 0 \
+    --recon-normalized-token-loss-weight 0 \
+    --branch-confidence-mode evidence \
+    --generator-output-gate \
+    --no-generator-only-task-grad \
     --seed "$seed" \
     --device "$device_index" \
     "$test_flag"

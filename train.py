@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import math
 import random
 import time
 from pathlib import Path
@@ -83,6 +84,33 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dropout", type=float, default=0.3)
     parser.add_argument("--gen-num-layers", type=int, default=2)
     parser.add_argument("--gen-num-heads", type=int, default=4)
+    parser.add_argument(
+        "--pattern-aware-reconstruction",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+    )
+    parser.add_argument(
+        "--recon-context-dropout-probability", type=float, default=0.0
+    )
+    parser.add_argument(
+        "--recon-normalized-token-loss-weight", type=float, default=0.0
+    )
+    parser.add_argument(
+        "--branch-confidence-mode",
+        choices=("evidence", "entropy_detached", "entropy_exp_detached"),
+        default="evidence",
+    )
+    parser.add_argument(
+        "--generator-output-gate",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
+    parser.add_argument(
+        "--generator-only-task-grad",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="allow classification loss to update generators only (opt in)",
+    )
 
     parser.add_argument("--gate-loss-weight", type=float, default=0.01)
     parser.add_argument("--recon-loss-weight", type=float, default=1.0)
@@ -107,6 +135,17 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
+    method_defaults = {
+        "pattern_aware_reconstruction": False,
+        "recon_context_dropout_probability": 0.0,
+        "recon_normalized_token_loss_weight": 0.0,
+        "branch_confidence_mode": "evidence",
+        "generator_output_gate": True,
+        "generator_only_task_grad": False,
+    }
+    for name, value in method_defaults.items():
+        if not hasattr(args, name) or getattr(args, name) is None:
+            setattr(args, name, value)
     if getattr(args, "modality", None) is None:
         args.modality = "SRDGNPME" if args.data == "abcd" else "IGCB"
     if args.variant == "auto":
@@ -125,7 +164,6 @@ def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
         args.class_weight_power if args.class_weight_power is not None else (0.15 if args.data == "abcd" else 0.0)
     )
     args.num_layers_pred = args.num_layers_pred or (2 if args.data == "abcd" else 1)
-
     default_dbr = 0.02 if args.variant in {"dbr", "unified"} else 0.0
     default_mofe = 0.1 if args.variant in {"mofe", "unified", "mofe_tcl", "mofe_tbfd"} else 0.0
     default_branch_distill = 0.05 if args.variant in {"mofe_tcl", "mofe_tbfd"} else 0.0
@@ -147,6 +185,21 @@ def resolve_defaults(args: argparse.Namespace) -> argparse.Namespace:
 
 def validate_objective_compatibility(args: argparse.Namespace, num_classes: int) -> None:
     """Reject objectives whose mathematical assumptions do not match the target."""
+
+    context_dropout = float(args.recon_context_dropout_probability)
+    if not math.isfinite(context_dropout) or not 0.0 <= context_dropout <= 1.0:
+        raise ValueError(
+            "recon_context_dropout_probability must be finite and in [0, 1]"
+        )
+    if context_dropout > 0 and not args.pattern_aware_reconstruction:
+        raise ValueError(
+            "positive reconstruction context dropout requires pattern-aware reconstruction"
+        )
+    token_weight = float(args.recon_normalized_token_loss_weight)
+    if not math.isfinite(token_weight) or token_weight < 0:
+        raise ValueError(
+            "recon_normalized_token_loss_weight must be finite and non-negative"
+        )
 
     if num_classes < 2:
         raise ValueError("CERD classification requires at least two classes")
@@ -434,11 +487,21 @@ def train(args: argparse.Namespace) -> dict[str, Any]:
         dropout=args.dropout,
         gen_num_layers=args.gen_num_layers,
         gen_num_heads=args.gen_num_heads,
+        pattern_aware_reconstruction=args.pattern_aware_reconstruction,
+        recon_normalized_token_loss_weight=(
+            args.recon_normalized_token_loss_weight
+        ),
+        recon_context_dropout_probability=(
+            args.recon_context_dropout_probability
+        ),
         vectorized_generation=True,
         recon_targets_per_sample=len(modality_dict),
         use_generators=True,
         dynamic_branch_fusion=False,
+        branch_confidence_mode=args.branch_confidence_mode,
         generator_task_grad=False,
+        generator_only_task_grad=args.generator_only_task_grad,
+        generator_output_gate=args.generator_output_gate,
     ).to(device)
 
     parameters = list(model.parameters()) + [

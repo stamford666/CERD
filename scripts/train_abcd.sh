@@ -32,6 +32,12 @@ for seed in 0 1 2; do
     --sampler-power 0.35 \
     --class-weight-power 0.15 \
     --num-layers-pred 2 \
+    --no-pattern-aware-reconstruction \
+    --recon-context-dropout-probability 0 \
+    --recon-normalized-token-loss-weight 0 \
+    --branch-confidence-mode evidence \
+    --generator-output-gate \
+    --no-generator-only-task-grad \
     --more-fewer-rank-loss-weight 0.1 \
     --dual-boundary-rank-loss-weight 0.0 \
     --seed "$seed" \
