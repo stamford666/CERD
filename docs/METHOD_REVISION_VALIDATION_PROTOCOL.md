@@ -1,122 +1,9 @@
-# Method-revision MoE validation protocol
+# Final CERD evaluation and public-reporting protocol
 
-## Scope and claim boundary
+## Scope
 
-This protocol evaluates a revised CERD Method while retaining the sparse
-mixture-of-experts (MoE) backbone in every arm. It is validation-only
-development evidence: no test split or sealed holdout was accessed. The
-reported values are descriptive pooled out-of-fold metrics, not evidence of
-external generalization or statistical significance.
-
-The public repository is a core-method reference implementation, not the
-frozen campaign runner, and it does not support exact numerical reproduction
-of these values. Its generic trainer and descriptive configuration records are
-provided to expose the central Method switches rather than to reconstruct the
-controlled internal execution environment.
-
-The public result artifact contains no participant identifiers, split lists,
-participant-level predictions, logits, checkpoints, local paths, or execution
-logs.
-
-The ABCD Method-revision endpoint is distinct from the 11,671-participant
-binary ABCD-ADHD benchmark reported elsewhere in the README. It uses a
-946-participant development cohort, ses-00A IGCB features, and a strict
-three-class ses-01A ADHD-presentation target: inattentive,
-hyperactive/impulsive, or combined. Its five folds are family-disjoint.
-
-## Method question
-
-The experiment tests four changes motivated by the Method review:
-
-1. train latent completion from stochastic, nonempty observed subsets;
-2. supervise the generated token sequence in addition to its pooled summary;
-3. replace shift-sensitive evidence magnitude with detached normalized-entropy
-   confidence; and
-4. test whether the generator's post-cross-attention output gate is necessary.
-
-The conceptual path is:
-
-```text
-reconstruct missing information
-        -> mark observed/generated provenance
-        -> estimate input reliability and predictive confidence
-        -> combine joint, unimodal, and pairwise decisions
-```
-
-## Sparse-MoE anchor and controlled capacity variant
-
-The initial Method-revision and balance-screen arms use the same anchor:
-
-- one sparse fusion layer;
-- 16 experts and one router;
-- top-4 routing;
-- router load-balancing weight 0.01; and
-- observed/generated provenance embeddings and reliability-aware branch
-  decomposition.
-
-No dense replacement is evaluated. The final capacity screen changes only the
-expert count and top-k to 8/top-2 while retaining one router/fusion layer, all
-Method and balance settings, and the same 25% active-expert ratio. Thus MoE is
-retained throughout, but “same backbone” applies only before this controlled
-capacity comparison.
-
-## Arms
-
-| Arm | Stochastic subset | Token loss | Entropy confidence | Output gate |
-|---|:---:|:---:|:---:|:---:|
-| `c0_legacy` | no | no | no | yes |
-| `c1_full` | yes | yes | yes | yes |
-| `c2_full_minus_subset` | no | yes | yes | yes |
-| `c3_full_minus_token` | yes | no | yes | yes |
-| `c4_full_minus_entropy` | yes | yes | no | yes |
-| `c5_full_minus_gate` | yes | yes | yes | no |
-
-For stochastic-subset reconstruction, each eligible sample has at least two
-physically observed modalities. A nonempty proper subset is retained as
-context and the masked, physically observed modalities become reconstruction
-targets. The context-drop probability is 0.25. The token objective is
-normalized token-level Smooth-L1 with weight 0.05, added to the pooled
-reconstruction objective.
-
-For a branch probability vector \(p\) over \(C\) classes, predictive confidence
-is
-
-\[
-q(p)=\max\!\left(1-\frac{H(p)}{\log C},10^{-3}\right),
-\]
-
-and is detached before branch weighting. This makes confidence invariant to a
-common shift of all class logits.
-
-The output-gate ablation bypasses the sigmoid multiplication while retaining
-the gate parameters and their initialization. This keeps parameter names and
-random-number consumption aligned between the gated and ungated arms.
-
-## Dataset-specific fixed training detail
-
-The ADNI runs retain their predeclared generator-only task-gradient path;
-ABCD does not use that path. In both datasets the ordinary generator task
-gradient is disabled. This dataset-specific distinction was fixed before the
-Method-revision runs and is part of the reported internal configuration. A
-reproduction attempt would need to match it, but this public release makes no
-exact numerical reproduction claim.
-
-## Validation design
-
-The first ablation uses five validation folds with ABCD seed 9 and ADNI seed
-26. The fixed-config confirmation repeats only `c0_legacy` and `c1_full` with
-new seeds: ABCD seed 10 and ADNI seed 27. No aggregate ablation result was used
-to add, remove, or reconfigure an arm after the predeclared grid was launched.
-This grid-level statement does not describe within-run checkpoint selection.
-
-The reported ADNI campaign used legacy image imputation and final-epoch
-refitting. By contrast, the public generic trainer uses validation-selected
-checkpointing and is not the campaign runner. Other campaign-specific details
-outside the public reference are the LRPA rank-4 patch adapter and the
-ABCD-specific presentation-axis and class-weighted quality branch-auxiliary
-objectives with its fixed no-recompute dropped-combination policy.
-
-Both datasets use exactly the same six metrics:
+The public result contains only the final ADNI and ABCD experiments. Both use
+the same six metrics:
 
 1. Accuracy;
 2. Balanced Accuracy;
@@ -125,88 +12,205 @@ Both datasets use exactly the same six metrics:
 5. Macro-AUROC; and
 6. Macro-AUPRC.
 
-Macro-F1 is the primary metric. Metrics are computed from pooled out-of-fold
-predictions. The public artifact also reports arithmetic two-seed means as a
-descriptive stability summary; these means are not a substitute for an
-independent test or a significance analysis.
+Both final endpoints are three-class tasks. ABCD uses the frozen strict
+presentation endpoint on dev946 with five family-disjoint folds; the
+manifest-driven binary ABCD-ADHD workflow in the core reference code is an
+independent benchmark and contributes no result to this artifact. Macro-AUROC
+uses macro one-vs-rest averaging and Macro-AUPRC averages one-vs-rest average
+precision over every fixed class. The independent binary reference applies the
+same rule over both fixed labels rather than reporting positive-class AP alone.
 
-## Predeclared decisions
+Macro-F1 is the primary classification metric. Binary-only quantities,
+task-specific sensitivity/specificity, and results from earlier endpoints or
+tuning lineages are excluded from the final table.
 
-The fixed-config new-seed confirmation supports a shared primary claim only if
-`c1_full` improves pooled Macro-F1 and does not reduce pooled Accuracy relative
-to `c0_legacy` on both datasets.
+The sparse mixture-of-experts backbone remains part of full CERD. The public
+reference implementation exposes the core Method but is not the protected
+campaign runner. Exact data versions, fixed partitions, preprocessing receipts,
+fold assignments, checkpoint hashes, and orchestration stay in the controlled
+experiment record.
 
-The output gate is removed only if the no-gate arm has pooled Macro-F1 at least
-as high as `c1_full` on both datasets, strictly higher on at least one dataset,
-and pooled Accuracy at least as high on both datasets.
+## Freeze and evaluation boundary
 
-The new-seed confirmation did not satisfy the shared primary-claim rule:
-ABCD's Macro-F1 difference changed sign at seed 10. The gate-removal rule also
-failed because removing the gate reduced ABCD Macro-F1 and Balanced Accuracy.
-The predeclared gate rule therefore retains the output gate. Sparse MoE remains
-because every arm uses it; this protocol does not compare MoE with a dense
-replacement and makes no dense-versus-MoE selection claim.
+For each dataset, record the cohort, endpoint, partition, subject count, fold
+count, clustering unit, candidate configuration, comparator configurations,
+checkpoint ensemble rule, and statistical plan before final scoring. Selection
+data may be used for tuning; any reused partition must be named plainly and
+must not be presented as independent confirmation.
 
-## Adaptive ABCD follow-ups
+All methods in a paired comparison must use the same eligible participants,
+target definition, modality inputs, preprocessing boundary, split, and metric
+implementation. Missing-class behavior for Macro-AUROC and Macro-AUPRC is
+fixed before evaluation. Probability ensembles, if used, are constructed
+before computing any of the six pooled metrics.
 
-The adaptive follow-ups reuse the same 946-participant ABCD development cohort
-and five family-disjoint folds. They provide validation-only tuning evidence,
-not independent-data confirmation. Every candidate retains the output gate and
-sparse MoE; only the final capacity stage changes expert count and top-k.
+The public aggregate artifact records the realized evaluation design and split
+for both datasets. A result remains `NOT AVAILABLE` until every required field
+is frozen and available.
 
-At seed 11, a six-configuration screen promoted `t4` for confirmation. The
-candidate simultaneously changed context dropout from 0.25 to 0.10, token-loss
-weight from 0.05 to 0.10, and confidence from detached entropy to detached
-exponential entropy, so its screen result cannot identify a component-specific
-effect. A frozen seed-12 rerun compared only `t4` with its anchor. It failed all
-three confirmation checks: strict pooled Macro-F1 improvement, Accuracy delta
-at least −0.005, and Macro-AUROC delta at least −0.005. The decision was
-`NOT_CONFIRMED`, and `t4` was not adopted.
+The v3 public contract fixes ADNI to 1,480 subjects and five subject-level OOF
+folds, and ABCD to 946 subjects, five family-disjoint OOF folds, and 922 family
+resampling units. Both are adaptively reused development cohorts:
+`evidence_scope=development_cv`, `partition_reused=true`, and
+`selection_independent=false`. Consequently `confirmatory_support` is always
+false for this release even if a descriptive paired comparison is significant.
+The top-level claim boundary uses the fixed sentence: “Adaptive same cohort
+development evidence only; both scored cohorts were reused for model and
+configuration selection, so any Holm adjusted difference is descriptive and
+confirmatory support is false.”
 
-The seed-13 robustness screen therefore returned to the retained anchor and
-held context dropout at 0.25. Its local 2×3 grid crossed two detached confidence
-transforms (`entropy_detached` and `entropy_exp_detached`) with normalized token-
-loss weights 0.05, 0.075, and 0.10. The 0.05 detached-entropy configuration was
-the anchor. Promotion required every one of the following relative to that
-anchor:
+ADNI validation-318, test-318, and unassigned-910 are outside this campaign:
+not selected into any arm, not iterated over, not scored, and not included in
+any fitted statistic.
+ABCD protected temporal internal holdout 850 is likewise outside this campaign:
+not selected into any arm, not iterated over, not scored, and not included in
+any fitted statistic.
 
-1. pooled Macro-F1 delta at least +0.003;
-2. pooled Accuracy delta at least −0.005;
-3. pooled Macro-AUROC delta at least −0.005; and
-4. a strict Macro-F1 win in at least three of the five folds.
+The artifact also records an evidence scope, whether the scored partition was
+reused during development, and whether model/configuration selection was
+independent of that partition. A new training seed on the same participants is
+same-cohort development replication, not independent-data confirmation.
+`development_cv` and `reused_validation` results may be released descriptively,
+but cannot support a confirmatory superiority flag. Only a locked evaluation,
+locked internal holdout, or external test that is both non-reused and
+selection-independent is eligible for that flag.
 
-None of the five non-anchor candidates improved pooled Macro-F1, so no
-candidate met all four conditions. The frozen decision was
-`NO_PROMOTION_RETAIN_ANCHOR`, and the conditional new-seed confirmation was not
-launched. This negative screen does not support a positive tuning or robustness
-claim.
+## Primary results and statistical comparisons
 
-At seed 14, a six-arm one-factor balance screen kept the full Method and
-16-expert/top-4 anchor fixed. It varied class-weight power, sampler power, or
-training-only logit adjustment one at a time. No alternative met the same
-promotion guardrails, so the decision was `NO_PROMOTION_RETAIN_ANCHOR`; the
-conditional seed-15 confirmation was skipped.
+The primary table reports exactly one CERD row and one named comparator for
+each dataset. Values are stored as fractions and rendered as percentages.
+There is no threshold selection on final labels.
+Each row also carries a public configuration ID, configuration SHA-256, and
+execution-receipt SHA-256. These digests bind the reported row to its controlled
+configuration and receipt without releasing a path. The paired comparison
+carries the SHA-256 of its controlled analysis receipt.
 
-At seed 16, the final capacity screen compared that exact anchor with an
-8-expert/top-2 compact sparse MoE. Both arms kept a 25% active-expert ratio and
-all non-capacity arguments were inherited unchanged. The compact arm met all
-four promotion conditions. Its precommitted seed-17 exact10 rerun required all
-of: strict compact-minus-anchor Macro-F1 improvement, Accuracy and Macro-AUROC
-deltas each at least −0.005, and a seed-16/17 mean Macro-F1 delta at least
-0.003. All checks passed and the decision was `CONFIRMED`.
+Each dataset has exactly one one-sided paired Macro-F1 comparison on the exact
+same evaluation observations. Each released comparison records:
 
-All seed-14/16/17 values are pooled out-of-fold common-six validation metrics
-on the same 946-participant family-disjoint development cohort. These stages
-do not access test or sealed holdout data and are not independent-data
-confirmation or a significance analysis.
+- the two named methods, `paired=true`, and the primary Macro-F1 metric;
+- the observed difference, with CERD minus comparator orientation;
+- the one-sided 95% paired-bootstrap lower bound;
+- the raw paired-swap p-value and jointly recomputed Holm-adjusted p-value;
+- the fixed test, unit count, draw counts, RNG seeds, and alpha; and
+- a separate confirmatory-support flag checked by the release validator.
 
-## Public artifacts
+The paired swap uses a separately initialized NumPy PCG64 stream per dataset,
+50,000 draws, RNG seed 20260905, one swap bit per subject/family, an inclusive
+one-sided tail, and plus-one Monte Carlo correction. The paired cluster
+bootstrap uses a separate PCG64 stream per dataset, 20,000 draws, RNG seed
+20260906, and the 0.05 percentile with NumPy's `linear` quantile method. Both
+statistics recompute pooled fixed-three-class Macro-F1; they never average
+unit-level F1 values. Holm correction is performed jointly across the ADNI and
+ABCD primary comparisons. Significance is derived, rather than supplied, from
+Holm-adjusted p-value `< 0.05`.
 
-- [Method narrative](METHOD.md)
-- [De-identified common-six result](../results/method_revision_moe_common6.json)
-- De-identified descriptive parameter records under [`configs/`](../configs/)
+The confirmatory-support flag can be true only when CERD is the correctly
+oriented `ours` row, the comparator is a comparator row, the tested metric is
+the pre-specified primary Macro-F1, CERD's difference and bootstrap
+lower bound are positive, the alternative is `greater`, the adjusted p-value
+is below alpha, and the evidence boundary is eligible as defined above.
+The validator also recomputes the reported difference directly from the two
+public Macro-F1 values.
 
-The parameter records are not consumed by the public `train.py` and are not a
-complete executable campaign specification. Internal fold assignments,
-protected manifests and fitted preprocessing assets, predictions, checkpoints,
-run receipts, logs, and campaign orchestration remain private.
+ABCD inference uses whole families as the resampling unit. ADNI uses subjects.
+The bootstrap and paired swap operate on the same declared unit. A superiority
+statement is made only for a pre-specified
+comparison whose adjusted test meets alpha and whose effect direction is
+positive; otherwise the result is described without a superiority claim.
+
+## Pre-specified matched ablations
+
+Each dataset reports all six metrics for every row below. Apart from the named
+factor, the data split, seed/ensemble policy, optimization budget, prediction
+aggregation, and evaluation code remain matched to full CERD.
+
+| Public ID | Change from full CERD | Question isolated |
+|---|---|---|
+| `dense_backbone` | replace sparse MoE feed-forward fusion with its dense control | whether sparse expert routing contributes |
+| `no_provenance` | remove observed/generated provenance embeddings | whether source marking contributes |
+| `uniform_branch_weights` | replace reliability-aware weights with uniform valid-branch weights | whether trust-aware decision weighting contributes |
+| `mean_pooling` | replace gated-attention pooling with mean pooling | whether learned token pooling contributes |
+| `no_stochastic_context` | disable stochastic observed-subset context masking while retaining completion | whether context masking contributes separately from reconstruction |
+| `no_completion` | disable latent completion under the matched missingness policy | whether reconstruction contributes |
+| `no_mofe` | disable the more/fewer-modality objective | whether the robustness objective contributes |
+| `no_output_gate` | bypass the generator output gate with aligned construction | whether the gate contributes |
+
+The dense control is the only arm that removes MoE; all other rows retain the
+same sparse-MoE configuration as full CERD. Ablation values are reported even
+when they do not favor the full model.
+
+The public control mapping is frozen in
+[`configs/matched_ablations_v1.json`](../configs/matched_ablations_v1.json).
+Named runs use `train.py --ablation-id ID --data-order-seed SEED`; fold-based
+runs additionally require `--fold-id FOLD --split-receipt-sha256 SHA256`.
+Checkpoint protocol metadata records the resolved eight-bit profile, ordered-ID
+digest, safe split-receipt digest, and canonical configuration digest. The
+output stem binds those values, and a pre-existing output is accepted only
+when both its receipt and checkpoint exactly match. The loader/sampler seed is
+separate from model RNG so module-construction differences cannot change
+example order. The public protocol freezes that RNG scheme but does not record
+epoch-order hashes and therefore makes no epoch-order hash-closure claim. For
+`no_stochastic_context`, target selection and random draws are preserved and
+only the context is expanded. For `no_completion`, generator and projector
+modules remain constructed but generation and reconstruction are skipped. For
+`no_mofe`, the reduced-view forward remains active while only the named rank
+objective is excluded.
+
+The dense arm shadow-constructs each corresponding sparse feed-forward block
+to restore the full model's construction-RNG tail; all common parameters,
+including alternating dense layers and every post-backbone module, therefore
+start identically. This is construction alignment only. Sparse router noise is
+drawn during the full model's forward pass and is absent from the dense arm, so
+their global forward RNG streams are not promised to remain aligned. The
+dedicated loader/sampler generator keeps sample order independent of that
+difference.
+
+## Aggregate interpretability
+
+Explanation is generated by replaying the frozen final checkpoints without
+changing predictions. For each dataset and both complete and incomplete input
+conditions, release only:
+
+- the number of evaluated observations;
+- four normalized modality decision-allocation masses; and
+- normalized mass grouped across joint, unimodal, and pairwise branches.
+
+The artifact fixes `natural_disjoint` as its condition design and uses a
+controlled public aggregate-source label. Complete and incomplete counts must
+sum exactly to the evaluation subject count, with each
+public cell containing at least 10 subjects. Each allocation sums to one within
+absolute tolerance 1e-6. Each vector is the arithmetic mean of normalized
+per-subject vectors within its natural condition; no row-level explanation is
+accepted by the public builder. These values are descriptive routing/decision
+allocation, not causal modality importance or proof of explanation faithfulness.
+
+## Public artifact and privacy barrier
+
+The repository does not ship a placeholder result JSON. The controlled builder
+interface and exact private schemas are specified in
+[`FINAL_RESULT_BUILDER.md`](FINAL_RESULT_BUILDER.md). After its input and
+receipts are approved, create `results/final_results.json`, then render the
+README and SVG figures with:
+
+```bash
+# The reviewed post-barrier finalizer internally invokes the bound builder and
+# writes the FINAL-bound candidate to results/final_results.json.
+python scripts/render_release_results.py --input results/final_results.json
+python scripts/render_release_results.py --input results/final_results.json --check --require-final
+```
+
+The renderer rejects a final artifact missing either dataset, any common-six
+metric, any required ablation, paired comparison metadata, or aggregate
+interpretability values. It recomputes significance and rejects inconsistent
+confirmatory-support claims.
+
+The `--require-final` release gate accepts only the completed final artifact.
+Plain text fields reject placeholder tokens, Markdown control characters,
+local paths, and participant-like identifiers so a result cannot break the
+generated tables or disclose protected information.
+
+Never publish participant identifiers, labels, split membership, predictions,
+probabilities, logits, embeddings, per-participant attributions, checkpoints,
+protected paths, or run logs. Only validated aggregate JSON, generated tables,
+and aggregate SVG figures cross the public-release boundary.

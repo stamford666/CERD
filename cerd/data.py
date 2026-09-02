@@ -5,6 +5,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import json
 from .model import PatchEmbeddings
+from .sampling import data_order_generator
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from itertools import combinations
@@ -365,7 +366,23 @@ def collate_fn(batch):
     observeds = torch.tensor(np.vstack(observeds))
     return collated_data, labels, mcs, observeds
 
-def create_loaders(data_dict, observed_idx, labels, train_ids, valid_ids, test_ids, batch_size, num_workers, pin_memory, input_dims, transforms, masks, preprocessed, use_common_ids=True):
+def create_loaders(
+    data_dict,
+    observed_idx,
+    labels,
+    train_ids,
+    valid_ids,
+    test_ids,
+    batch_size,
+    num_workers,
+    pin_memory,
+    input_dims,
+    transforms,
+    masks,
+    preprocessed,
+    use_common_ids=True,
+    data_order_seed=None,
+):
     if ('image' in list(data_dict.keys())) & (not preprocessed):
         train_transfrom = val_transform = test_transform = transforms['image']
         # val_transform = test_transform = False
@@ -374,14 +391,81 @@ def create_loaders(data_dict, observed_idx, labels, train_ids, valid_ids, test_i
         train_transfrom = val_transform = test_transform = False
         mask = None
 
-    train_dataset = MultiModalDataset(data_dict, observed_idx, train_ids, labels, input_dims, train_transfrom, mask, preprocessed, use_common_ids)
-    valid_dataset = MultiModalDataset(data_dict, observed_idx, valid_ids, labels, input_dims, val_transform, mask, preprocessed, use_common_ids)
-    test_dataset = MultiModalDataset(data_dict, observed_idx, test_ids, labels, input_dims, test_transform, mask, preprocessed, use_common_ids)
+    train_dataset = MultiModalDataset(
+        data_dict,
+        observed_idx,
+        train_ids,
+        labels,
+        input_dims,
+        train_transfrom,
+        mask,
+        preprocessed,
+        use_common_ids,
+    )
+    valid_dataset = MultiModalDataset(
+        data_dict,
+        observed_idx,
+        valid_ids,
+        labels,
+        input_dims,
+        val_transform,
+        mask,
+        preprocessed,
+        use_common_ids,
+    )
+    test_dataset = MultiModalDataset(
+        data_dict,
+        observed_idx,
+        test_ids,
+        labels,
+        input_dims,
+        test_transform,
+        mask,
+        preprocessed,
+        use_common_ids,
+    )
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=num_workers, pin_memory=pin_memory)
-    train_loader_shuffle = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn, num_workers=num_workers, pin_memory=pin_memory)
-    val_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=num_workers, pin_memory=pin_memory)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn, num_workers=num_workers, pin_memory=pin_memory)
+    def order_generator(stream):
+        if data_order_seed is None:
+            return None
+        return data_order_generator(data_order_seed, stream=stream)
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=collate_fn,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        generator=order_generator(0),
+    )
+    train_loader_shuffle = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=collate_fn,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        generator=order_generator(1),
+    )
+    val_loader = DataLoader(
+        valid_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=collate_fn,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        generator=order_generator(2),
+    )
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        collate_fn=collate_fn,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        generator=order_generator(3),
+    )
 
     return train_loader, train_loader_shuffle, val_loader, test_loader
 

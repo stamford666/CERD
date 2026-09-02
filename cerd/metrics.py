@@ -1,27 +1,34 @@
-"""Metrics that work for both ADNI multiclass and ABCD binary tasks."""
+"""Common-six metrics for multiclass endpoints and the binary reference task."""
 
 import numpy as np
 from sklearn.metrics import (
     accuracy_score,
     average_precision_score,
     balanced_accuracy_score,
-    confusion_matrix,
     f1_score,
-    matthews_corrcoef,
     roc_auc_score,
 )
 
 
-def metric_bundle(labels, probabilities, predictions=None) -> dict[str, float | int]:
-    """Return a common metric bundle for both ABCD and ADNI."""
+COMMON_METRIC_KEYS = (
+    "accuracy",
+    "balanced_accuracy",
+    "macro_f1",
+    "weighted_f1",
+    "macro_auroc",
+    "macro_auprc",
+)
+
+
+def metric_bundle(labels, probabilities, predictions=None) -> dict[str, float]:
+    """Return exactly the six metrics reported for both ABCD and ADNI."""
 
     labels = np.asarray(labels, dtype=np.int64)
     probabilities = np.asarray(probabilities, dtype=np.float64)
     if predictions is None:
         predictions = probabilities.argmax(axis=1)
     predictions = np.asarray(predictions, dtype=np.int64)
-    result = {
-        "n": int(labels.size),
+    return {
         "accuracy": float(accuracy_score(labels, predictions)),
         "balanced_accuracy": float(balanced_accuracy_score(labels, predictions)),
         "macro_f1": float(
@@ -33,24 +40,6 @@ def metric_bundle(labels, probabilities, predictions=None) -> dict[str, float | 
         "macro_auroc": classification_auc(labels, probabilities),
         "macro_auprc": classification_average_precision(labels, probabilities),
     }
-    if probabilities.shape[1] == 2:
-        matrix = confusion_matrix(labels, predictions, labels=[0, 1])
-        tn, fp, fn, tp = matrix.ravel()
-        result.update(
-            {
-                # For a rare binary endpoint, AP is defined for the positive
-                # disease class.  Keep ``macro_auprc`` as a compatibility
-                # alias while exposing the unambiguous manuscript name.
-                "positive_auprc": result["macro_auprc"],
-                "positive_f1": float(
-                    f1_score(labels, predictions, pos_label=1, zero_division=0)
-                ),
-                "sensitivity": float(tp / max(tp + fn, 1)),
-                "specificity": float(tn / max(tn + fp, 1)),
-                "mcc": float(matthews_corrcoef(labels, predictions)),
-            }
-        )
-    return result
 
 
 def classification_auc(labels, probabilities) -> float:
@@ -59,15 +48,28 @@ def classification_auc(labels, probabilities) -> float:
     if probabilities.ndim != 2:
         raise ValueError(f"Expected a [samples, classes] probability matrix, got {probabilities.shape}")
     if probabilities.shape[1] == 2:
-        return float(roc_auc_score(labels, probabilities[:, 1]))
-    return float(roc_auc_score(labels, probabilities, multi_class="ovr"))
+        one_hot = np.eye(2, dtype=np.float32)[labels]
+        return float(roc_auc_score(one_hot, probabilities, average="macro"))
+    return float(
+        roc_auc_score(labels, probabilities, multi_class="ovr", average="macro")
+    )
 
 
 def classification_average_precision(labels, probabilities) -> float:
     labels = np.asarray(labels)
     probabilities = np.asarray(probabilities)
-    if probabilities.shape[1] == 2:
-        return float(average_precision_score(labels, probabilities[:, 1]))
+    if probabilities.ndim != 2:
+        raise ValueError(
+            f"Expected a [samples, classes] probability matrix, got {probabilities.shape}"
+        )
+    if labels.ndim != 1 or labels.shape[0] != probabilities.shape[0]:
+        raise ValueError("Labels must be a vector aligned with the probability rows")
+    if probabilities.shape[1] < 2:
+        raise ValueError("Average precision requires at least two fixed class columns")
+    if labels.size and (
+        labels.min() < 0 or labels.max() >= probabilities.shape[1]
+    ):
+        raise ValueError("Labels must index the fixed probability columns")
     one_hot = np.eye(probabilities.shape[1], dtype=np.float32)[labels]
     return float(average_precision_score(one_hot, probabilities, average="macro"))
 

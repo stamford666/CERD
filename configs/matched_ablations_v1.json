@@ -1,0 +1,71 @@
+{
+  "schema": "cerd-matched-ablations-v1",
+  "scope": "public control mapping only; dataset, fold, optimization, and private campaign configuration remain separate",
+  "cli": "python train.py --data DATASET --ablation-id ABLATION_ID --data-order-seed SEED [--fold-id FOLD --split-receipt-sha256 SHA256] [matched base options]",
+  "full_id": "full",
+  "order_sha256": "b5ef40f7debc0add2da1f5eeeeca02c4bfb1e080f56756db8b387baa6278a702",
+  "data_order_rng": "torch-generator-linear-stream-v1",
+  "epoch_order_hash_closure": false,
+  "construction_rng_alignment": "common initialization only; forward RNG is not aligned between sparse and dense backbones",
+  "output_identity": [
+    "fold_id",
+    "split_receipt_sha256",
+    "seed",
+    "data_order_seed",
+    "configuration_sha256"
+  ],
+  "aligned_completion_module_construction": true,
+  "no_mofe_effective_weight": 0.0,
+  "full_control_profile": {
+    "use_sparse_moe_backbone": true,
+    "use_provenance_embeddings": true,
+    "use_reliability_branch_weights": true,
+    "use_attentive_token_pooling": true,
+    "use_stochastic_reconstruction_context": true,
+    "use_latent_completion": true,
+    "use_more_fewer_objective": true,
+    "generator_output_gate": true
+  },
+  "ablations": [
+    {
+      "id": "dense_backbone",
+      "control": "use_sparse_moe_backbone",
+      "value": false
+    },
+    {
+      "id": "no_provenance",
+      "control": "use_provenance_embeddings",
+      "value": false
+    },
+    {
+      "id": "uniform_branch_weights",
+      "control": "use_reliability_branch_weights",
+      "value": false
+    },
+    {
+      "id": "mean_pooling",
+      "control": "use_attentive_token_pooling",
+      "value": false
+    },
+    {
+      "id": "no_stochastic_context",
+      "control": "use_stochastic_reconstruction_context",
+      "value": false
+    },
+    {
+      "id": "no_completion",
+      "control": "use_latent_completion",
+      "value": false
+    },
+    {
+      "id": "no_mofe",
+      "control": "use_more_fewer_objective",
+      "value": false
+    },
+    {
+      "id": "no_output_gate",
+      "control": "generator_output_gate",
+      "value": false
+    }
+  ]
+}

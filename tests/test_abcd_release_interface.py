@@ -22,7 +22,7 @@ EXPECTED_MODALITIES = {
 }
 
 
-def test_committed_abcd_interfaces_describe_binary_adhd_task():
+def test_committed_abcd_interfaces_describe_independent_binary_reference_task():
     manifest = json.loads(
         (ROOT / "data" / "abcd_adhd_manifest.example.json").read_text(encoding="utf-8")
     )
@@ -45,6 +45,8 @@ def test_committed_abcd_interfaces_describe_binary_adhd_task():
     assert all(not Path(value).is_absolute() for value in referenced_paths)
 
     assert config["data"] == "abcd"
+    assert "independent public binary reference benchmark" in config["scope"]
+    assert "not the frozen three-class dev946" in config["scope"]
     assert config["task"] == "baseline_parent_ksads_full_adhd_present_or_past"
     assert config["experiment_tag"] == "abcd_adhd"
     assert config["variant"] == "mofe"

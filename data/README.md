@@ -4,7 +4,13 @@ No ABCD or ADNI participant data, identifiers, splits, or derived feature
 tables are distributed in this repository. Obtain each dataset through its
 official access process and keep it outside version control.
 
-## ABCD
+## ABCD binary reference benchmark
+
+This manifest-driven binary workflow is an independent public reference
+benchmark. It is not the source of the final method-revision ABCD result, which
+uses the frozen three-class presentation endpoint on the dev946 development
+cohort with five family-disjoint folds. The controlled dev946 tables, folds, and
+campaign runner are not distributed.
 
 Pass a manifest with `--dataset-manifest`. Start from
 `abcd_adhd_manifest.example.json`. The manifest points to the binary label table,
@@ -14,8 +20,8 @@ structure, neurocognition, physical health, mental health, and environment.
 Feature filtering, median imputation, and standardization are fitted on training
 subjects only.
 
-The current experiment uses baseline parent K-SADS **full ADHD present-or-past**
-as the positive research endpoint. Controls are assessed negative on the
+The independent reference benchmark uses baseline parent K-SADS **full ADHD
+present-or-past** as the positive research endpoint. Controls are assessed negative on the
 available full, partial-remission, and unspecified ADHD fields. This is an
 algorithmic research endpoint, not a clinical diagnosis. Predictor tables must
 exclude target-defining K-SADS fields, target-revealing source tables, direct

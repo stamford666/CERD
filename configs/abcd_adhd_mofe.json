@@ -1,4 +1,5 @@
 {
+  "scope": "independent public binary reference benchmark; not the frozen three-class dev946 method-revision result",
   "data": "abcd",
   "task": "baseline_parent_ksads_full_adhd_present_or_past",
   "experiment_tag": "abcd_adhd",

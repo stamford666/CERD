@@ -21,6 +21,7 @@ for seed in 0 1 2; do
   python train.py \
     --data adni \
     --variant mofe \
+    --ablation-id full \
     --adni-data-root "$data_root" \
     --output-dir "$output_dir" \
     --no-pattern-aware-reconstruction \
@@ -30,6 +31,7 @@ for seed in 0 1 2; do
     --generator-output-gate \
     --no-generator-only-task-grad \
     --seed "$seed" \
+    --data-order-seed "$seed" \
     --device "$device_index" \
     "$test_flag"
 done

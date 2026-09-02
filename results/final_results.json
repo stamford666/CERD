@@ -1,0 +1,492 @@
+{
+  "claim_boundary": "Adaptive same cohort development evidence only; both scored cohorts were reused for model and configuration selection, so any Holm adjusted difference is descriptive and confirmatory support is false.",
+  "datasets": {
+    "abcd": {
+      "ablations": [
+        {
+          "configuration_id": "ABCD dense backbone configuration",
+          "configuration_sha256": "b4a282bf7249e1574f7e94912eb0d082ae60ff87dc11df1d6f4b3262ea34fc45",
+          "execution_receipt_sha256": "cac3de297ca5d9c691a389cb4b1b948d9139229612da61e1131ae2aebaf4fcd5",
+          "id": "dense_backbone",
+          "label": "Dense FFN instead of sparse MoE",
+          "metrics": {
+            "accuracy": 0.5454545454545454,
+            "balanced_accuracy": 0.4248154798800587,
+            "macro_auprc": 0.4285872058568268,
+            "macro_auroc": 0.6181405501817848,
+            "macro_f1": 0.42520729611084596,
+            "weighted_f1": 0.5448135928919403
+          }
+        },
+        {
+          "configuration_id": "ABCD no provenance configuration",
+          "configuration_sha256": "8cab6ebab44c0a9e80870c6e92fb5da2bcc9a490f66d4d6bc764b08abb805100",
+          "execution_receipt_sha256": "e9685ba610548a3884c6c327dce0d14ed30490fda0def7b5c3c71ddb7d13004d",
+          "id": "no_provenance",
+          "label": "Without observed/generated provenance",
+          "metrics": {
+            "accuracy": 0.5422832980972516,
+            "balanced_accuracy": 0.43486177329639414,
+            "macro_auprc": 0.4296677136023524,
+            "macro_auroc": 0.624250662137451,
+            "macro_f1": 0.4329277696220177,
+            "weighted_f1": 0.5446390509460227
+          }
+        },
+        {
+          "configuration_id": "ABCD uniform branch weights configuration",
+          "configuration_sha256": "5551c7e049705f978cf40310601838925592eb3d2938e26d276c9a00da6cdfe3",
+          "execution_receipt_sha256": "127bebb6dd1375814c129a06050a962f3fbaa25caf221cbe1aa33bdae697e24a",
+          "id": "uniform_branch_weights",
+          "label": "Uniform instead of reliability-aware branch weights",
+          "metrics": {
+            "accuracy": 0.5285412262156448,
+            "balanced_accuracy": 0.440563540349856,
+            "macro_auprc": 0.4337803894804684,
+            "macro_auroc": 0.6203902420598454,
+            "macro_f1": 0.43274613370430676,
+            "weighted_f1": 0.5374882344669346
+          }
+        },
+        {
+          "configuration_id": "ABCD mean pooling configuration",
+          "configuration_sha256": "b9e5911214d71425a737d2510e9a426eb531fc8c926ffa90d601433b54996e6e",
+          "execution_receipt_sha256": "7f482abf392996f090dc8c6ae053e5533fdde141cab1701f713d726ebd1382eb",
+          "id": "mean_pooling",
+          "label": "Mean instead of gated-attention pooling",
+          "metrics": {
+            "accuracy": 0.5380549682875264,
+            "balanced_accuracy": 0.44094617914771755,
+            "macro_auprc": 0.42969603118446775,
+            "macro_auroc": 0.6192592041351498,
+            "macro_f1": 0.4363087728890318,
+            "weighted_f1": 0.5431052172156098
+          }
+        },
+        {
+          "configuration_id": "ABCD no stochastic context configuration",
+          "configuration_sha256": "cf8c48fba6814f77577d2a29b34ac1cf8f86fdc4534201af202af753220fac8e",
+          "execution_receipt_sha256": "5096a6242ff59bd65d43b761ee379ac62ec59a1cc2df639bf7ae7d3e38332def",
+          "id": "no_stochastic_context",
+          "label": "Without stochastic observed-subset context masking",
+          "metrics": {
+            "accuracy": 0.5169133192389006,
+            "balanced_accuracy": 0.4223168258503311,
+            "macro_auprc": 0.4295123250293133,
+            "macro_auroc": 0.6253199402573854,
+            "macro_f1": 0.41653137887652214,
+            "weighted_f1": 0.5261667262897594
+          }
+        },
+        {
+          "configuration_id": "ABCD no completion configuration",
+          "configuration_sha256": "e378ac48994bb8f08c80a8a1aa883d636d4ba568f34d0439853b7881bf763008",
+          "execution_receipt_sha256": "34cb8531025dd21d424b58c0a81d2ecc4b63b1574ed42f1ee085d02290f7a991",
+          "id": "no_completion",
+          "label": "Without latent completion",
+          "metrics": {
+            "accuracy": 0.507399577167019,
+            "balanced_accuracy": 0.42144782337907777,
+            "macro_auprc": 0.42638195263123024,
+            "macro_auroc": 0.6165542371836246,
+            "macro_f1": 0.4125935148993401,
+            "weighted_f1": 0.5210090189219225
+          }
+        },
+        {
+          "configuration_id": "ABCD no mofe configuration",
+          "configuration_sha256": "5996bb88328c3643463365939db6cc97ec5d4515119c635aabed450bbdb94c83",
+          "execution_receipt_sha256": "52e3e6161e54c98408dba325e48000b8ae3472ee8ae23e61595a9736c8f19c92",
+          "id": "no_mofe",
+          "label": "Without more/fewer-modality objective",
+          "metrics": {
+            "accuracy": 0.5295983086680761,
+            "balanced_accuracy": 0.4296697670268017,
+            "macro_auprc": 0.4313707180752288,
+            "macro_auroc": 0.6249549737492374,
+            "macro_f1": 0.4253066285892538,
+            "weighted_f1": 0.5361131475668585
+          }
+        },
+        {
+          "configuration_id": "ABCD no output gate configuration",
+          "configuration_sha256": "6500cf96d00f80c07cc55c615707c32c3c41a998b52dd6dadc7cdf20aa8aee3e",
+          "execution_receipt_sha256": "b4a998f63fcfe1125b08093f10a9146362c375d235c5352049b1085a8bb97967",
+          "id": "no_output_gate",
+          "label": "Without generator output gate",
+          "metrics": {
+            "accuracy": 0.5243128964059197,
+            "balanced_accuracy": 0.4290908100408271,
+            "macro_auprc": 0.4267933999726184,
+            "macro_auroc": 0.6233028239933235,
+            "macro_f1": 0.4231061730760022,
+            "weighted_f1": 0.5312904895586213
+          }
+        }
+      ],
+      "display_name": "ABCD",
+      "evaluation": {
+        "design": "five-fold family-disjoint out-of-fold ensemble evaluation",
+        "evidence_scope": "development_cv",
+        "folds": 5,
+        "partition_reused": true,
+        "selection_independent": false,
+        "split": "dev946 family-disjoint out-of-fold development cohort",
+        "subjects": 946
+      },
+      "interpretability": {
+        "aggregation_method": "arithmetic mean of per-subject normalized vectors",
+        "aggregation_receipt_sha256": "abe67c98a7453354640b289f74fd29c8f3916c300dcecf94770d7091f630d5fd",
+        "aggregation_unit": "subject",
+        "condition_design": "natural_disjoint",
+        "conditions": {
+          "complete": {
+            "branch_mass": {
+              "joint": 0.22107644069129764,
+              "pairwise": 0.4675526352963403,
+              "unimodal": 0.3113709245286274
+            },
+            "decision_allocation": [
+              0.21663994931081354,
+              0.24786178472964376,
+              0.23473230595948436,
+              0.3007659741715921
+            ],
+            "definition": "naturally complete four-modality inputs",
+            "subjects": 676
+          },
+          "incomplete": {
+            "branch_mass": {
+              "joint": 0.2150276234407943,
+              "pairwise": 0.43663055517467086,
+              "unimodal": 0.34834181942923115
+            },
+            "decision_allocation": [
+              0.2011853237946828,
+              0.22409623853034438,
+              0.26871231728681805,
+              0.30600613418828565
+            ],
+            "definition": "naturally incomplete inputs",
+            "subjects": 270
+          }
+        },
+        "modality_names": [
+          "imaging",
+          "genetic",
+          "cognition and health",
+          "behavior and environment"
+        ],
+        "source": "aggregate out-of-fold checkpoint replay"
+      },
+      "primary_results": [
+        {
+          "configuration_id": "ABCD full configuration",
+          "configuration_sha256": "701692d82cebd6a92c1a7ddb6823a393b574efb444b32dbcb79d441aab21c817",
+          "execution_receipt_sha256": "25268fbc5ad0b2f4b1be451725d57ac62cea6fc611b4108e11241297cf327a51",
+          "method": "CERD",
+          "metrics": {
+            "accuracy": 0.5380549682875264,
+            "balanced_accuracy": 0.4358141120632261,
+            "macro_auprc": 0.42633053833324275,
+            "macro_auroc": 0.6228659479765919,
+            "macro_f1": 0.4319575030851667,
+            "weighted_f1": 0.5427424718860837
+          },
+          "role": "ours"
+        },
+        {
+          "configuration_id": "ABCD comparator configuration",
+          "configuration_sha256": "2bacd7d9a2bbd87eeea2baa581c272ec99102e69d9864df4be9f9735add9813d",
+          "execution_receipt_sha256": "fda4993a9879a5785e90b9fb3bb20c90c511cd6f9682126f972e46ac3d3278c4",
+          "method": "Comparator",
+          "metrics": {
+            "accuracy": 0.5433403805496829,
+            "balanced_accuracy": 0.43396247723699516,
+            "macro_auprc": 0.4305497625268675,
+            "macro_auroc": 0.6233537689488887,
+            "macro_f1": 0.4314209235502135,
+            "weighted_f1": 0.5456316370108324
+          },
+          "role": "comparator"
+        }
+      ],
+      "statistical_comparisons": [
+        {
+          "adjusted_p_value": 0.6925061498770024,
+          "alpha": 0.05,
+          "alternative": "greater",
+          "analysis_receipt_sha256": "5e00d080f875532a2d9d48c7113a60fda71e7af7267f66eb409458bd39ae7add",
+          "bootstrap_confidence_level": 0.95,
+          "bootstrap_draws": 20000,
+          "bootstrap_lower_bound": -0.0254698884401873,
+          "bootstrap_rng_seed": 20260906,
+          "comparator": "Comparator",
+          "confirmatory_support": false,
+          "delta": 0.0005365795349532299,
+          "metric": "macro_f1",
+          "multiplicity_adjustment": "Holm across ADNI and ABCD primary Macro-F1 comparisons",
+          "n_units": 922,
+          "ours": "CERD",
+          "p_value": 0.4863902721945561,
+          "paired": true,
+          "resampling_unit": "family",
+          "swap_draws": 50000,
+          "swap_rng_seed": 20260905,
+          "test": "paired swap test"
+        }
+      ],
+      "task": "strict three-class ADHD presentation at ses-01A from ses-00A IGCB features"
+    },
+    "adni": {
+      "ablations": [
+        {
+          "configuration_id": "ADNI dense backbone configuration",
+          "configuration_sha256": "61b85783d5b3537961c89e9968ac54ca36f8c5f85974fb0f7f47e1bd3814404d",
+          "execution_receipt_sha256": "3329aee08c1a7207f81fded80ebe8d48a65aba6010731c1b5ef944b50e8dca88",
+          "id": "dense_backbone",
+          "label": "Dense FFN instead of sparse MoE",
+          "metrics": {
+            "accuracy": 0.6364864864864865,
+            "balanced_accuracy": 0.6324705777338332,
+            "macro_auprc": 0.6461494889314019,
+            "macro_auroc": 0.7888767762856177,
+            "macro_f1": 0.6288153970898146,
+            "weighted_f1": 0.6268134698771126
+          }
+        },
+        {
+          "configuration_id": "ADNI no provenance configuration",
+          "configuration_sha256": "b189452718532592d9038ebe820ed1ba209063bbff3cd447099f73a1868a1900",
+          "execution_receipt_sha256": "9f33ef9055c892a049f1ef14a7e52ee324be26d6acf18b2942d23e9fe834b120",
+          "id": "no_provenance",
+          "label": "Without observed/generated provenance",
+          "metrics": {
+            "accuracy": 0.6128378378378379,
+            "balanced_accuracy": 0.6140467002659563,
+            "macro_auprc": 0.6317828860276268,
+            "macro_auroc": 0.7780127975324426,
+            "macro_f1": 0.6023108207758794,
+            "weighted_f1": 0.5978920657514188
+          }
+        },
+        {
+          "configuration_id": "ADNI uniform branch weights configuration",
+          "configuration_sha256": "31f4ac3dd5860b0e9523269a4dfed152e552f1d59232ca08cce6f865d9a6441f",
+          "execution_receipt_sha256": "a62fd982ac0dff13172c8d0ab1fc809ebd1b186199d32d2c05f43fef676b2a27",
+          "id": "uniform_branch_weights",
+          "label": "Uniform instead of reliability-aware branch weights",
+          "metrics": {
+            "accuracy": 0.6074324324324324,
+            "balanced_accuracy": 0.6114172354284825,
+            "macro_auprc": 0.6451355920495292,
+            "macro_auroc": 0.7833276452746806,
+            "macro_f1": 0.6047669784261617,
+            "weighted_f1": 0.5988878387812381
+          }
+        },
+        {
+          "configuration_id": "ADNI mean pooling configuration",
+          "configuration_sha256": "0fdd5de94a63b6d76981b923c3b6d9482127a358fd20d0378b1b7b2827484723",
+          "execution_receipt_sha256": "50079c594f5e05805524d131d1a890eee84f7d02ac1bcb5ead063d174d35abd4",
+          "id": "mean_pooling",
+          "label": "Mean instead of gated-attention pooling",
+          "metrics": {
+            "accuracy": 0.6182432432432432,
+            "balanced_accuracy": 0.61990448921298,
+            "macro_auprc": 0.6330090450261251,
+            "macro_auroc": 0.7796367713907871,
+            "macro_f1": 0.6086204335152462,
+            "weighted_f1": 0.6039214480148557
+          }
+        },
+        {
+          "configuration_id": "ADNI no stochastic context configuration",
+          "configuration_sha256": "19a67c2eb80cd2eb72c536789880a341a4fe60c705dbc6a42ec66f202ec39682",
+          "execution_receipt_sha256": "4db8dbc358a2bfecc792c2c20b8db549cb7d99ff6f1a14442dc811b4e4cda91d",
+          "id": "no_stochastic_context",
+          "label": "Without stochastic observed-subset context masking",
+          "metrics": {
+            "accuracy": 0.6155405405405405,
+            "balanced_accuracy": 0.6173459765537382,
+            "macro_auprc": 0.6349428265157614,
+            "macro_auroc": 0.7841760761618324,
+            "macro_f1": 0.6074652467923398,
+            "weighted_f1": 0.6031566298416462
+          }
+        },
+        {
+          "configuration_id": "ADNI no completion configuration",
+          "configuration_sha256": "8c553649a694902d9e8139f70bd14f5ebc2c7775e4095bd80900b37ac48ae88b",
+          "execution_receipt_sha256": "9650757f6b01fe65ea2c49d58cfdbb2c54c05dd6823721336d89e0f0debe2c42",
+          "id": "no_completion",
+          "label": "Without latent completion",
+          "metrics": {
+            "accuracy": 0.6162162162162163,
+            "balanced_accuracy": 0.6169439523567567,
+            "macro_auprc": 0.6624956089565605,
+            "macro_auroc": 0.7957745340305461,
+            "macro_f1": 0.5935869339381475,
+            "weighted_f1": 0.591683054141651
+          }
+        },
+        {
+          "configuration_id": "ADNI no mofe configuration",
+          "configuration_sha256": "8ec82a180c376896c5a9516e86ec238bbff2caacbcbe0c413df3cc0a0627bad8",
+          "execution_receipt_sha256": "e0180a61894001f8a61ed0f1bfda8a939a398f397f76e43027fe27958b1b4d38",
+          "id": "no_mofe",
+          "label": "Without more/fewer-modality objective",
+          "metrics": {
+            "accuracy": 0.620945945945946,
+            "balanced_accuracy": 0.6243297307937031,
+            "macro_auprc": 0.6377807521180747,
+            "macro_auroc": 0.7834611862722856,
+            "macro_f1": 0.6120410843803316,
+            "weighted_f1": 0.6065487875581034
+          }
+        },
+        {
+          "configuration_id": "ADNI no output gate configuration",
+          "configuration_sha256": "34e35b9c5474cf89b29eb5d42af703f085e786e842339623b79c05a168571681",
+          "execution_receipt_sha256": "d9e43965a232d0f36d50bffe042f492601a14b239568ca6ba75b6e3a06db82c8",
+          "id": "no_output_gate",
+          "label": "Without generator output gate",
+          "metrics": {
+            "accuracy": 0.6168918918918919,
+            "balanced_accuracy": 0.6187515163167122,
+            "macro_auprc": 0.6365830470281209,
+            "macro_auroc": 0.7808230012778177,
+            "macro_f1": 0.6068003204226114,
+            "weighted_f1": 0.6022564311264001
+          }
+        }
+      ],
+      "display_name": "ADNI",
+      "evaluation": {
+        "design": "five-fold subject-level out-of-fold ensemble evaluation",
+        "evidence_scope": "development_cv",
+        "folds": 5,
+        "partition_reused": true,
+        "selection_independent": false,
+        "split": "training1480 out-of-fold development cohort",
+        "subjects": 1480
+      },
+      "interpretability": {
+        "aggregation_method": "arithmetic mean of per-subject normalized vectors",
+        "aggregation_receipt_sha256": "a3110ea964908ad44b06f9ea8403bc450b4755bafe2d2896d2aba3013def218e",
+        "aggregation_unit": "subject",
+        "condition_design": "natural_disjoint",
+        "conditions": {
+          "complete": {
+            "branch_mass": {
+              "joint": 0.10307420058159394,
+              "pairwise": 0.594250524434355,
+              "unimodal": 0.3026752761719269
+            },
+            "decision_allocation": [
+              0.2169643512153936,
+              0.2714507271922661,
+              0.27236396420319203,
+              0.23922097279049304
+            ],
+            "definition": "naturally complete four-modality inputs",
+            "subjects": 1071
+          },
+          "incomplete": {
+            "branch_mass": {
+              "joint": 0.10260540526815688,
+              "pairwise": 0.5945022202182276,
+              "unimodal": 0.30289237328122526
+            },
+            "decision_allocation": [
+              0.23966781045959185,
+              0.2009966267641714,
+              0.2945045683195946,
+              0.2648310099808104
+            ],
+            "definition": "naturally incomplete inputs",
+            "subjects": 409
+          }
+        },
+        "modality_names": [
+          "image",
+          "genomic",
+          "clinical",
+          "biospecimen"
+        ],
+        "source": "aggregate out-of-fold checkpoint replay"
+      },
+      "primary_results": [
+        {
+          "configuration_id": "ADNI full configuration",
+          "configuration_sha256": "c91b27c1b3913410fa2aa858094c61b62e5c3370bad35d05e139f0f80be97cee",
+          "execution_receipt_sha256": "46fb95ae176be90bfdbe164e87c25c7deffb781f34625c84074fea761563564e",
+          "method": "CERD",
+          "metrics": {
+            "accuracy": 0.6182432432432432,
+            "balanced_accuracy": 0.6192836576534512,
+            "macro_auprc": 0.6345454898819344,
+            "macro_auroc": 0.7818018175040122,
+            "macro_f1": 0.6069398967245351,
+            "weighted_f1": 0.6024748476782317
+          },
+          "role": "ours"
+        },
+        {
+          "configuration_id": "ADNI comparator configuration",
+          "configuration_sha256": "2ba7e0db605946a857a80c36216f90e00034ab31b102a3a59fb8f4c21fa82ea9",
+          "execution_receipt_sha256": "b8f20cd44965ef21b2966499c4d70b6ca513578d128c419e4e640f690d66b268",
+          "method": "Comparator",
+          "metrics": {
+            "accuracy": 0.6101351351351352,
+            "balanced_accuracy": 0.6160350778414059,
+            "macro_auprc": 0.6327576173762918,
+            "macro_auroc": 0.7790909806291859,
+            "macro_f1": 0.6030191561095307,
+            "weighted_f1": 0.5982121563183815
+          },
+          "role": "comparator"
+        }
+      ],
+      "statistical_comparisons": [
+        {
+          "adjusted_p_value": 0.6925061498770024,
+          "alpha": 0.05,
+          "alternative": "greater",
+          "analysis_receipt_sha256": "669438bc689c3d673eb88ae6e7b565496d788e2881e5f0b254c1824325369b76",
+          "bootstrap_confidence_level": 0.95,
+          "bootstrap_draws": 20000,
+          "bootstrap_lower_bound": -0.012153858966147684,
+          "bootstrap_rng_seed": 20260906,
+          "comparator": "Comparator",
+          "confirmatory_support": false,
+          "delta": 0.003920740615004359,
+          "metric": "macro_f1",
+          "multiplicity_adjustment": "Holm across ADNI and ABCD primary Macro-F1 comparisons",
+          "n_units": 1480,
+          "ours": "CERD",
+          "p_value": 0.3462530749385012,
+          "paired": true,
+          "resampling_unit": "subject",
+          "swap_draws": 50000,
+          "swap_rng_seed": 20260905,
+          "test": "paired swap test"
+        }
+      ],
+      "task": "three-class diagnosis classification"
+    }
+  },
+  "generated_at": "2026-09-02T07:22:35Z",
+  "metric_order": [
+    "accuracy",
+    "balanced_accuracy",
+    "macro_f1",
+    "weighted_f1",
+    "macro_auroc",
+    "macro_auprc"
+  ],
+  "metric_unit": "fraction",
+  "schema": "cerd-final-public-results-v3",
+  "source_manifest_sha256": "3181228cabef8ee06e0ef78d4e99f8e95062b9ee7cd3891be0a2ea629b8a8359",
+  "status": "final"
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "cerd-stochastic-context-golden-v1",
+  "seed": 127,
+  "observed_mask": [
+    [1, 1, 1, 1],
+    [1, 1, 1, 0],
+    [1, 0, 0, 0]
+  ],
+  "targets_per_sample": 4,
+  "context_dropout_probability": 0.25,
+  "stochastic": [
+    {"target": 0, "context": [1, 2], "rows": [1]},
+    {"target": 0, "context": [2], "rows": [0]},
+    {"target": 1, "context": [2], "rows": [0]},
+    {"target": 3, "context": [2], "rows": [0]}
+  ],
+  "expanded": [
+    {"target": 0, "context": [1, 2], "rows": [1]},
+    {"target": 0, "context": [1, 2, 3], "rows": [0]},
+    {"target": 1, "context": [0, 2, 3], "rows": [0]},
+    {"target": 3, "context": [0, 1, 2], "rows": [0]}
+  ],
+  "rng_tail": [
+    0.997057378,
+    0.728086054,
+    0.18058306,
+    0.976182163,
+    0.661606908
+  ]
+}

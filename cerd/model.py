@@ -8,6 +8,42 @@ from itertools import combinations
 from typing import Optional, List, Tuple
 
 
+def _capture_torch_rng_state():
+    """Capture initialized torch RNGs without initializing a CUDA context."""
+
+    cpu_state = torch.random.get_rng_state().clone()
+    cuda_states = None
+    if torch.cuda.is_available() and torch.cuda.is_initialized():
+        cuda_states = [state.clone() for state in torch.cuda.get_rng_state_all()]
+    return cpu_state, cuda_states
+
+
+def _restore_torch_rng_state(state) -> None:
+    cpu_state, cuda_states = state
+    torch.random.set_rng_state(cpu_state)
+    if cuda_states is not None:
+        torch.cuda.set_rng_state_all(cuda_states)
+
+
+def _rng_aligned_alternative(reference_factory, alternative_factory):
+    """Construct an alternative while retaining the reference's outer RNG path."""
+
+    before = _capture_torch_rng_state()
+    try:
+        reference = reference_factory()
+    except Exception:
+        _restore_torch_rng_state(before)
+        raise
+    after_reference = _capture_torch_rng_state()
+    del reference
+    _restore_torch_rng_state(before)
+    try:
+        alternative = alternative_factory()
+    finally:
+        _restore_torch_rng_state(after_reference)
+    return alternative
+
+
 # =========================
 # Basic blocks (keep style)
 # =========================
@@ -93,6 +129,7 @@ class TransformerEncoderLayer(nn.Module):
         standard_residual=False,
         gated_residual=False,
         normalized_gate_loss=False,
+        rng_reference_mlp_sparse=None,
         **kwargs
     ) -> None:
         super().__init__()
@@ -120,8 +157,8 @@ class TransformerEncoderLayer(nn.Module):
         self.expert_index = None
         self.full_modality_index = full_modality_index
 
-        if self.mlp_sparse:
-            self.mlp = FMoETransformerMLP(
+        def sparse_mlp():
+            return FMoETransformerMLP(
                 num_expert=num_experts,
                 n_router=num_routers,
                 d_model=d_model,
@@ -131,9 +168,31 @@ class TransformerEncoderLayer(nn.Module):
                 normalized_gate_loss=normalized_gate_loss,
                 **kwargs
             )
+
+        def dense_mlp():
+            return MLP(
+                input_dim=d_model,
+                hidden_dim=d_model * hidden_times,
+                output_dim=d_model,
+                num_layers=2,
+                activation=nn.GELU(),
+                dropout=dropout,
+            )
+
+        reference_sparse = (
+            self.mlp_sparse
+            if rng_reference_mlp_sparse is None
+            else bool(rng_reference_mlp_sparse)
+        )
+        if self.mlp_sparse:
+            self.mlp = sparse_mlp()
+        elif reference_sparse:
+            # The dense control owns different FFN parameters, but every common
+            # parameter constructed after this point must see the exact RNG
+            # state of the historical sparse-MoE path.
+            self.mlp = _rng_aligned_alternative(sparse_mlp, dense_mlp)
         else:
-            self.mlp = MLP(input_dim=d_model, hidden_dim=d_model * hidden_times, output_dim=d_model,
-                           num_layers=2, activation=nn.GELU(), dropout=dropout)
+            self.mlp = dense_mlp()
 
     def forward(self, x, attn_mask=None):
         if self.self_attn:
@@ -188,24 +247,32 @@ class FlexMoE(nn.Module):
     def __init__(self, num_modalities, full_modality_index, num_patches, hidden_dim,
                  num_layers, num_experts, num_routers, top_k, num_heads=2, dropout=0.5,
                  standard_residual=False, gated_residual=False,
-                 normalized_gate_loss=False):
+                 normalized_gate_loss=False, sparse_backbone=True):
         super().__init__()
         layers = []
-        _sparse = True
+        self.sparse_backbone = bool(sparse_backbone)
+        reference_sparse = True
+        _sparse = reference_sparse if self.sparse_backbone else False
         layers.append(TransformerEncoderLayer(num_experts, num_routers, hidden_dim, num_head=num_heads,
                                               dropout=dropout, hidden_times=2, mlp_sparse=_sparse,
                                               full_modality_index=full_modality_index, top_k=top_k,
                                               standard_residual=standard_residual,
                                               gated_residual=gated_residual,
-                                              normalized_gate_loss=normalized_gate_loss))
+                                              normalized_gate_loss=normalized_gate_loss,
+                                              rng_reference_mlp_sparse=reference_sparse))
         for _ in range(num_layers - 1):
-            _sparse = not _sparse
+            # The historical sparse backbone alternates sparse and dense
+            # feed-forward layers.  Its matched dense control keeps every
+            # Transformer operation but never constructs an MoE layer.
+            reference_sparse = not reference_sparse
+            _sparse = reference_sparse if self.sparse_backbone else False
             layers.append(TransformerEncoderLayer(num_experts, num_routers, hidden_dim, num_head=num_heads,
                                                   dropout=dropout, hidden_times=2, mlp_sparse=_sparse,
                                                   full_modality_index=full_modality_index, top_k=top_k,
                                                   standard_residual=standard_residual,
                                                   gated_residual=gated_residual,
-                                                  normalized_gate_loss=normalized_gate_loss))
+                                                  normalized_gate_loss=normalized_gate_loss,
+                                                  rng_reference_mlp_sparse=reference_sparse))
         self.layers = nn.Sequential(*layers)
 
         self.pos_embed = nn.Parameter(torch.zeros(1, np.sum([num_patches] * num_modalities), hidden_dim))
@@ -394,6 +461,7 @@ class ReliabilityBranchFusion(nn.Module):
         confidence_mode: str = "evidence",
         centered_evidence_confidence: bool = False,
         class_conditional_fusion: bool = False,
+        uniform_valid_branch_weights: bool = False,
     ):
         super().__init__()
         self.hidden_dim = hidden_dim
@@ -411,6 +479,7 @@ class ReliabilityBranchFusion(nn.Module):
         self.confidence_mode = confidence_mode
         self.centered_evidence_confidence = bool(centered_evidence_confidence)
         self.class_conditional_fusion = bool(class_conditional_fusion)
+        self.uniform_valid_branch_weights = bool(uniform_valid_branch_weights)
         self.joint_head = MLP(
             hidden_dim * num_modalities,
             hidden_dim,
@@ -589,7 +658,23 @@ class ReliabilityBranchFusion(nn.Module):
         supervision_log_scores = supervision_log_scores.masked_fill(
             ~branch_mask, -1e4
         )
-        branch_weights = F.softmax(branch_log_scores, dim=1)
+        learned_branch_weights = F.softmax(branch_log_scores, dim=1)
+        if self.uniform_valid_branch_weights:
+            # All reliability/confidence modules are still constructed and the
+            # learned score path is still evaluated.  Only the final valid-
+            # branch mixture is replaced by a uniform control.
+            branch_weights = branch_mask.to(branch_logits.dtype)
+            branch_weights = branch_weights / branch_weights.sum(
+                dim=1, keepdim=True
+            ).clamp_min(1.0)
+            # Keep the public diagnostic consistent with the weights actually
+            # used for prediction; supervision_log_scores above still exposes
+            # the evaluated learned path to any training-only router loss.
+            branch_log_scores = torch.zeros_like(branch_log_scores).masked_fill(
+                ~branch_mask, -1e4
+            )
+        else:
+            branch_weights = learned_branch_weights
 
         probs = self._mix_probabilities(branch_probs, branch_weights)
         if self.complete_joint_only:
@@ -764,13 +849,18 @@ def sample_observed_reconstruction_groups(
     observed_mask: torch.Tensor,
     targets_per_sample: int,
     context_dropout_probability: float = 0.0,
+    *,
+    expand_context_to_all_observed: bool = False,
 ) -> dict[tuple[int, tuple[int, ...]], torch.Tensor]:
     """Group per-sample observed reconstruction tasks by target and context.
 
     At zero context dropout, each observed target uses all other observed
     modalities (the backward-compatible leave-one-out path).  With positive
     dropout, one non-empty proper observed subset is shared as context and its
-    complement supplies reconstruction targets for that sample.
+    complement supplies reconstruction targets for that sample.  The matched
+    no-stochastic-context control keeps the same priority draws and target
+    choices, then expands only each target's context to all other observed
+    modalities.
     """
     if observed_mask.ndim != 2:
         raise ValueError("observed_mask must have shape (batch, modalities)")
@@ -878,7 +968,7 @@ def sample_observed_reconstruction_groups(
                     for modality_index in observed_modalities
                     if modality_index != target_modality
                 )
-                if subset_priorities is None
+                if subset_priorities is None or expand_context_to_all_observed
                 else context_modalities
             )
             grouped_rows.setdefault(
@@ -965,6 +1055,12 @@ class AGMGFlexMoE(nn.Module):
         recon_context_dropout_probability: float = 0.0,
         generator_only_task_grad: bool = False,
         generator_output_gate: bool = True,
+        use_sparse_moe_backbone: bool = True,
+        use_provenance_embeddings: bool = True,
+        use_reliability_branch_weights: bool = True,
+        use_attentive_token_pooling: bool = True,
+        use_stochastic_reconstruction_context: bool = True,
+        use_latent_completion: bool = True,
     ):
         super().__init__()
         self.num_modalities = num_modalities
@@ -1008,6 +1104,16 @@ class AGMGFlexMoE(nn.Module):
         self.generator_task_grad = bool(generator_task_grad)
         self.generator_only_task_grad = bool(generator_only_task_grad)
         self.generator_output_gate = bool(generator_output_gate)
+        self.use_sparse_moe_backbone = bool(use_sparse_moe_backbone)
+        self.use_provenance_embeddings = bool(use_provenance_embeddings)
+        self.use_reliability_branch_weights = bool(
+            use_reliability_branch_weights
+        )
+        self.use_attentive_token_pooling = bool(use_attentive_token_pooling)
+        self.use_stochastic_reconstruction_context = bool(
+            use_stochastic_reconstruction_context
+        )
+        self.use_latent_completion = bool(use_latent_completion)
         if self.generator_task_grad and self.generator_only_task_grad:
             raise ValueError(
                 "generator_task_grad and generator_only_task_grad are mutually exclusive"
@@ -1084,6 +1190,7 @@ class AGMGFlexMoE(nn.Module):
             standard_residual=standard_transformer_residual,
             gated_residual=gated_transformer_residual,
             normalized_gate_loss=normalized_gate_loss,
+            sparse_backbone=self.use_sparse_moe_backbone,
         )
 
         self.generators = nn.ModuleList([
@@ -1143,6 +1250,9 @@ class AGMGFlexMoE(nn.Module):
             confidence_mode=branch_confidence_mode,
             centered_evidence_confidence=centered_evidence_confidence,
             class_conditional_fusion=class_conditional_fusion,
+            uniform_valid_branch_weights=(
+                not self.use_reliability_branch_weights
+            ),
         )
         use_ordinal_head = output_dim == 3 and (
             self.ordinal_fusion_weight > 0 or self.ordinal_aux_loss_weight > 0
@@ -1383,6 +1493,9 @@ class AGMGFlexMoE(nn.Module):
             observed_mask,
             self.recon_targets_per_sample,
             self.recon_context_dropout_probability,
+            expand_context_to_all_observed=(
+                not self.use_stochastic_reconstruction_context
+            ),
         )
         losses = []
         for (target_modality, context_modalities), sample_idx in groups.items():
@@ -1428,9 +1541,10 @@ class AGMGFlexMoE(nn.Module):
         for m in range(self.num_modalities):
             gen_flag[m][observed_mask[:, m]] = 0
 
-        if self.use_generators and self.vectorized_generation:
+        completion_enabled = self.use_generators and self.use_latent_completion
+        if completion_enabled and self.vectorized_generation:
             self._generate_missing_batched(tokens_list, observed_mask, filled_for_cls, generated_mask)
-        elif self.use_generators:
+        elif completion_enabled:
             for m in range(self.num_modalities):
                 missing_idx = (~observed_mask[:, m]).nonzero(as_tuple=False).view(-1)
                 for idx in missing_idx.tolist():
@@ -1454,12 +1568,14 @@ class AGMGFlexMoE(nn.Module):
                     generated_mask[idx, m] = True
 
         for m in range(self.num_modalities):
-            filled_for_cls[m] = self.flag_embeds[m](filled_for_cls[m], gen_flag[m])
+            provenance_marked = self.flag_embeds[m](filled_for_cls[m], gen_flag[m])
+            if self.use_provenance_embeddings:
+                filled_for_cls[m] = provenance_marked
 
         # ===== generator training: legacy complete-only or observed-only grouped targets =====
         recon_loss = None
         if return_recon_loss:
-            if not self.use_generators:
+            if not completion_enabled:
                 recon_loss = torch.zeros((), device=device)
             elif self.pattern_aware_reconstruction:
                 recon_loss = self._reconstruct_observed_targets_batched(
@@ -1489,7 +1605,18 @@ class AGMGFlexMoE(nn.Module):
         pooled_feats = []
         reliability_scores = []
         for m in range(self.num_modalities):
-            pooled_m, tok_w_m = self.token_poolers[m](token_features[m])
+            attentive_pooled_m, attentive_weights_m = self.token_poolers[m](
+                token_features[m]
+            )
+            if self.use_attentive_token_pooling:
+                pooled_m = attentive_pooled_m
+                tok_w_m = attentive_weights_m
+            else:
+                pooled_m = token_features[m].mean(dim=1)
+                tok_w_m = torch.full_like(
+                    attentive_weights_m,
+                    1.0 / float(token_features[m].shape[1]),
+                )
             token_importance.append(tok_w_m)
             pooled_feats.append(pooled_m)
             raw_reliability = self.reliability_scorers[m](pooled_m).squeeze(-1)

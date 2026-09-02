@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Independent binary ABCD reference benchmark only. The frozen final
+# method-revision ABCD row uses the controlled three-class dev946 campaign.
+
 if (( $# < 1 )); then
   echo "usage: scripts/train_abcd.sh MANIFEST [DEVICE] [EVALUATE_TEST] [OUTPUT_DIR]" >&2
   exit 2
@@ -21,6 +24,7 @@ for seed in 0 1 2; do
   python train.py \
     --data abcd \
     --variant mofe \
+    --ablation-id full \
     --modality SRDGNPME \
     --dataset-manifest "$manifest_path" \
     --output-dir "$output_dir" \
@@ -41,6 +45,7 @@ for seed in 0 1 2; do
     --more-fewer-rank-loss-weight 0.1 \
     --dual-boundary-rank-loss-weight 0.0 \
     --seed "$seed" \
+    --data-order-seed "$seed" \
     --device "$device_index" \
     "$test_flag"
 done

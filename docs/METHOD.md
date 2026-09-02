@@ -12,12 +12,14 @@ reconstruct -> mark provenance -> estimate trust -> make a decision
 The method has three substantive components: subject-conditioned latent
 completion, provenance-aware multimodal representation, and reliability-aware
 decision decomposition. A sparse mixture-of-experts (MoE) layer remains the
-fusion implementation between representation and decision; it is retained in
-all Method-revision experiments rather than treated as a separate add-on.
+fusion implementation between representation and decision. It is retained in
+full CERD and every non-backbone ablation; only the explicit dense-backbone
+control replaces it.
 
 This repository is a core-method reference implementation, not the frozen
-campaign runner. It implements the central Method switches described below but
-does not claim exact numerical reproduction of the reported validation values.
+campaign runner. It implements all eight matched-control mechanics described
+below but
+does not claim exact numerical reproduction of the private campaign results.
 Protected data definitions, fixed folds, fitted preprocessing assets, and
 internal run orchestration are not released. Campaign-specific LRPA rank-4
 patch adaptation, the ABCD presentation-axis and class-weighted quality
@@ -37,12 +39,12 @@ whether a latent sequence is observed, generated, or unavailable.
 
 When modality \(m\) is missing but at least one other modality is observed, a
 conditional cross-attention generator uses the current subject's observed
-latent tokens as context and produces a token sequence for \(m\). The reported
-revision trains this generator from stochastic observed subsets. For an
-eligible training subject, a nonempty proper subset of the physically observed
-modalities is sampled as context; the remaining observed modalities become
-reconstruction targets. This better matches arbitrary incomplete contexts than
-training completion only from fully observed inputs.
+latent tokens as context and produces a token sequence for \(m\). The final
+Method specification trains this generator from stochastic observed subsets.
+For an eligible training subject, a nonempty proper subset of the physically
+observed modalities is sampled as context; the remaining observed modalities
+become reconstruction targets. This better matches arbitrary incomplete
+contexts than training completion only from fully observed inputs.
 
 The reconstruction objective supervises both levels of the generated output:
 
@@ -51,25 +53,29 @@ The reconstruction objective supervises both levels of the generated output:
   token sequence.
 
 The token term addresses the ambiguity of producing multiple tokens while
-supervising only their mean. In the reported validation configuration, the
-observed context-drop probability is 0.25 and the normalized token-loss weight
-is 0.05.
+supervising only their mean. Context-drop probability and the normalized
+token-loss weight are frozen before final evaluation and recorded with the
+private campaign receipt; this reference implementation exposes both switches.
 
 After cross-attention and feed-forward refinement, the generator applies a
-learned sigmoid output gate. A matched ablation bypassed this multiplication
-without changing the constructed parameters or their initialization. The
-predeclared rule for removing the gate failed, so the output gate is retained;
-this is not a positive empirical-selection claim for the gate itself.
+learned sigmoid output gate. Its matched ablation bypasses this multiplication
+without changing the constructed parameters or their initialization, keeping
+the comparison aligned apart from the named factor.
+
+The `no_stochastic_context` arm first performs the identical stochastic draw
+and preserves the identical reconstruction targets, then expands only each
+target's context to all other observed modalities. The `no_completion` arm
+still constructs the generators and reconstruction projectors in their normal
+order, but executes neither missing-latent generation nor reconstruction.
 
 ## Provenance-aware multimodal encoding
 
 Observed and generated representations receive different learned provenance
 embeddings before fusion. The resulting token streams are processed by a
-Transformer with a sparse MoE feed-forward layer. The retained anchor uses one
-fusion layer, 16 experts, one router, and top-4 routing. A later controlled
-capacity screen also evaluates 8 experts with top-2 routing; both activate 25%
-of experts per token. Router balancing is trained explicitly, while the
-observed-modality pattern determines which specialization context is relevant.
+Transformer with a sparse MoE feed-forward layer. Expert count and top-k are
+frozen together with the final training configuration. Router balancing is
+trained explicitly, while the observed-modality pattern determines which
+specialization context is relevant.
 
 MoE is not used to erase provenance. Completion supplies a usable latent
 representation; provenance embeddings preserve how that representation was
@@ -89,8 +95,8 @@ and pairwise branches. Pairwise features are formed in the shared latent space
 using the two modality vectors, their elementwise product, and their absolute
 difference. Branches that require unavailable information are masked out.
 
-For branch probabilities \(p\) over \(C\) classes, the reported predictive
-confidence is detached normalized-entropy confidence:
+For branch probabilities \(p\) over \(C\) classes, the final Method uses
+detached normalized-entropy confidence:
 
 \[
 q(p)=\max\!\left(1-\frac{H(p)}{\log C},10^{-3}\right).
@@ -101,6 +107,11 @@ this quantity is invariant to adding a common constant to every class logit.
 Input reliability, predictive confidence, and a low-capacity branch prior
 determine the branch mixture weights. The final prediction is a weighted
 mixture of branch class probabilities.
+
+For the pooling and branch-weight controls, the attention and reliability
+modules remain constructed and their normal score paths are evaluated. The
+selected pooled feature is replaced by the token mean, or the final valid
+branch mixture is replaced by a uniform distribution, respectively.
 
 Reported branch weights should be described as **branch-associated mixture
 mass**, not as causal modality importance. Token attention is an auxiliary
@@ -125,46 +136,46 @@ Here, \(\mathcal L_{\mathrm{task}}\) is supervised classification;
 \(\mathcal L_{\mathrm{robust}}\) groups branch supervision, artificial
 modality-drop consistency, and full-to-reduced-view distillation.
 
-## Validation-evaluated structural configuration
+## Final reporting boundary
 
-The predeclared full revision uses:
+The public result reports ADNI and ABCD with one shared metric vocabulary:
+Accuracy, Balanced Accuracy, Macro-F1, Weighted-F1, Macro-AUROC, and
+Macro-AUPRC. No earlier tuning lineage or incompatible endpoint table is mixed
+into that artifact.
+Both final rows use three-class endpoints. In particular, the final ABCD row is
+the frozen strict presentation endpoint on dev946 with five family-disjoint
+folds. The manifest-driven binary ABCD-ADHD workflow in the public reference
+code is an independent benchmark and contributes no value to the final table.
 
-```text
-pattern-aware reconstruction        true
-observed-context drop probability   0.25
-normalized token-loss weight        0.05
-branch confidence                    detached normalized entropy
-generator output gate               retained
-sparse MoE                           retained
-```
+The pre-specified matched ablations cover dense FFN versus sparse MoE, provenance
+marking, reliability-aware branch weighting, gated-attention pooling,
+stochastic observed-subset context masking, latent completion, the
+more/fewer-modality objective, and the generator output gate. Context masking
+and completion are tested as separate factors.
+The dense arm is the sole arm whose fusion stack contains no sparse expert
+layer. The `no_mofe` arm retains the same artificial reduced-view forward pass,
+classification, and distillation paths but excludes the more/fewer-modality
+rank objective from the optimized sum.
 
-The Method-revision evidence is validation-only. In the first seed, the full
-revision improved pooled Macro-F1 over the legacy arm on both datasets. With
-new seeds, ADNI improved again but ABCD's Macro-F1 difference changed sign.
-Consequently, the predeclared shared confirmation rule was not met. The
-two-seed arithmetic means are reported only as descriptive stability summaries
-and do not establish significance or external generalization.
+The canonical ID-to-control mapping and its order digest live in
+[`configs/matched_ablations_v1.json`](../configs/matched_ablations_v1.json).
+Invoke a row with `--ablation-id ID` on an otherwise identical base command.
+`--data-order-seed` is stored in checkpoint protocol metadata and drives
+loader/sampler generators that are independent of model initialization.
+This freezes the RNG scheme for example order only; the public runner neither
+records nor claims an epoch-order hash closure. Dense construction consumes a
+shadow sparse initialization and restores its RNG tail, so every common
+parameter (including post-backbone modules) has the full-model initialization.
+At forward time, however, the sparse `NoisyGate` consumes router noise while
+the dense control does not. Forward-pass dropout, modality dropout, and
+reconstruction sampling can consequently diverge between those two arms. The
+public runner does not claim full forward-RNG alignment or reproduction of the
+private campaign's fold/job RNG and orchestration receipts.
+Aggregate explanation reports modality decision allocation and grouped
+joint/unimodal/pairwise branch mass for complete and incomplete inputs. These
+quantities are descriptive routing summaries, not causal importance.
 
-ABCD-only adaptive follow-ups did not replace this configuration. A seed-11
-screen candidate that changed three settings together failed its frozen
-seed-12 new-training-seed confirmation. A subsequent seed-13 local 2×3 screen
-kept context dropout at 0.25, the output gate, and sparse MoE fixed while
-crossing two detached entropy transforms with token-loss weights 0.05, 0.075,
-and 0.10. Every non-anchor candidate reduced pooled Macro-F1. The decision was
-`NO_PROMOTION_RETAIN_ANCHOR`, so no new-seed confirmation was launched from
-that screen. These are validation-only outcomes on the same development cohort,
-not evidence of external generalization.
-
-A seed-14 one-factor balance screen also retained the anchor, so its
-conditional seed-15 confirmation was skipped. The final capacity lineage
-changed only sparse-MoE capacity: seed 16 compared the 16-expert/top-4 anchor
-with an 8-expert/top-2 compact variant while preserving one router/fusion
-layer, the output gate, every Method/balance setting, and the 25% active-expert
-ratio. The compact variant passed the screen; its frozen seed-17 paired rerun
-then passed all four confirmation checks. The decision was `CONFIRMED`. This
-remains same-cohort validation-only new-seed stability evidence, not an
-independent-data or significance claim.
-
-See the [validation protocol](METHOD_REVISION_VALIDATION_PROTOCOL.md) and the
-[de-identified common-six result](../results/method_revision_moe_common6.json)
-for the reported arms, metrics, and decision rules.
+See the [evaluation protocol](METHOD_REVISION_VALIDATION_PROTOCOL.md) and the
+[aggregate artifact contract](../results/README.md). Until the final campaign
+is frozen, the README and figures deliberately render `NOT AVAILABLE` rather
+than reusing values from an earlier experiment.

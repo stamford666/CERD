@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="760" viewBox="0 0 1320 760" role="img" aria-labelledby="title desc">
+  <title id="title">Aggregate decision allocation and branch mass</title>
+  <desc id="desc">Two-by-two comparison of complete and incomplete input routing summaries for ADNI and ABCD.</desc>
+  <rect width="1320" height="760" fill="#ffffff"/>
+  <text x="28" y="40" font-family="sans-serif" font-size="27" font-weight="700" fill="#20242a">Aggregate decision allocation</text>
+  <text x="28" y="70" font-family="sans-serif" font-size="15" fill="#555b63">Descriptive routing mass; not causal importance. Values are percentages.</text>
+  <rect x="35" y="95" width="610" height="620" rx="10" fill="#f8f9fb" stroke="#c4c9d0"/>
+  <text x="55" y="128" font-family="sans-serif" font-size="21" font-weight="700" fill="#20242a">ADNI</text>
+  <text x="55" y="157" font-family="sans-serif" font-size="16" font-weight="600" fill="#30353b">Modality decision allocation</text>
+  <text x="55" y="203" font-family="sans-serif" font-size="13" fill="#30353b">Complete (n=1071)</text>
+  <rect x="200.0" y="185.0" width="89.0" height="28.0" fill="#2f6fbb"/>
+  <text x="244.5" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">21.7</text>
+  <rect x="289.0" y="185.0" width="111.3" height="28.0" fill="#4c9f70"/>
+  <text x="344.6" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">27.1</text>
+  <rect x="400.3" y="185.0" width="111.7" height="28.0" fill="#e59f3a"/>
+  <text x="456.1" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">27.2</text>
+  <rect x="511.9" y="185.0" width="98.1" height="28.0" fill="#9a65b7"/>
+  <text x="561.0" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">23.9</text>
+  <text x="55" y="269" font-family="sans-serif" font-size="13" fill="#30353b">Incomplete (n=409)</text>
+  <rect x="200.0" y="251.0" width="98.3" height="28.0" fill="#2f6fbb"/>
+  <text x="249.1" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">24.0</text>
+  <rect x="298.3" y="251.0" width="82.4" height="28.0" fill="#4c9f70"/>
+  <text x="339.5" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">20.1</text>
+  <rect x="380.7" y="251.0" width="120.7" height="28.0" fill="#e59f3a"/>
+  <text x="441.0" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">29.5</text>
+  <rect x="501.4" y="251.0" width="108.6" height="28.0" fill="#9a65b7"/>
+  <text x="555.7" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">26.5</text>
+  <rect x="55" y="314" width="14" height="14" fill="#2f6fbb"/>
+  <text x="76" y="326" font-family="sans-serif" font-size="13" fill="#30353b">image</text>
+  <rect x="345" y="314" width="14" height="14" fill="#4c9f70"/>
+  <text x="366" y="326" font-family="sans-serif" font-size="13" fill="#30353b">genomic</text>
+  <rect x="55" y="342" width="14" height="14" fill="#e59f3a"/>
+  <text x="76" y="354" font-family="sans-serif" font-size="13" fill="#30353b">clinical</text>
+  <rect x="345" y="342" width="14" height="14" fill="#9a65b7"/>
+  <text x="366" y="354" font-family="sans-serif" font-size="13" fill="#30353b">biospecimen</text>
+  <text x="55" y="425" font-family="sans-serif" font-size="16" font-weight="600" fill="#30353b">Grouped branch mixture mass</text>
+  <text x="55" y="470" font-family="sans-serif" font-size="13" fill="#30353b">Complete</text>
+  <rect x="200.0" y="452.0" width="42.3" height="28.0" fill="#355c9a"/>
+  <text x="221.1" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">10.3</text>
+  <rect x="242.3" y="452.0" width="124.1" height="28.0" fill="#d17a22"/>
+  <text x="304.3" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">30.3</text>
+  <rect x="366.4" y="452.0" width="243.6" height="28.0" fill="#6b8e23"/>
+  <text x="488.2" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">59.4</text>
+  <text x="55" y="536" font-family="sans-serif" font-size="13" fill="#30353b">Incomplete</text>
+  <rect x="200.0" y="518.0" width="42.1" height="28.0" fill="#355c9a"/>
+  <text x="221.0" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">10.3</text>
+  <rect x="242.1" y="518.0" width="124.2" height="28.0" fill="#d17a22"/>
+  <text x="304.2" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">30.3</text>
+  <rect x="366.3" y="518.0" width="243.7" height="28.0" fill="#6b8e23"/>
+  <text x="488.1" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">59.5</text>
+  <rect x="55" y="591" width="14" height="14" fill="#355c9a"/>
+  <text x="76" y="603" font-family="sans-serif" font-size="13" fill="#30353b">joint</text>
+  <rect x="240" y="591" width="14" height="14" fill="#d17a22"/>
+  <text x="261" y="603" font-family="sans-serif" font-size="13" fill="#30353b">unimodal</text>
+  <rect x="425" y="591" width="14" height="14" fill="#6b8e23"/>
+  <text x="446" y="603" font-family="sans-serif" font-size="13" fill="#30353b">pairwise</text>
+  <text x="55" y="680" font-family="sans-serif" font-size="12" fill="#656b73">Source: aggregate out-of-fold checkpoint replay</text>
+  <rect x="685" y="95" width="610" height="620" rx="10" fill="#f8f9fb" stroke="#c4c9d0"/>
+  <text x="705" y="128" font-family="sans-serif" font-size="21" font-weight="700" fill="#20242a">ABCD</text>
+  <text x="705" y="157" font-family="sans-serif" font-size="16" font-weight="600" fill="#30353b">Modality decision allocation</text>
+  <text x="705" y="203" font-family="sans-serif" font-size="13" fill="#30353b">Complete (n=676)</text>
+  <rect x="850.0" y="185.0" width="88.8" height="28.0" fill="#2f6fbb"/>
+  <text x="894.4" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">21.7</text>
+  <rect x="938.8" y="185.0" width="101.6" height="28.0" fill="#4c9f70"/>
+  <text x="989.6" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">24.8</text>
+  <rect x="1040.4" y="185.0" width="96.2" height="28.0" fill="#e59f3a"/>
+  <text x="1088.6" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">23.5</text>
+  <rect x="1136.7" y="185.0" width="123.3" height="28.0" fill="#9a65b7"/>
+  <text x="1198.3" y="204.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">30.1</text>
+  <text x="705" y="269" font-family="sans-serif" font-size="13" fill="#30353b">Incomplete (n=270)</text>
+  <rect x="850.0" y="251.0" width="82.5" height="28.0" fill="#2f6fbb"/>
+  <text x="891.2" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">20.1</text>
+  <rect x="932.5" y="251.0" width="91.9" height="28.0" fill="#4c9f70"/>
+  <text x="978.4" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">22.4</text>
+  <rect x="1024.4" y="251.0" width="110.2" height="28.0" fill="#e59f3a"/>
+  <text x="1079.5" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">26.9</text>
+  <rect x="1134.5" y="251.0" width="125.5" height="28.0" fill="#9a65b7"/>
+  <text x="1197.3" y="270.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">30.6</text>
+  <rect x="705" y="314" width="14" height="14" fill="#2f6fbb"/>
+  <text x="726" y="326" font-family="sans-serif" font-size="13" fill="#30353b">imaging</text>
+  <rect x="995" y="314" width="14" height="14" fill="#4c9f70"/>
+  <text x="1016" y="326" font-family="sans-serif" font-size="13" fill="#30353b">genetic</text>
+  <rect x="705" y="342" width="14" height="14" fill="#e59f3a"/>
+  <text x="726" y="354" font-family="sans-serif" font-size="13" fill="#30353b">cognition and health</text>
+  <rect x="995" y="342" width="14" height="14" fill="#9a65b7"/>
+  <text x="1016" y="354" font-family="sans-serif" font-size="13" fill="#30353b">behavior and environment</text>
+  <text x="705" y="425" font-family="sans-serif" font-size="16" font-weight="600" fill="#30353b">Grouped branch mixture mass</text>
+  <text x="705" y="470" font-family="sans-serif" font-size="13" fill="#30353b">Complete</text>
+  <rect x="850.0" y="452.0" width="90.6" height="28.0" fill="#355c9a"/>
+  <text x="895.3" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">22.1</text>
+  <rect x="940.6" y="452.0" width="127.7" height="28.0" fill="#d17a22"/>
+  <text x="1004.5" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">31.1</text>
+  <rect x="1068.3" y="452.0" width="191.7" height="28.0" fill="#6b8e23"/>
+  <text x="1164.2" y="471.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">46.8</text>
+  <text x="705" y="536" font-family="sans-serif" font-size="13" fill="#30353b">Incomplete</text>
+  <rect x="850.0" y="518.0" width="88.2" height="28.0" fill="#355c9a"/>
+  <text x="894.1" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">21.5</text>
+  <rect x="938.2" y="518.0" width="142.8" height="28.0" fill="#d17a22"/>
+  <text x="1009.6" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">34.8</text>
+  <rect x="1081.0" y="518.0" width="179.0" height="28.0" fill="#6b8e23"/>
+  <text x="1170.5" y="537.0" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ffffff">43.7</text>
+  <rect x="705" y="591" width="14" height="14" fill="#355c9a"/>
+  <text x="726" y="603" font-family="sans-serif" font-size="13" fill="#30353b">joint</text>
+  <rect x="890" y="591" width="14" height="14" fill="#d17a22"/>
+  <text x="911" y="603" font-family="sans-serif" font-size="13" fill="#30353b">unimodal</text>
+  <rect x="1075" y="591" width="14" height="14" fill="#6b8e23"/>
+  <text x="1096" y="603" font-family="sans-serif" font-size="13" fill="#30353b">pairwise</text>
+  <text x="705" y="680" font-family="sans-serif" font-size="12" fill="#656b73">Source: aggregate out-of-fold checkpoint replay</text>
+</svg>
