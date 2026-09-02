@@ -1,5 +1,30 @@
 # Public result artifact
 
+## Current CGHC-v1 result bundle
+
+`cghc_v1.json` is the current model-comparison artifact. It reports the same
+six metrics for ADNI and ABCD, six three-seed comparator ensembles, paired
+Macro-F1 and secondary Accuracy inference, the retained conditional-generation
+boundary, and aggregate-only component interpretation. Its paired evidence is
+retrospective fixed-candidate evidence, not a pristine new confirmatory test.
+
+The artifact distinguishes two levels that must not be merged:
+
+- the final CGHC-v1 hierarchical consensus, whose last fusion rule is not an
+  MoE; and
+- the separate exact-500 development-OOF matched campaign, which supplies
+  component controls such as `no_completion` but is not a matched ablation of
+  the final heterogeneous consensus.
+
+Public interpretation contains only validation-cohort aggregates and
+cluster-bootstrap intervals. Modality allocation and disease-stratum
+differences are descriptive fitted-model associations, never estimates of
+disease etiology or causal effects. `cghc_v1_receipt.json` binds the JSON and
+the two CGHC SVG figures. The write-once builder is
+[`scripts/build_cghc_release.py`](../scripts/build_cghc_release.py).
+
+## Earlier matched-component artifact
+
 `final_results.json` is created only after the experiments, comparisons, and
 public-release boundary are frozen. The repository does not ship a placeholder
 result JSON. The final artifact contains aggregate values only.
@@ -42,6 +67,10 @@ unassigned-910 are outside this campaign: not selected into any arm, not
 iterated over, not scored, and not included in any fitted statistic.
 ABCD protected temporal internal holdout 850 is also outside this campaign and
 is not selected, iterated, scored, or included in a fitted statistic.
+These ablations are validation controls for the four-stage decision chain, not
+eight coequal CERD modules. The dense-FFN row is specifically a
+backbone-sensitivity control; canonical artifact order is retained only for
+stable validation and rendering.
 
 The final v3 artifact locks ADNI to 1,480 subjects and five subject-level OOF
 folds, and ABCD to 946 subjects, five family-disjoint OOF folds, and 922 family

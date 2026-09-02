@@ -536,10 +536,15 @@ def test_public_results_tree_has_only_allowlisted_aggregate_files():
     allowed = {
         "results/README.md",
         "results/final_results.json",
+        "results/cghc_v1.json",
+        "results/cghc_v1.md",
+        "results/cghc_v1_receipt.json",
         "figures/README.md",
         "figures/common6.svg",
         "figures/ablations.svg",
         "figures/decision_allocation.svg",
+        "figures/cghc_common6.svg",
+        "figures/cghc_modality_association.svg",
     }
     local_files = {
         path.relative_to(ROOT).as_posix()

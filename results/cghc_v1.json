@@ -1,0 +1,1595 @@
+{
+  "claim_boundary": {
+    "causal_modality_or_disease_etiology_claim": false,
+    "pristine_new_confirmatory_test": false,
+    "retrospective_fixed_candidate_paired_evidence": true,
+    "test_targets_used_to_fit_or_select_decision_bias": false
+  },
+  "datasets": {
+    "abcd": {
+      "baselines": {
+        "acadiff": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.030998851894374235,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.04756446991404011,
+            "holm_adjusted_p": 0.00011999760004799905,
+            "holm_significant_0.05": true,
+            "one_sided_p": 1.999960000799984e-05,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.047564469914040175,
+            "balanced_accuracy": 0.013112566385575342,
+            "macro_auprc": 0.024551468458071435,
+            "macro_auroc": 0.025173489005143934,
+            "macro_f1": 0.01487757523272748,
+            "weighted_f1": 0.02591178168705155
+          },
+          "display_name": "ACADiff",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.002123614098894783,
+            "bootstrap_lower_positive": false,
+            "clusters": 1464,
+            "delta": 0.01487757523272748,
+            "holm_adjusted_p": 0.25343493130137396,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.07789844203115938,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5724928366762178,
+            "balanced_accuracy": 0.5418518216594356,
+            "macro_auprc": 0.5653164912484264,
+            "macro_auroc": 0.7316748229155238,
+            "macro_f1": 0.5466905907041061,
+            "weighted_f1": 0.5860651717161319
+          }
+        },
+        "agdic": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.03442340791738374,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.052148997134670486,
+            "holm_adjusted_p": 0.00011999760004799905,
+            "holm_significant_0.05": true,
+            "one_sided_p": 1.999960000799984e-05,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.05214899713467058,
+            "balanced_accuracy": 0.019417044826680496,
+            "macro_auprc": 0.04045754687283498,
+            "macro_auroc": 0.0387887497122259,
+            "macro_f1": 0.0242399037436708,
+            "weighted_f1": 0.034380043467707955
+          },
+          "display_name": "AGDiC",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.006000199980678045,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.0242399037436708,
+            "holm_adjusted_p": 0.0994780104397912,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.016579668406631866,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5679083094555873,
+            "balanced_accuracy": 0.5355473432183304,
+            "macro_auprc": 0.5494104128336629,
+            "macro_auroc": 0.7180595622084418,
+            "macro_f1": 0.5373282621931628,
+            "weighted_f1": 0.5775969099354755
+          }
+        },
+        "anymod": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.00979234484478504,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.024068767908309457,
+            "holm_adjusted_p": 0.007239855202895942,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.003619927601447971,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.024068767908309474,
+            "balanced_accuracy": 0.013111056764761875,
+            "macro_auprc": 0.023462253378810694,
+            "macro_auroc": 0.022528036119681794,
+            "macro_f1": 0.013761123690964938,
+            "weighted_f1": 0.016843546924949493
+          },
+          "display_name": "AnyMod",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.0027868974863668457,
+            "bootstrap_lower_positive": false,
+            "clusters": 1464,
+            "delta": 0.013761123690964938,
+            "holm_adjusted_p": 0.25343493130137396,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.09101817963640728,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5959885386819485,
+            "balanced_accuracy": 0.541853331280249,
+            "macro_auprc": 0.5664057063276872,
+            "macro_auroc": 0.7343202758009859,
+            "macro_f1": 0.5478070422458686,
+            "weighted_f1": 0.595133406478234
+          }
+        },
+        "flex_moe": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.02669762042948353,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.042406876790830945,
+            "holm_adjusted_p": 0.00017999640007199856,
+            "holm_significant_0.05": true,
+            "one_sided_p": 5.999880002399952e-05,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.042406876790830994,
+            "balanced_accuracy": 0.012319109686029117,
+            "macro_auprc": 0.012950351873143529,
+            "macro_auroc": 0.009903258221550693,
+            "macro_f1": 0.016276687131093426,
+            "weighted_f1": 0.024189988460322276
+          },
+          "display_name": "Flex-MoE",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.0013110089302458604,
+            "bootstrap_lower_positive": false,
+            "clusters": 1464,
+            "delta": 0.016276687131093426,
+            "holm_adjusted_p": 0.25343493130137396,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.06335873282534349,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5776504297994269,
+            "balanced_accuracy": 0.5426452783589818,
+            "macro_auprc": 0.5769176078333543,
+            "macro_auroc": 0.746945053699117,
+            "macro_f1": 0.5452914788057401,
+            "weighted_f1": 0.5877869649428612
+          }
+        },
+        "i2moe": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.028686173264486525,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.04469914040114613,
+            "holm_adjusted_p": 0.00011999760004799905,
+            "holm_significant_0.05": true,
+            "one_sided_p": 1.999960000799984e-05,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.0446991404011462,
+            "balanced_accuracy": 0.006213297343973245,
+            "macro_auprc": 0.020999522771445123,
+            "macro_auroc": 0.014209616529211266,
+            "macro_f1": 0.007953435160643174,
+            "weighted_f1": 0.020725758699405183
+          },
+          "display_name": "I2MoE",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.008950265062869677,
+            "bootstrap_lower_positive": false,
+            "clusters": 1464,
+            "delta": 0.007953435160643174,
+            "holm_adjusted_p": 0.25343493130137396,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.22093558128837423,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5753581661891117,
+            "balanced_accuracy": 0.5487510907010377,
+            "macro_auprc": 0.5688684369350527,
+            "macro_auroc": 0.7426386953914564,
+            "macro_f1": 0.5536147307761904,
+            "weighted_f1": 0.5912511947037783
+          }
+        },
+        "moepp_corrected": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.006896551724137945,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.02177650429799427,
+            "holm_adjusted_p": 0.008999820003599928,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.008999820003599928,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.02177650429799427,
+            "balanced_accuracy": 0.00932070082636649,
+            "macro_auprc": 0.014715911660482917,
+            "macro_auroc": 0.013649041864308042,
+            "macro_f1": 0.020316346563969634,
+            "weighted_f1": 0.020504678204943505
+          },
+          "display_name": "MoE++ (corrected)",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.0020853946369757907,
+            "bootstrap_lower_positive": true,
+            "clusters": 1464,
+            "delta": 0.020316346563969634,
+            "holm_adjusted_p": 0.16719665606687864,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.03343933121337573,
+            "randomization_draws": 50000,
+            "subjects": 1745
+          },
+          "metrics": {
+            "accuracy": 0.5982808022922637,
+            "balanced_accuracy": 0.5456436872186444,
+            "macro_auprc": 0.5751520480460149,
+            "macro_auroc": 0.7431992700563597,
+            "macro_f1": 0.5412518193728639,
+            "weighted_f1": 0.59147227519824
+          }
+        }
+      },
+      "candidate": {
+        "accuracy": 0.6200573065902579,
+        "balanced_accuracy": 0.5549643880450109,
+        "macro_auprc": 0.5898679597064979,
+        "macro_auroc": 0.7568483119206677,
+        "macro_f1": 0.5615681659368336,
+        "weighted_f1": 0.6119769534031835
+      },
+      "candidate_higher_than_every_baseline_on_all_six": true,
+      "clusters": 1464,
+      "component_ablation_boundary": "separate five-seed, five-fold development-OOF campaign; describes the conditional-generative component and is not a matched ablation of the final heterogeneous consensus",
+      "component_ablations": {
+        "arms": {
+          "comparator": {
+            "accuracy": 0.5433403805496829,
+            "balanced_accuracy": 0.43396247723699516,
+            "macro_auprc": 0.4305497625268675,
+            "macro_auroc": 0.6233537689488887,
+            "macro_f1": 0.4314209235502135,
+            "weighted_f1": 0.5456316370108324
+          },
+          "dense_backbone": {
+            "accuracy": 0.5454545454545454,
+            "balanced_accuracy": 0.4248154798800587,
+            "macro_auprc": 0.4285872058568268,
+            "macro_auroc": 0.6181405501817848,
+            "macro_f1": 0.42520729611084596,
+            "weighted_f1": 0.5448135928919403
+          },
+          "full": {
+            "accuracy": 0.5380549682875264,
+            "balanced_accuracy": 0.4358141120632261,
+            "macro_auprc": 0.42633053833324275,
+            "macro_auroc": 0.6228659479765919,
+            "macro_f1": 0.4319575030851667,
+            "weighted_f1": 0.5427424718860837
+          },
+          "mean_pooling": {
+            "accuracy": 0.5380549682875264,
+            "balanced_accuracy": 0.44094617914771755,
+            "macro_auprc": 0.42969603118446775,
+            "macro_auroc": 0.6192592041351498,
+            "macro_f1": 0.4363087728890318,
+            "weighted_f1": 0.5431052172156098
+          },
+          "no_completion": {
+            "accuracy": 0.507399577167019,
+            "balanced_accuracy": 0.42144782337907777,
+            "macro_auprc": 0.42638195263123024,
+            "macro_auroc": 0.6165542371836246,
+            "macro_f1": 0.4125935148993401,
+            "weighted_f1": 0.5210090189219225
+          },
+          "no_mofe": {
+            "accuracy": 0.5295983086680761,
+            "balanced_accuracy": 0.4296697670268017,
+            "macro_auprc": 0.4313707180752288,
+            "macro_auroc": 0.6249549737492374,
+            "macro_f1": 0.4253066285892538,
+            "weighted_f1": 0.5361131475668585
+          },
+          "no_output_gate": {
+            "accuracy": 0.5243128964059197,
+            "balanced_accuracy": 0.4290908100408271,
+            "macro_auprc": 0.4267933999726184,
+            "macro_auroc": 0.6233028239933235,
+            "macro_f1": 0.4231061730760022,
+            "weighted_f1": 0.5312904895586213
+          },
+          "no_provenance": {
+            "accuracy": 0.5422832980972516,
+            "balanced_accuracy": 0.43486177329639414,
+            "macro_auprc": 0.4296677136023524,
+            "macro_auroc": 0.624250662137451,
+            "macro_f1": 0.4329277696220177,
+            "weighted_f1": 0.5446390509460227
+          },
+          "no_stochastic_context": {
+            "accuracy": 0.5169133192389006,
+            "balanced_accuracy": 0.4223168258503311,
+            "macro_auprc": 0.4295123250293133,
+            "macro_auroc": 0.6253199402573854,
+            "macro_f1": 0.41653137887652214,
+            "weighted_f1": 0.5261667262897594
+          },
+          "uniform_branch_weights": {
+            "accuracy": 0.5285412262156448,
+            "balanced_accuracy": 0.440563540349856,
+            "macro_auprc": 0.4337803894804684,
+            "macro_auroc": 0.6203902420598454,
+            "macro_f1": 0.43274613370430676,
+            "weighted_f1": 0.5374882344669346
+          }
+        },
+        "full_minus_ablation": {
+          "comparator": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": -0.005285412262156508,
+              "balanced_accuracy": 0.0018516348262309634,
+              "macro_auprc": -0.004219224193624749,
+              "macro_auroc": -0.0004878209722968263,
+              "macro_f1": 0.0005365795349532299,
+              "weighted_f1": -0.0028891651247486827
+            }
+          },
+          "dense_backbone": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": -0.007399577167019,
+              "balanced_accuracy": 0.010998632183167434,
+              "macro_auprc": -0.002256667523584055,
+              "macro_auroc": 0.0047253977948070736,
+              "macro_f1": 0.0067502069743207715,
+              "weighted_f1": -0.002071121005856602
+            }
+          },
+          "mean_pooling": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.0,
+              "balanced_accuracy": -0.005132067084491432,
+              "macro_auprc": -0.003365492851225005,
+              "macro_auroc": 0.003606743841442106,
+              "macro_f1": -0.0043512698038650766,
+              "weighted_f1": -0.00036274532952607075
+            }
+          },
+          "no_completion": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.030655391120507414,
+              "balanced_accuracy": 0.014366288684148354,
+              "macro_auprc": -5.1414297987495416e-05,
+              "macro_auroc": 0.006311710792967329,
+              "macro_f1": 0.01936398818582663,
+              "weighted_f1": 0.021733452964161182
+            }
+          },
+          "no_mofe": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.008456659619450302,
+              "balanced_accuracy": 0.0061443450364244145,
+              "macro_auprc": -0.005040179741986062,
+              "macro_auroc": -0.0020890257726454697,
+              "macro_f1": 0.006650874495912951,
+              "weighted_f1": 0.006629324319225249
+            }
+          },
+          "no_output_gate": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.013742071881606699,
+              "balanced_accuracy": 0.006723302022399014,
+              "macro_auprc": -0.0004628616393756446,
+              "macro_auroc": -0.00043687601673159104,
+              "macro_f1": 0.008851330009164549,
+              "weighted_f1": 0.011451982327462362
+            }
+          },
+          "no_provenance": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": -0.0042283298097252064,
+              "balanced_accuracy": 0.0009523387668319838,
+              "macro_auprc": -0.003337175269109649,
+              "macro_auroc": -0.0013847141608590574,
+              "macro_f1": -0.00097026653685095,
+              "weighted_f1": -0.0018965790599390075
+            }
+          },
+          "no_stochastic_context": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.02114164904862581,
+              "balanced_accuracy": 0.013497286212895032,
+              "macro_auprc": -0.0031817866960705543,
+              "macro_auroc": -0.00245399228079346,
+              "macro_f1": 0.015426124208644587,
+              "weighted_f1": 0.016575745596324354
+            }
+          },
+          "uniform_branch_weights": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.009513742071881603,
+              "balanced_accuracy": -0.0047494282866298865,
+              "macro_auprc": -0.007449851147225628,
+              "macro_auroc": 0.0024757059167465068,
+              "macro_f1": -0.0007886306191400294,
+              "weighted_f1": 0.005254237419149099
+            }
+          }
+        },
+        "participants": 946,
+        "seeds": [
+          48,
+          49,
+          50,
+          51,
+          52
+        ]
+      },
+      "display_name": "ABCD",
+      "interpretability": {
+        "decision_allocation_by_disease_stratum": [
+          {
+            "ci95_lower": 0.2370553700127549,
+            "ci95_upper": 0.23890850796507782,
+            "clusters": 757,
+            "cohort": "no_diagnosis",
+            "component": "imaging",
+            "dataset": "abcd",
+            "mean": 0.23801061174982077,
+            "n": 858,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.260920525120789,
+            "ci95_upper": 0.2637827556054124,
+            "clusters": 757,
+            "cohort": "no_diagnosis",
+            "component": "genetic",
+            "dataset": "abcd",
+            "mean": 0.2624368576858288,
+            "n": 858,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.22988742243270294,
+            "ci95_upper": 0.2308200738970228,
+            "clusters": 757,
+            "cohort": "no_diagnosis",
+            "component": "cognition_health",
+            "dataset": "abcd",
+            "mean": 0.2303342590486253,
+            "n": 858,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2684284385799198,
+            "ci95_upper": 0.270070145137138,
+            "clusters": 757,
+            "cohort": "no_diagnosis",
+            "component": "behavior_environment",
+            "dataset": "abcd",
+            "mean": 0.26921828752839483,
+            "n": 858,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2358461777644236,
+            "ci95_upper": 0.2389780938326335,
+            "clusters": 361,
+            "cohort": "one_domain",
+            "component": "imaging",
+            "dataset": "abcd",
+            "mean": 0.23755844242193483,
+            "n": 374,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2643284793435045,
+            "ci95_upper": 0.2682129530350785,
+            "clusters": 361,
+            "cohort": "one_domain",
+            "component": "genetic",
+            "dataset": "abcd",
+            "mean": 0.26644663528643825,
+            "n": 374,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.23093556215065303,
+            "ci95_upper": 0.23230079731298192,
+            "clusters": 361,
+            "cohort": "one_domain",
+            "component": "cognition_health",
+            "dataset": "abcd",
+            "mean": 0.2315789407746677,
+            "n": 374,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2633091609601476,
+            "ci95_upper": 0.26559652323372646,
+            "clusters": 361,
+            "cohort": "one_domain",
+            "component": "behavior_environment",
+            "dataset": "abcd",
+            "mean": 0.26441599556150286,
+            "n": 374,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.23454340866884085,
+            "ci95_upper": 0.2378009018226397,
+            "clusters": 431,
+            "cohort": "multiple_domains",
+            "component": "imaging",
+            "dataset": "abcd",
+            "mean": 0.2362661614690138,
+            "n": 460,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.26706832687329085,
+            "ci95_upper": 0.2717067941266001,
+            "clusters": 431,
+            "cohort": "multiple_domains",
+            "component": "genetic",
+            "dataset": "abcd",
+            "mean": 0.26949179813913676,
+            "n": 460,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.23236121995904982,
+            "ci95_upper": 0.23396061006537563,
+            "clusters": 431,
+            "cohort": "multiple_domains",
+            "component": "cognition_health",
+            "dataset": "abcd",
+            "mean": 0.23314013873105463,
+            "n": 460,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.25999487361388807,
+            "ci95_upper": 0.2622747182788773,
+            "clusters": 431,
+            "cohort": "multiple_domains",
+            "component": "behavior_environment",
+            "dataset": "abcd",
+            "mean": 0.26110191280427186,
+            "n": 460,
+            "section": "decision_allocation"
+          }
+        ],
+        "disease_allocation_contrast": "multiple_domains_minus_no_diagnosis",
+        "disease_strata": [
+          {
+            "class_index": 0,
+            "cohort": "no_diagnosis",
+            "display_name": "No diagnosis"
+          },
+          {
+            "class_index": 1,
+            "cohort": "one_domain",
+            "display_name": "One diagnosis domain"
+          },
+          {
+            "class_index": 2,
+            "cohort": "multiple_domains",
+            "display_name": "Multiple diagnosis domains"
+          }
+        ],
+        "multiple_domains_minus_no_diagnosis": [
+          {
+            "bootstrap_two_sided_p": 0.0672,
+            "causal_effect": false,
+            "ci95_lower": -0.00380871872084231,
+            "ci95_upper": 0.00010269249367913461,
+            "component": "imaging",
+            "contrast": "multiple_domains_minus_no_diagnosis",
+            "dataset": "abcd",
+            "holm_adjusted_p": 0.0672,
+            "holm_significant_0.05": false,
+            "mean_difference": -0.0017442107200622559
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": 0.004252164891827413,
+            "ci95_upper": 0.009690020544774147,
+            "component": "genetic",
+            "contrast": "multiple_domains_minus_no_diagnosis",
+            "dataset": "abcd",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": 0.007055163383483887
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": 0.0019266751577247671,
+            "ci95_upper": 0.0037534577787446386,
+            "component": "cognition_health",
+            "contrast": "multiple_domains_minus_no_diagnosis",
+            "dataset": "abcd",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": 0.002805769443511963
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": -0.00948772252907075,
+            "ci95_upper": -0.006676344446969353,
+            "component": "behavior_environment",
+            "contrast": "multiple_domains_minus_no_diagnosis",
+            "dataset": "abcd",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": -0.00811624526977539
+          }
+        ],
+        "replay_audits": [
+          {
+            "checkpoint_sha256": "5e2cf6555ead810273b1770bf29112b6f77d3526a0d170b788e2580d6c7df6ca",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 0,
+            "status": "PASS",
+            "validation_rows_replayed": 1692,
+            "variant": "rank_moe"
+          },
+          {
+            "checkpoint_sha256": "c7d4f9286cabf41c531320d63c0363028c44e39b3b0e885d2c93390c5a9dbcff",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 1,
+            "status": "PASS",
+            "validation_rows_replayed": 1692,
+            "variant": "rank_moe"
+          },
+          {
+            "checkpoint_sha256": "5b3e852b60c76bb6e28d22d25ce0e93924252a1a0fe82b7066385e80de217c88",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 2,
+            "status": "PASS",
+            "validation_rows_replayed": 1692,
+            "variant": "rank_moe"
+          }
+        ],
+        "scope": {
+          "abcd_component_boundary": "conditional-generative Rank-MoE family only; CatBoost and TabM-32 remain in the final predictor but have no neural routing tensors",
+          "cluster_count": 1438,
+          "formal_or_final_test_result_artifacts_read": false,
+          "max_batches_per_member": null,
+          "neural_member_count": 3,
+          "standard_preprocessing_scope": "full feature tables and split-index structures may be materialized; only the validation loader is iterated",
+          "test_forward_executions": 0,
+          "test_loader_iterations": 0,
+          "test_rows_aggregated": 0,
+          "validation_only": true,
+          "validation_rows": 1692
+        },
+        "semantics": {
+          "causal_claim": false,
+          "decision_allocation": "normalized modality allocation used by the neural predictive component",
+          "disease_stratum_contrast": "model-allocation association; not disease etiology or a causal effect",
+          "member_aggregation": "equal mean across retained conditional-generative neural members",
+          "routing_mass": "normalized mass grouped into joint, unimodal, and pairwise branch families",
+          "token_attention": "within-modality attention averaged over tokens"
+        },
+        "uncertainty": {
+          "abcd_cluster": "genetic family",
+          "adni_cluster": "participant",
+          "contrast_multiplicity": "Holm across four modalities within dataset",
+          "draws": 10000,
+          "method": "percentile cluster bootstrap"
+        }
+      },
+      "subjects": 1745
+    },
+    "adni": {
+      "baselines": {
+        "acadiff": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.053459119496855334,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.1069182389937107,
+            "holm_adjusted_p": 0.003599928001439971,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.0005999880002399952,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.10691823899371067,
+            "balanced_accuracy": 0.13695557413344372,
+            "macro_auprc": 0.1560154336508245,
+            "macro_auroc": 0.11328632289669471,
+            "macro_f1": 0.14770652096283254,
+            "weighted_f1": 0.1345377589493978
+          },
+          "display_name": "ACADiff",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.09399023408186986,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.14770652096283254,
+            "holm_adjusted_p": 0.00011999760004799905,
+            "holm_significant_0.05": true,
+            "one_sided_p": 1.999960000799984e-05,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.5660377358490566,
+            "balanced_accuracy": 0.5420360939393475,
+            "macro_auprc": 0.5678469275483701,
+            "macro_auroc": 0.7173503013127829,
+            "macro_f1": 0.5204442081635064,
+            "weighted_f1": 0.5325410120180064
+          }
+        },
+        "agdic": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.03144654088050314,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.08490566037735849,
+            "holm_adjusted_p": 0.0252994940101198,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.00505989880202396,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.08490566037735847,
+            "balanced_accuracy": 0.12259936187510545,
+            "macro_auprc": 0.10189613059462033,
+            "macro_auroc": 0.06505747047428168,
+            "macro_f1": 0.1007905594875167,
+            "weighted_f1": 0.08474015005397173
+          },
+          "display_name": "AGDiC",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.04650171693866241,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.1007905594875167,
+            "holm_adjusted_p": 0.008899822003559928,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.0017799644007119857,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.5880503144654088,
+            "balanced_accuracy": 0.5563923061976858,
+            "macro_auprc": 0.6219662306045742,
+            "macro_auroc": 0.7655791537351959,
+            "macro_f1": 0.5673601696388223,
+            "weighted_f1": 0.5823386209134325
+          }
+        },
+        "anymod": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.012578616352201255,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.031446540880503145,
+            "holm_adjusted_p": 0.2853542929141417,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.1399972000559989,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.03144654088050314,
+            "balanced_accuracy": 0.048065811742929676,
+            "macro_auprc": 0.01560614838496388,
+            "macro_auroc": 0.010889022528897452,
+            "macro_f1": 0.04382334479590533,
+            "weighted_f1": 0.03375489351800398
+          },
+          "display_name": "AnyMod",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.00042973688241322816,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.04382334479590533,
+            "holm_adjusted_p": 0.15869682606347874,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.05289894202115958,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.6415094339622641,
+            "balanced_accuracy": 0.6309258563298615,
+            "macro_auprc": 0.7082562128142307,
+            "macro_auroc": 0.8197476016805801,
+            "macro_f1": 0.6243273843304337,
+            "weighted_f1": 0.6333238774494002
+          }
+        },
+        "flex_moe": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.0031446540880503138,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.0440251572327044,
+            "holm_adjusted_p": 0.20895582088358233,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.05223895522089558,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.04402515723270439,
+            "balanced_accuracy": 0.06685898615862096,
+            "macro_auprc": 0.0631570857512983,
+            "macro_auroc": 0.03430293643071858,
+            "macro_f1": 0.06316430683487395,
+            "weighted_f1": 0.05408723532188109
+          },
+          "display_name": "Flex-MoE",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": 0.021171367576784974,
+            "bootstrap_lower_positive": true,
+            "clusters": 318,
+            "delta": 0.06316430683487395,
+            "holm_adjusted_p": 0.03103937921241575,
+            "holm_significant_0.05": true,
+            "one_sided_p": 0.007759844803103938,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.6289308176100629,
+            "balanced_accuracy": 0.6121326819141703,
+            "macro_auprc": 0.6607052754478963,
+            "macro_auroc": 0.796333687778759,
+            "macro_f1": 0.604986422291465,
+            "weighted_f1": 0.6129915356455231
+          }
+        },
+        "i2moe": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.037735849056603765,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.0031446540880503146,
+            "holm_adjusted_p": 0.499910001799964,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.499910001799964,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.0031446540880503138,
+            "balanced_accuracy": 0.019114346049812547,
+            "macro_auprc": 0.02425170984333347,
+            "macro_auroc": 0.011260964717374478,
+            "macro_f1": 0.026404406382800172,
+            "weighted_f1": 0.028940690216822884
+          },
+          "display_name": "I2MoE",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.016842186279071993,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.026404406382800172,
+            "holm_adjusted_p": 0.16035679286414273,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.16035679286414273,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.6698113207547169,
+            "balanced_accuracy": 0.6598773220229787,
+            "macro_auprc": 0.6996106513558611,
+            "macro_auroc": 0.8193756594921031,
+            "macro_f1": 0.6417463227435388,
+            "weighted_f1": 0.6381380807505813
+          }
+        },
+        "moepp_corrected": {
+          "accuracy_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.0062893081761006275,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.03773584905660377,
+            "holm_adjusted_p": 0.2853542929141417,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.09511809763804724,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "candidate_minus_baseline": {
+            "accuracy": 0.037735849056603765,
+            "balanced_accuracy": 0.044817344418708105,
+            "macro_auprc": 0.0482063700286236,
+            "macro_auroc": 0.021024279042398675,
+            "macro_f1": 0.03966836705132604,
+            "weighted_f1": 0.034374152812309045
+          },
+          "display_name": "MoE++ (corrected)",
+          "macro_f1_inference": {
+            "bootstrap_draws": 20000,
+            "bootstrap_lower_one_sided_95": -0.004838277718583361,
+            "bootstrap_lower_positive": false,
+            "clusters": 318,
+            "delta": 0.03966836705132604,
+            "holm_adjusted_p": 0.15869682606347874,
+            "holm_significant_0.05": false,
+            "one_sided_p": 0.07015859682806344,
+            "randomization_draws": 50000,
+            "subjects": 318
+          },
+          "metrics": {
+            "accuracy": 0.6352201257861635,
+            "balanced_accuracy": 0.6341743236540831,
+            "macro_auprc": 0.675655991170571,
+            "macro_auroc": 0.8096123451670789,
+            "macro_f1": 0.628482362075013,
+            "weighted_f1": 0.6327046181550952
+          }
+        }
+      },
+      "candidate": {
+        "accuracy": 0.6729559748427673,
+        "balanced_accuracy": 0.6789916680727912,
+        "macro_auprc": 0.7238623611991946,
+        "macro_auroc": 0.8306366242094776,
+        "macro_f1": 0.668150729126339,
+        "weighted_f1": 0.6670787709674042
+      },
+      "candidate_higher_than_every_baseline_on_all_six": true,
+      "clusters": 318,
+      "component_ablation_boundary": "separate five-seed, five-fold development-OOF campaign; describes the conditional-generative component and is not a matched ablation of the final heterogeneous consensus",
+      "component_ablations": {
+        "arms": {
+          "comparator": {
+            "accuracy": 0.6101351351351352,
+            "balanced_accuracy": 0.6160350778414059,
+            "macro_auprc": 0.6327576173762918,
+            "macro_auroc": 0.7790909806291859,
+            "macro_f1": 0.6030191561095307,
+            "weighted_f1": 0.5982121563183815
+          },
+          "dense_backbone": {
+            "accuracy": 0.6364864864864865,
+            "balanced_accuracy": 0.6324705777338332,
+            "macro_auprc": 0.6461494889314019,
+            "macro_auroc": 0.7888767762856177,
+            "macro_f1": 0.6288153970898146,
+            "weighted_f1": 0.6268134698771126
+          },
+          "full": {
+            "accuracy": 0.6182432432432432,
+            "balanced_accuracy": 0.6192836576534512,
+            "macro_auprc": 0.6345454898819344,
+            "macro_auroc": 0.7818018175040122,
+            "macro_f1": 0.6069398967245351,
+            "weighted_f1": 0.6024748476782317
+          },
+          "mean_pooling": {
+            "accuracy": 0.6182432432432432,
+            "balanced_accuracy": 0.61990448921298,
+            "macro_auprc": 0.6330090450261251,
+            "macro_auroc": 0.7796367713907871,
+            "macro_f1": 0.6086204335152462,
+            "weighted_f1": 0.6039214480148557
+          },
+          "no_completion": {
+            "accuracy": 0.6162162162162163,
+            "balanced_accuracy": 0.6169439523567567,
+            "macro_auprc": 0.6624687120523942,
+            "macro_auroc": 0.7957739157573585,
+            "macro_f1": 0.5935869339381475,
+            "weighted_f1": 0.591683054141651
+          },
+          "no_mofe": {
+            "accuracy": 0.620945945945946,
+            "balanced_accuracy": 0.6243297307937031,
+            "macro_auprc": 0.6377807521180747,
+            "macro_auroc": 0.7834611862722856,
+            "macro_f1": 0.6120410843803316,
+            "weighted_f1": 0.6065487875581034
+          },
+          "no_output_gate": {
+            "accuracy": 0.6168918918918919,
+            "balanced_accuracy": 0.6187515163167122,
+            "macro_auprc": 0.6365830470281209,
+            "macro_auroc": 0.7808230012778177,
+            "macro_f1": 0.6068003204226114,
+            "weighted_f1": 0.6022564311264001
+          },
+          "no_provenance": {
+            "accuracy": 0.6128378378378379,
+            "balanced_accuracy": 0.6140467002659563,
+            "macro_auprc": 0.6317828860276268,
+            "macro_auroc": 0.7780127975324426,
+            "macro_f1": 0.6023108207758794,
+            "weighted_f1": 0.5978920657514188
+          },
+          "no_stochastic_context": {
+            "accuracy": 0.6155405405405405,
+            "balanced_accuracy": 0.6173459765537382,
+            "macro_auprc": 0.6349428265157614,
+            "macro_auroc": 0.7841760761618324,
+            "macro_f1": 0.6074652467923398,
+            "weighted_f1": 0.6031566298416462
+          },
+          "uniform_branch_weights": {
+            "accuracy": 0.6074324324324324,
+            "balanced_accuracy": 0.6114172354284825,
+            "macro_auprc": 0.6451355920495292,
+            "macro_auroc": 0.7833276452746806,
+            "macro_f1": 0.6047669784261617,
+            "weighted_f1": 0.5988878387812381
+          }
+        },
+        "full_minus_ablation": {
+          "comparator": {
+            "full_strictly_higher_all_six": true,
+            "metrics": {
+              "accuracy": 0.008108108108108025,
+              "balanced_accuracy": 0.0032485798120452936,
+              "macro_auprc": 0.001787872505642607,
+              "macro_auroc": 0.0027108368748263167,
+              "macro_f1": 0.003920740615004359,
+              "weighted_f1": 0.004262691359850135
+            }
+          },
+          "dense_backbone": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": -0.018243243243243334,
+              "balanced_accuracy": -0.013186920080382025,
+              "macro_auprc": -0.011603999049467517,
+              "macro_auroc": -0.007074958781605467,
+              "macro_f1": -0.02187550036527952,
+              "weighted_f1": -0.024338622198880944
+            }
+          },
+          "mean_pooling": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.0,
+              "balanced_accuracy": -0.000620831559528856,
+              "macro_auprc": 0.0015364448558092825,
+              "macro_auroc": 0.0021650461132250998,
+              "macro_f1": -0.001680536790711118,
+              "weighted_f1": -0.0014466003366240265
+            }
+          },
+          "no_completion": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.002027027027026951,
+              "balanced_accuracy": 0.002339705296694472,
+              "macro_auprc": -0.027923222170459838,
+              "macro_auroc": -0.013972098253346221,
+              "macro_f1": 0.013352962786387534,
+              "weighted_f1": 0.010791793536580663
+            }
+          },
+          "no_mofe": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": -0.002702702702702786,
+              "balanced_accuracy": -0.005046073140251961,
+              "macro_auprc": -0.003235262236140346,
+              "macro_auroc": -0.0016593687682733282,
+              "macro_f1": -0.00510118765579648,
+              "weighted_f1": -0.004073939879871702
+            }
+          },
+          "no_output_gate": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.0013513513513513375,
+              "balanced_accuracy": 0.000532141336738956,
+              "macro_auprc": -0.002037557146186475,
+              "macro_auroc": 0.0009788162261945565,
+              "macro_f1": 0.00013957630192362735,
+              "weighted_f1": 0.00021841655183152398
+            }
+          },
+          "no_provenance": {
+            "full_strictly_higher_all_six": true,
+            "metrics": {
+              "accuracy": 0.00540540540540535,
+              "balanced_accuracy": 0.005236957387494856,
+              "macro_auprc": 0.0027626038543075992,
+              "macro_auroc": 0.0037890199715696626,
+              "macro_f1": 0.004629075948655692,
+              "weighted_f1": 0.004582781926812829
+            }
+          },
+          "no_stochastic_context": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.002702702702702675,
+              "balanced_accuracy": 0.001937681099712929,
+              "macro_auprc": -0.0003973366338270168,
+              "macro_auroc": -0.0023742586578201497,
+              "macro_f1": -0.0005253500678047418,
+              "weighted_f1": -0.0006817821634145238
+            }
+          },
+          "uniform_branch_weights": {
+            "full_strictly_higher_all_six": false,
+            "metrics": {
+              "accuracy": 0.010810810810810811,
+              "balanced_accuracy": 0.007866422224968694,
+              "macro_auprc": -0.010590102167594817,
+              "macro_auroc": -0.001525827770668342,
+              "macro_f1": 0.0021729182983734052,
+              "weighted_f1": 0.003587008896993593
+            }
+          }
+        },
+        "participants": 1480,
+        "seeds": [
+          54,
+          55,
+          56,
+          57,
+          58
+        ]
+      },
+      "display_name": "ADNI",
+      "interpretability": {
+        "decision_allocation_by_disease_stratum": [
+          {
+            "ci95_lower": 0.22811065849265177,
+            "ci95_upper": 0.2364276193913153,
+            "clusters": 139,
+            "cohort": "cognitively_normal",
+            "component": "image",
+            "dataset": "adni",
+            "mean": 0.23216023065632196,
+            "n": 139,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.20577291745906898,
+            "ci95_upper": 0.23224683347151434,
+            "clusters": 139,
+            "cohort": "cognitively_normal",
+            "component": "genomic",
+            "dataset": "adni",
+            "mean": 0.21926141305149888,
+            "n": 139,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2800282071739864,
+            "ci95_upper": 0.29034131338163244,
+            "clusters": 139,
+            "cohort": "cognitively_normal",
+            "component": "clinical",
+            "dataset": "adni",
+            "mean": 0.28511759799590214,
+            "n": 139,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.25925209093704926,
+            "ci95_upper": 0.26780284476473176,
+            "clusters": 139,
+            "cohort": "cognitively_normal",
+            "component": "biospecimen",
+            "dataset": "adni",
+            "mean": 0.2634607731438369,
+            "n": 139,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.22991982925616739,
+            "ci95_upper": 0.238561185213205,
+            "clusters": 112,
+            "cohort": "mild_cognitive_impairment",
+            "component": "image",
+            "dataset": "adni",
+            "mean": 0.23415011566664493,
+            "n": 112,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.20858368698640592,
+            "ci95_upper": 0.2366156283150693,
+            "clusters": 112,
+            "cohort": "mild_cognitive_impairment",
+            "component": "genomic",
+            "dataset": "adni",
+            "mean": 0.2227960747799703,
+            "n": 112,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.27859210615778074,
+            "ci95_upper": 0.2898853239037895,
+            "clusters": 112,
+            "cohort": "mild_cognitive_impairment",
+            "component": "clinical",
+            "dataset": "adni",
+            "mean": 0.2841150557090129,
+            "n": 112,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2543453816457519,
+            "ci95_upper": 0.26368334162980317,
+            "clusters": 112,
+            "cohort": "mild_cognitive_impairment",
+            "component": "biospecimen",
+            "dataset": "adni",
+            "mean": 0.2589387722047312,
+            "n": 112,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2178945426787458,
+            "ci95_upper": 0.22334652370703753,
+            "clusters": 67,
+            "cohort": "dementia",
+            "component": "image",
+            "dataset": "adni",
+            "mean": 0.22051733354134345,
+            "n": 67,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2500540089112387,
+            "ci95_upper": 0.26648982557565415,
+            "clusters": 67,
+            "cohort": "dementia",
+            "component": "genomic",
+            "dataset": "adni",
+            "mean": 0.25905422321451244,
+            "n": 67,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2691485705326742,
+            "ci95_upper": 0.2767168463277283,
+            "clusters": 67,
+            "cohort": "dementia",
+            "component": "clinical",
+            "dataset": "adni",
+            "mean": 0.2726348171483225,
+            "n": 67,
+            "section": "decision_allocation"
+          },
+          {
+            "ci95_lower": 0.2448021965796378,
+            "ci95_upper": 0.25112663735427077,
+            "clusters": 67,
+            "cohort": "dementia",
+            "component": "biospecimen",
+            "dataset": "adni",
+            "mean": 0.24779363932894238,
+            "n": 67,
+            "section": "decision_allocation"
+          }
+        ],
+        "disease_allocation_contrast": "dementia_minus_cognitively_normal",
+        "disease_strata": [
+          {
+            "class_index": 0,
+            "cohort": "cognitively_normal",
+            "display_name": "Cognitively normal"
+          },
+          {
+            "class_index": 1,
+            "cohort": "mild_cognitive_impairment",
+            "display_name": "Mild cognitive impairment"
+          },
+          {
+            "class_index": 2,
+            "cohort": "dementia",
+            "display_name": "Dementia"
+          }
+        ],
+        "multiple_domains_minus_no_diagnosis": [
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": -0.016529965424472628,
+            "ci95_upper": -0.0066261307054019634,
+            "component": "image",
+            "contrast": "dementia_minus_cognitively_normal",
+            "dataset": "adni",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": -0.011642873287200928
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": 0.02420904736807055,
+            "ci95_upper": 0.05511545285858388,
+            "component": "genomic",
+            "contrast": "dementia_minus_cognitively_normal",
+            "dataset": "adni",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": 0.039792925119400024
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": -0.01875871800090944,
+            "ci95_upper": -0.006125729925829423,
+            "component": "clinical",
+            "contrast": "dementia_minus_cognitively_normal",
+            "dataset": "adni",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": -0.01248273253440857
+          },
+          {
+            "bootstrap_two_sided_p": 0.0002,
+            "causal_effect": false,
+            "ci95_lower": -0.020963040641466684,
+            "ci95_upper": -0.010261743569161402,
+            "component": "biospecimen",
+            "contrast": "dementia_minus_cognitively_normal",
+            "dataset": "adni",
+            "holm_adjusted_p": 0.0008,
+            "holm_significant_0.05": true,
+            "mean_difference": -0.015667125582695007
+          }
+        ],
+        "replay_audits": [
+          {
+            "checkpoint_sha256": "46cf0c2be9c1072edfab0a2dbfc1cda4820a31601a9fe15a6e8b70c5b676c63a",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 0,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "mean_clearcache"
+          },
+          {
+            "checkpoint_sha256": "da5fe3ae81eb5a07bc9d8686d049301618d0855866c00a383ce74644dfa203e4",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 1,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "mean_clearcache"
+          },
+          {
+            "checkpoint_sha256": "7af45a2cb7559f433d308fb809efb9699b96b63d6b0c922d33f4cf06568e9a34",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 2,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "mean_clearcache"
+          },
+          {
+            "checkpoint_sha256": "5e81468ac74e10f10f99cd5a3ae2197a032d7d72fe7541efbf0bcb242f0d1c21",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 0,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "median"
+          },
+          {
+            "checkpoint_sha256": "b8208d3b0e01207c61c4ff9a29009aa1246bb9b3f9c6cd667639fb38488ce40f",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 1,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "median"
+          },
+          {
+            "checkpoint_sha256": "6494506a3129c153894dc87ccbca923e3c47c39907f18f70454d2ec940c15926",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 2,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "median"
+          },
+          {
+            "checkpoint_sha256": "d5fab2e92f8f31c7d9523c0f0043663a0cc28fd013a445fd4e1be1355fb7cbcf",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 0,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "maskedbranchtcl"
+          },
+          {
+            "checkpoint_sha256": "d22537e851e237a5c5907017be94f200f6472fc4ef1f3eb0af155c00ddbfd12b",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 1,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "maskedbranchtcl"
+          },
+          {
+            "checkpoint_sha256": "830d0a916e92fc940ccd1c5d86eeb6c40e52e6fdc5f14a0a8e2682f2c6427c71",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 2,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "maskedbranchtcl"
+          },
+          {
+            "checkpoint_sha256": "1bf66d9c626cb76033518ec8b30e5ffd3d05a30ffbf4ac177f5b56c1b4e46a09",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 0,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "tbfd"
+          },
+          {
+            "checkpoint_sha256": "3110f4fbdad3100b83e883dab27d7c01ac443bbc86a899c016a437168d545284",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 1,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "tbfd"
+          },
+          {
+            "checkpoint_sha256": "1598a04fc67f62a1ba824c79d8bfbed8234d81af0b395861670e338961c450c3",
+            "conditional_generation_enabled": true,
+            "maximum_absolute_probability_replay_error": 0.0,
+            "seed": 2,
+            "status": "PASS",
+            "validation_rows_replayed": 318,
+            "variant": "tbfd"
+          }
+        ],
+        "scope": {
+          "abcd_component_boundary": null,
+          "cluster_count": 318,
+          "formal_or_final_test_result_artifacts_read": false,
+          "max_batches_per_member": null,
+          "neural_member_count": 12,
+          "standard_preprocessing_scope": "full feature tables and split-index structures may be materialized; only the validation loader is iterated",
+          "test_forward_executions": 0,
+          "test_loader_iterations": 0,
+          "test_rows_aggregated": 0,
+          "validation_only": true,
+          "validation_rows": 318
+        },
+        "semantics": {
+          "causal_claim": false,
+          "decision_allocation": "normalized modality allocation used by the neural predictive component",
+          "disease_stratum_contrast": "model-allocation association; not disease etiology or a causal effect",
+          "member_aggregation": "equal mean across retained conditional-generative neural members",
+          "routing_mass": "normalized mass grouped into joint, unimodal, and pairwise branch families",
+          "token_attention": "within-modality attention averaged over tokens"
+        },
+        "uncertainty": {
+          "abcd_cluster": "genetic family",
+          "adni_cluster": "participant",
+          "contrast_multiplicity": "Holm across four modalities within dataset",
+          "draws": 10000,
+          "method": "percentile cluster bootstrap"
+        }
+      },
+      "subjects": 318
+    }
+  },
+  "method": {
+    "abcd_members": "three Rank-MoE, three CatBoost, and three TabM-32 models",
+    "adni_members": "four conditional-generative MoE variants with three seeds each",
+    "conditional_generation_required": true,
+    "expanded_name": "Conditional-Generative Heterogeneous Consensus",
+    "final_consensus_is_moe": false,
+    "moe_retained": true,
+    "name": "CGHC-v1"
+  },
+  "metric_order": [
+    "accuracy",
+    "balanced_accuracy",
+    "macro_f1",
+    "weighted_f1",
+    "macro_auroc",
+    "macro_auprc"
+  ],
+  "metric_unit": "fraction",
+  "schema": "cghc-public-results-v1",
+  "source_receipts": {
+    "abcd_interpretability": {
+      "sha256": "3581f4bf9558ce297363486c445139f942394b86294a94d965e73ebf955813f1"
+    },
+    "abcd_interpretability_receipt": {
+      "sha256": "44d2ed2671062d3ddbc59df9166ebb69a78d094b07645d16d30126a13c75777c"
+    },
+    "ablation": {
+      "sha256": "ed28499fca8ee8506943c28609ac68accab3341cbe2706cf52d04458428decbd"
+    },
+    "accuracy": {
+      "sha256": "f7fef2ac0f1ad0b9a44cdc46a6b26809136d20ec728e7fd32848161e6a199381"
+    },
+    "adni_interpretability": {
+      "sha256": "6ce432cc7ddb459a472f0b20a74af45c97efd639485fe4076410231660daee76"
+    },
+    "adni_interpretability_receipt": {
+      "sha256": "d65fe914935d7760b9de8d5c02bcaf02b3310fe9cadac96cb62da214135fd6df"
+    },
+    "receipt": {
+      "sha256": "50f594ef2feb7c21bd25e503368fff9a1bd9d92b423667de055cbd823274bb75"
+    },
+    "summary": {
+      "sha256": "cebfc85646996817ce88661e10bc03b35b4342bf382ff8a825f9acd22aa15f14"
+    }
+  },
+  "status": "retrospective_fixed_candidate_paired_evidence"
+}

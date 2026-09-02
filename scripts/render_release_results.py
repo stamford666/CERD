@@ -1066,7 +1066,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
             "",
             "### Pre-specified matched ablations",
             "",
-            "Each row is one pre-specified matched configuration relative to full CERD. Differences are descriptive ablation effects and do not by themselves establish causal necessity.",
+            "These rows are validation controls for the four-stage decision chain, not eight coequal CERD modules. Each row is one pre-specified matched configuration relative to full CERD; differences are descriptive ablation effects and do not by themselves establish causal necessity. The dense-FFN row is a backbone-sensitivity control, and canonical artifact order is retained for traceability.",
             "",
             "| Dataset | Ablation | Accuracy | BalAcc | Macro-F1 | Weighted-F1 | Macro-AUROC | Macro-AUPRC |",
             "|---|---|---:|---:|---:|---:|---:|---:|",

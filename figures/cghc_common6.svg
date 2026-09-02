@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560">
+<rect width="100%" height="100%" fill="white"/>
+<text x="560" y="32" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="700">CGHC-v1 common-six results</text>
+<text x="560" y="54" text-anchor="middle" font-family="sans-serif" font-size="13">Candidate and strongest baseline per metric; retrospective fixed-candidate evidence</text>
+<text x="305.0" y="86" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="700">ADNI</text>
+<text x="45" y="116" font-family="sans-serif" font-size="12">Accuracy</text>
+<rect x="45" y="124" width="288.02" height="14" fill="#b9c2cc"/>
+<rect x="45" y="142" width="289.37" height="14" fill="#31688e"/>
+<text x="338.02" y="136" font-family="sans-serif" font-size="10">66.98 I2MoE</text>
+<text x="339.37" y="154" font-family="sans-serif" font-size="10" font-weight="700">67.30 CGHC</text>
+<text x="45" y="182" font-family="sans-serif" font-size="12">Balanced Accuracy</text>
+<rect x="45" y="190" width="283.75" height="14" fill="#b9c2cc"/>
+<rect x="45" y="208" width="291.97" height="14" fill="#31688e"/>
+<text x="333.75" y="202" font-family="sans-serif" font-size="10">65.99 I2MoE</text>
+<text x="341.97" y="220" font-family="sans-serif" font-size="10" font-weight="700">67.90 CGHC</text>
+<text x="45" y="248" font-family="sans-serif" font-size="12">Macro F1</text>
+<rect x="45" y="256" width="275.95" height="14" fill="#b9c2cc"/>
+<rect x="45" y="274" width="287.30" height="14" fill="#31688e"/>
+<text x="325.95" y="268" font-family="sans-serif" font-size="10">64.17 I2MoE</text>
+<text x="337.30" y="286" font-family="sans-serif" font-size="10" font-weight="700">66.82 CGHC</text>
+<text x="45" y="314" font-family="sans-serif" font-size="12">Weighted F1</text>
+<rect x="45" y="322" width="274.40" height="14" fill="#b9c2cc"/>
+<rect x="45" y="340" width="286.84" height="14" fill="#31688e"/>
+<text x="324.40" y="334" font-family="sans-serif" font-size="10">63.81 I2MoE</text>
+<text x="336.84" y="352" font-family="sans-serif" font-size="10" font-weight="700">66.71 CGHC</text>
+<text x="45" y="380" font-family="sans-serif" font-size="12">Macro Auroc</text>
+<rect x="45" y="388" width="352.49" height="14" fill="#b9c2cc"/>
+<rect x="45" y="406" width="357.17" height="14" fill="#31688e"/>
+<text x="402.49" y="400" font-family="sans-serif" font-size="10">81.97 AnyMod</text>
+<text x="407.17" y="418" font-family="sans-serif" font-size="10" font-weight="700">83.06 CGHC</text>
+<text x="45" y="446" font-family="sans-serif" font-size="12">Macro Auprc</text>
+<rect x="45" y="454" width="304.55" height="14" fill="#b9c2cc"/>
+<rect x="45" y="472" width="311.26" height="14" fill="#31688e"/>
+<text x="354.55" y="466" font-family="sans-serif" font-size="10">70.83 AnyMod</text>
+<text x="361.26" y="484" font-family="sans-serif" font-size="10" font-weight="700">72.39 CGHC</text>
+<text x="860.0" y="86" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="700">ABCD</text>
+<text x="600" y="116" font-family="sans-serif" font-size="12">Accuracy</text>
+<rect x="600" y="124" width="257.26" height="14" fill="#b9c2cc"/>
+<rect x="600" y="142" width="266.62" height="14" fill="#35b779"/>
+<text x="862.26" y="136" font-family="sans-serif" font-size="10">59.83 MoE++ (corrected)</text>
+<text x="871.62" y="154" font-family="sans-serif" font-size="10" font-weight="700">62.01 CGHC</text>
+<text x="600" y="182" font-family="sans-serif" font-size="12">Balanced Accuracy</text>
+<rect x="600" y="190" width="235.96" height="14" fill="#b9c2cc"/>
+<rect x="600" y="208" width="238.63" height="14" fill="#35b779"/>
+<text x="840.96" y="202" font-family="sans-serif" font-size="10">54.88 I2MoE</text>
+<text x="843.63" y="220" font-family="sans-serif" font-size="10" font-weight="700">55.50 CGHC</text>
+<text x="600" y="248" font-family="sans-serif" font-size="12">Macro F1</text>
+<rect x="600" y="256" width="238.05" height="14" fill="#b9c2cc"/>
+<rect x="600" y="274" width="241.47" height="14" fill="#35b779"/>
+<text x="843.05" y="268" font-family="sans-serif" font-size="10">55.36 I2MoE</text>
+<text x="846.47" y="286" font-family="sans-serif" font-size="10" font-weight="700">56.16 CGHC</text>
+<text x="600" y="314" font-family="sans-serif" font-size="12">Weighted F1</text>
+<rect x="600" y="322" width="255.91" height="14" fill="#b9c2cc"/>
+<rect x="600" y="340" width="263.15" height="14" fill="#35b779"/>
+<text x="860.91" y="334" font-family="sans-serif" font-size="10">59.51 AnyMod</text>
+<text x="868.15" y="352" font-family="sans-serif" font-size="10" font-weight="700">61.20 CGHC</text>
+<text x="600" y="380" font-family="sans-serif" font-size="12">Macro Auroc</text>
+<rect x="600" y="388" width="321.19" height="14" fill="#b9c2cc"/>
+<rect x="600" y="406" width="325.44" height="14" fill="#35b779"/>
+<text x="926.19" y="400" font-family="sans-serif" font-size="10">74.69 Flex-MoE</text>
+<text x="930.44" y="418" font-family="sans-serif" font-size="10" font-weight="700">75.68 CGHC</text>
+<text x="600" y="446" font-family="sans-serif" font-size="12">Macro Auprc</text>
+<rect x="600" y="454" width="248.07" height="14" fill="#b9c2cc"/>
+<rect x="600" y="472" width="253.64" height="14" fill="#35b779"/>
+<text x="853.07" y="466" font-family="sans-serif" font-size="10">57.69 Flex-MoE</text>
+<text x="858.64" y="484" font-family="sans-serif" font-size="10" font-weight="700">58.99 CGHC</text>
+<text x="560" y="545" text-anchor="middle" font-family="sans-serif" font-size="11">Values are percentages in labels; bar length uses fractional metric values.</text>
+</svg>

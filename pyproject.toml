@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cerd-multimodal"
 version = "0.1.0"
-description = "Missingness-aware generative reliability mixture-of-experts for multimodal classification"
+description = "Conditional-generative heterogeneous consensus for incomplete multimodal classification"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<rect width="100%" height="100%" fill="white"/>
+<text x="560" y="30" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="700">Conditional-generative component decision allocation</text>
+<text x="560" y="52" text-anchor="middle" font-family="sans-serif" font-size="13">Disease-burden strata; cluster-bootstrap aggregates; descriptive and non-causal</text>
+<text x="290" y="84" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="700">ADNI</text>
+<text x="101" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Biospecimen</text>
+<rect x="55" y="343.33" width="22" height="81.67" fill="#3b528b"/>
+<rect x="83" y="344.73" width="22" height="80.27" fill="#21918c"/>
+<rect x="111" y="348.18" width="22" height="76.82" fill="#5ec962"/>
+<text x="213" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Clinical</text>
+<rect x="167" y="336.61" width="22" height="88.39" fill="#3b528b"/>
+<rect x="195" y="336.92" width="22" height="88.08" fill="#21918c"/>
+<rect x="223" y="340.48" width="22" height="84.52" fill="#5ec962"/>
+<text x="325" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Genomic</text>
+<rect x="279" y="357.03" width="22" height="67.97" fill="#3b528b"/>
+<rect x="307" y="355.93" width="22" height="69.07" fill="#21918c"/>
+<rect x="335" y="344.69" width="22" height="80.31" fill="#5ec962"/>
+<text x="437" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Image</text>
+<rect x="391" y="353.03" width="22" height="71.97" fill="#3b528b"/>
+<rect x="419" y="352.41" width="22" height="72.59" fill="#21918c"/>
+<rect x="447" y="356.64" width="22" height="68.36" fill="#5ec962"/>
+<line x1="55" y1="425" x2="495" y2="425" stroke="#333"/>
+<text x="845" y="84" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="700">ABCD</text>
+<text x="656" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Behavior Environment</text>
+<rect x="610" y="341.54" width="22" height="83.46" fill="#3b528b"/>
+<rect x="638" y="343.03" width="22" height="81.97" fill="#21918c"/>
+<rect x="666" y="344.06" width="22" height="80.94" fill="#5ec962"/>
+<text x="768" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Cognition Health</text>
+<rect x="722" y="353.60" width="22" height="71.40" fill="#3b528b"/>
+<rect x="750" y="353.21" width="22" height="71.79" fill="#21918c"/>
+<rect x="778" y="352.73" width="22" height="72.27" fill="#5ec962"/>
+<text x="880" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Genetic</text>
+<rect x="834" y="343.64" width="22" height="81.36" fill="#3b528b"/>
+<rect x="862" y="342.40" width="22" height="82.60" fill="#21918c"/>
+<rect x="890" y="341.46" width="22" height="83.54" fill="#5ec962"/>
+<text x="992" y="454" text-anchor="middle" font-family="sans-serif" font-size="10">Imaging</text>
+<rect x="946" y="351.22" width="22" height="73.78" fill="#3b528b"/>
+<rect x="974" y="351.36" width="22" height="73.64" fill="#21918c"/>
+<rect x="1002" y="351.76" width="22" height="73.24" fill="#5ec962"/>
+<line x1="610" y1="425" x2="1050" y2="425" stroke="#333"/>
+<rect x="70" y="480" width="14" height="14" fill="#3b528b"/>
+<text x="90" y="492" font-family="sans-serif" font-size="10">Cognitively normal</text>
+<rect x="225" y="480" width="14" height="14" fill="#21918c"/>
+<text x="245" y="492" font-family="sans-serif" font-size="10">Mild cognitive impairment</text>
+<rect x="380" y="480" width="14" height="14" fill="#5ec962"/>
+<text x="400" y="492" font-family="sans-serif" font-size="10">Dementia</text>
+<rect x="625" y="480" width="14" height="14" fill="#3b528b"/>
+<text x="645" y="492" font-family="sans-serif" font-size="10">No diagnosis</text>
+<rect x="780" y="480" width="14" height="14" fill="#21918c"/>
+<text x="800" y="492" font-family="sans-serif" font-size="10">One diagnosis domain</text>
+<rect x="935" y="480" width="14" height="14" fill="#5ec962"/>
+<text x="955" y="492" font-family="sans-serif" font-size="10">Multiple diagnosis domains</text>
+</svg>

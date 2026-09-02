@@ -1,0 +1,11 @@
+{
+  "artifacts": {
+    "cghc_common6.svg": "a02e5b5e081d924ff7f42053ae6b418d85dcce9d225586549e0ffd523d6fb2c5",
+    "cghc_modality_association.svg": "4fc4bdd57703816a990c67eac4aa3a93bfffaceacae066763e250ed9b29b7312",
+    "cghc_v1.json": "105428e38146741629514e08632e70012659c7e92292e1961dd08f51ff01959d",
+    "cghc_v1.md": "8dca47856cbd68c9d0607cd49f07d0db65f4a29604b574f2eaf322c085633914"
+  },
+  "builder_sha256": "76d5808c7630ac7ab7af66ab95970f2f851e9ceba155cb3083fbf593db444b39",
+  "schema": "cghc-public-release-receipt-v1",
+  "status": "PASS"
+}

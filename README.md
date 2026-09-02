@@ -2,10 +2,58 @@
 
 CERD follows one decision path: reconstruct missing latent information, mark
 whether each representation was observed or generated, estimate its trust, and
-combine joint, unimodal, and pairwise predictions. Sparse mixture-of-experts
-(MoE) fusion is retained as the backbone.
+aggregate valid candidate predictions. Its conditional-generative neural
+members retain a sparse mixture-of-experts (MoE) backbone. The frozen CGHC-v1
+predictor then combines independently trained member families by hierarchical
+median consensus; this final cross-model consensus is not itself an MoE.
 
-## Final aggregate evidence
+## Method at a glance
+
+```text
+(1) reconstruct missing latent representations
+                         │
+(2) attach observed/generated provenance
+                         │
+       [retained Transformer + sparse-MoE backbone]
+                         │
+       candidate joint/unimodal/pairwise decision views
+                         │
+(3) estimate trust:
+    input reliability × normalized-entropy confidence
+                         │
+(4) aggregate valid branches into the final decision
+                         │
+      fixed hierarchical median across model families
+```
+
+The four stages above are CERD's single conceptual structure. The sparse-MoE
+layer is retained fusion machinery between provenance encoding and trust
+estimation, not a fifth stage or a separate CERD contribution. Joint, unimodal,
+and pairwise outputs are candidate decision views rather than independent
+method modules. In the final predictor, ABCD combines the conditional-generative
+Rank-MoE family with CatBoost and TabM-32 families, while ADNI combines four
+conditional-generative MoE variants. Conditional generation and MoE are
+therefore retained without forcing the final fusion rule to be another MoE.
+
+The detailed formulation is in the [Method narrative](docs/METHOD.md). The
+[evaluation protocol](docs/METHOD_REVISION_VALIDATION_PROTOCOL.md) defines the
+common-six reporting boundary, validation controls, and privacy requirements.
+The [controlled final-result builder](docs/FINAL_RESULT_BUILDER.md) defines the
+private-to-public, receipt-bound construction interface.
+
+## Current CGHC-v1 results
+
+The receipt-bound [CGHC-v1 result report](results/cghc_v1.md) is the current
+common-six evaluation of the frozen heterogeneous-consensus predictor. It also
+links the matched completion ablation and aggregate, validation-only modality–
+disease association analysis. The latter describes model associations and must
+not be interpreted as evidence of disease causation.
+
+## Archived core-member development evidence
+
+The receipt-bound block below is retained for provenance, but it predates and
+is superseded by the current CGHC-v1 predictor above. Its `FINAL` label applies
+only to that earlier development campaign; it is not the current result table.
 
 <!-- FINAL_RESULTS_START -->
 > **Release status: FINAL.** Adaptive same cohort development evidence only; both scored cohorts were reused for model and configuration selection, so any Holm adjusted difference is descriptive and confirmatory support is false.
@@ -43,7 +91,7 @@ Each dataset contributes exactly one paired, one-sided Macro-F1 comparison. Swap
 
 ### Pre-specified matched ablations
 
-Each row is one pre-specified matched configuration relative to full CERD. Differences are descriptive ablation effects and do not by themselves establish causal necessity.
+These rows are validation controls for the four-stage decision chain, not eight coequal CERD modules. Each row is one pre-specified matched configuration relative to full CERD; differences are descriptive ablation effects and do not by themselves establish causal necessity. The dense-FFN row is a backbone-sensitivity control, and canonical artifact order is retained for traceability.
 
 | Dataset | Ablation | Accuracy | BalAcc | Macro-F1 | Weighted-F1 | Macro-AUROC | Macro-AUPRC |
 |---|---|---:|---:|---:|---:|---:|---:|
@@ -86,32 +134,6 @@ interpretability values. The repository does not ship a placeholder result JSON;
 the public-release check accepts only the completed aggregate artifact and its
 exactly synchronized generated README and figures.
 
-## Method at a glance
-
-```text
-multimodal features + observed-modality mask
-                  │
-       modality-specific encoders
-                  │
- subject-conditioned latent completion
-                  │
- observed/generated provenance marking
-                  │
- Transformer + sparse MoE
-                  │
- joint / unimodal / pairwise predictions
-                  │
- input reliability × entropy confidence
-                  ▼
-              prediction
-```
-
-The detailed formulation is in the [Method narrative](docs/METHOD.md). The
-[evaluation protocol](docs/METHOD_REVISION_VALIDATION_PROTOCOL.md) fixes the
-common-six reporting boundary, pre-specified matched ablations, statistics, and privacy
-requirements. The [controlled final-result builder](docs/FINAL_RESULT_BUILDER.md)
-defines the private-to-public, receipt-bound construction interface.
-
 ## Core reference implementation
 
 ```bash
@@ -139,6 +161,9 @@ The final method-revision ABCD result uses the frozen three-class presentation
 endpoint on dev946 with five family-disjoint folds; the manifest-driven binary
 ABCD command above is a separate interface example and contributes no value to
 the final table.
+The CLI value `--variant mofe` is retained only as a legacy compatibility
+identifier; it does not name CERD's contribution, and MoE remains the fusion
+backbone.
 Protected data, fitted preprocessing objects, participant-level outputs,
 checkpoints, and internal orchestration are not distributed. The descriptive
 JSON files under `configs/` are not consumed by `train.py` and do not imply
@@ -146,27 +171,17 @@ exact numerical reproduction.
 
 `--ablation-id` accepts `full` and the eight ordered public IDs in
 [`configs/matched_ablations_v1.json`](configs/matched_ablations_v1.json). Every
-named arm changes exactly one control profile bit. Use the same explicit
-`--data-order-seed` for all matched arms; the loader and sampler then use RNG
-streams independent of model initialization. Fold runs require a safe
-`--fold-id` plus the SHA-256 of their controlled split receipt. Output names
-bind the dataset/variant, arm, fold, model seed, order seed, and canonical
-configuration digest. Existing files are never overwritten: only an exact
-checkpoint-and-receipt reentry is accepted, and publication uses a claim plus
-same-directory temporary files with the JSON completion receipt written last.
-
-This freezes the loader/sampler RNG scheme, not an observed epoch-order hash:
-the public trainer does not record epoch-order hashes. Dense construction
-shadow-consumes the sparse reference initialization so all common parameters
-start identically, but sparse router noise is consumed during forward passes;
-full and dense training therefore do not promise identical global forward RNG
-streams. The dedicated data-order generator still keeps their sample order
-independent of that difference.
+named arm changes exactly one control profile bit. Fold identity, model and
+data-order seeds, split-receipt digest, resolved control profile, and canonical
+configuration digest are bound into the run protocol. The detailed no-clobber,
+construction-alignment, and random-number guarantees belong to the
+[evaluation protocol](docs/METHOD_REVISION_VALIDATION_PROTOCOL.md); they verify
+matched controls rather than define additional method modules.
 
 ## Repository layout
 
 ```text
-cerd/       encoders, completion, reliability fusion, sparse MoE, objectives
+cerd/       reconstruct/provenance/trust/decision pipeline; retained MoE backbone
 configs/    de-identified descriptive parameter records
 data/       protected-data interface documentation only
 docs/       Method and final evaluation protocol
