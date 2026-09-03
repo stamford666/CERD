@@ -43,17 +43,52 @@ private-to-public, receipt-bound construction interface.
 
 ## Current CGHC-v1 results
 
-The receipt-bound [CGHC-v1 result report](results/cghc_v1.md) is the current
-common-six evaluation of the frozen heterogeneous-consensus predictor. It also
-links the matched completion ablation and aggregate, validation-only modality–
-disease association analysis. The latter describes model associations and must
-not be interpreted as evidence of disease causation.
+The table below is the current common-six evaluation of the frozen
+heterogeneous-consensus predictor. Values are percentages; the bold rows are
+the current CERD/CGHC-v1 results, not the archived development-CV results shown
+later in this README.
+
+| Dataset | Method | Accuracy | BalAcc | Macro-F1 | Weighted-F1 | Macro-AUROC | Macro-AUPRC |
+|---|---|---:|---:|---:|---:|---:|---:|
+| ADNI | **CERD (CGHC-v1)** | **67.30** | **67.90** | **66.82** | **66.71** | **83.06** | **72.39** |
+| ADNI | Flex-MoE | 62.89 | 61.21 | 60.50 | 61.30 | 79.63 | 66.07 |
+| ADNI | I2MoE | 66.98 | 65.99 | 64.17 | 63.81 | 81.94 | 69.96 |
+| ADNI | MoE++ (corrected) | 63.52 | 63.42 | 62.85 | 63.27 | 80.96 | 67.57 |
+| ADNI | AnyMod | 64.15 | 63.09 | 62.43 | 63.33 | 81.97 | 70.83 |
+| ADNI | AGDiC | 58.81 | 55.64 | 56.74 | 58.23 | 76.56 | 62.20 |
+| ADNI | ACADiff | 56.60 | 54.20 | 52.04 | 53.25 | 71.74 | 56.78 |
+| ABCD | **CERD (CGHC-v1)** | **62.01** | **55.50** | **56.16** | **61.20** | **75.68** | **58.99** |
+| ABCD | Flex-MoE | 57.77 | 54.26 | 54.53 | 58.78 | 74.69 | 57.69 |
+| ABCD | I2MoE | 57.54 | 54.88 | 55.36 | 59.13 | 74.26 | 56.89 |
+| ABCD | MoE++ (corrected) | 59.83 | 54.56 | 54.13 | 59.15 | 74.32 | 57.52 |
+| ABCD | AnyMod | 59.60 | 54.19 | 54.78 | 59.51 | 73.43 | 56.64 |
+| ABCD | AGDiC | 56.79 | 53.55 | 53.73 | 57.76 | 71.81 | 54.94 |
+| ABCD | ACADiff | 57.25 | 54.19 | 54.67 | 58.61 | 73.17 | 56.53 |
+
+The receipt-bound [full CGHC-v1 result report](results/cghc_v1.md) additionally
+contains paired evidence, completion controls, and the aggregate validation-only
+modality–disease association analysis. The latter describes model associations
+and must not be interpreted as evidence of disease causation.
+
+### Missingness boundary
+
+The primary evaluation preserves each dataset's natural missingness rather
+than forcing ABCD to imitate ADNI's missing rate. In the frozen test sets, ADNI
+has 99/318 (31.13%) incomplete examples, whereas ABCD has 43/1745 (2.46%). The
+neural MoE members use the same training-only modality-dropout probability
+(`0.25`) in both dataset configurations; this regularizer does not alter the
+natural test distributions. Any ADNI-rate-matched masking analysis is therefore
+reported separately as a controlled robustness ablation and is not substituted
+for the primary result.
 
 ## Archived core-member development evidence
 
 The receipt-bound block below is retained for provenance, but it predates and
 is superseded by the current CGHC-v1 predictor above. Its `FINAL` label applies
 only to that earlier development campaign; it is not the current result table.
+
+<details>
+<summary>Show superseded development-CV tables (ADNI 61.82%, ABCD 53.81%)</summary>
 
 <!-- FINAL_RESULTS_START -->
 > **Release status: FINAL.** Adaptive same cohort development evidence only; both scored cohorts were reused for model and configuration selection, so any Holm adjusted difference is descriptive and confirmatory support is false.
@@ -126,6 +161,8 @@ The explanation artifact contrasts complete and incomplete inputs using modality
 - [Decision allocation and branch mass](figures/decision_allocation.svg)
 
 <!-- FINAL_RESULTS_END -->
+
+</details>
 
 The [aggregate artifact contract](results/README.md) defines how the tables and
 figures are generated. A final release is rejected unless both datasets have
