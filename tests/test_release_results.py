@@ -539,6 +539,8 @@ def test_public_results_tree_has_only_allowlisted_aggregate_files():
         "results/cghc_v1.json",
         "results/cghc_v1.md",
         "results/cghc_v1_receipt.json",
+        "results/abcd_random_missing25_ablations_v1.json",
+        "results/abcd_random_missing25_ablations_v1.md",
         "figures/README.md",
         "figures/common6.svg",
         "figures/ablations.svg",

@@ -1,0 +1,138 @@
+{
+  "schema": "cerd-abcd-random-missing25-ablations-v1",
+  "status": "complete",
+  "evidence_scope": "development_validation_only",
+  "claim_boundary": "Descriptive same-cohort development ablations only; these results do not replace or modify the existing primary experiment results.",
+  "primary_experiment_is_not_an_ablation": true,
+  "dataset": "ABCD",
+  "task": "three_class",
+  "metric_unit": "fraction",
+  "metric_order": [
+    "accuracy",
+    "balanced_accuracy",
+    "macro_f1",
+    "weighted_f1",
+    "macro_auroc",
+    "macro_auprc"
+  ],
+  "missingness_protocol": {
+    "mechanism": "fixed random participant-level partial-modality masking",
+    "modalities": 4,
+    "manifest_participants": 1745,
+    "manifest_incomplete_participants": 436,
+    "manifest_incomplete_fraction": 0.2498567335243553,
+    "all_modalities_missing_participants": 0,
+    "rule": "Selected participants lose a random non-empty proper subset of modalities; at least one modality always remains.",
+    "shared_mask_across_arms": true
+  },
+  "evaluation": {
+    "partition": "validation",
+    "participants": 1692,
+    "complete_participants": 1269,
+    "incomplete_participants": 423,
+    "selection_independent": false,
+    "confirmatory_support": false,
+    "seeds": [0, 1, 2],
+    "aggregation": "Frozen consensus evaluated on the same row-aligned validation cohort."
+  },
+  "arms": [
+    {
+      "id": "full",
+      "description": "Full CERD ablation reference with sparse MoE, latent completion, provenance-aware routing, and learned branch weights.",
+      "completed_seeds": 3,
+      "metrics": {
+        "accuracy": 0.6146572104018913,
+        "balanced_accuracy": 0.5596801181200158,
+        "macro_f1": 0.5580793464888806,
+        "weighted_f1": 0.608450193940787,
+        "macro_auroc": 0.7546053960852342,
+        "macro_auprc": 0.5945723084617148
+      },
+      "delta_from_full": null
+    },
+    {
+      "id": "no_completion",
+      "description": "Disable latent modality completion.",
+      "completed_seeds": 3,
+      "metrics": {
+        "accuracy": 0.6063829787234043,
+        "balanced_accuracy": 0.5488802047625577,
+        "macro_f1": 0.544919372845436,
+        "weighted_f1": 0.597760210632408,
+        "macro_auroc": 0.7544501896095769,
+        "macro_auprc": 0.5943134839450664
+      },
+      "delta_from_full": {
+        "accuracy": -0.008274231678486954,
+        "balanced_accuracy": -0.010799913357458113,
+        "macro_f1": -0.013159973643444567,
+        "weighted_f1": -0.010689983308379003,
+        "macro_auroc": -0.00015520647565736567,
+        "macro_auprc": -0.0002588245166483816
+      }
+    },
+    {
+      "id": "dense_backbone",
+      "description": "Replace the sparse MoE backbone with a dense backbone.",
+      "completed_seeds": 3,
+      "metrics": {
+        "accuracy": 0.607565011820331,
+        "balanced_accuracy": 0.5463102399163781,
+        "macro_f1": 0.5402063235658504,
+        "weighted_f1": 0.5959085537290315,
+        "macro_auroc": 0.7568140824095173,
+        "macro_auprc": 0.5978201408160488
+      },
+      "delta_from_full": {
+        "accuracy": -0.007092198581560294,
+        "balanced_accuracy": -0.013369878203637775,
+        "macro_f1": -0.01787302292303017,
+        "weighted_f1": -0.012541640211755523,
+        "macro_auroc": 0.00220868632428306,
+        "macro_auprc": 0.0032478323543340126
+      }
+    },
+    {
+      "id": "no_provenance",
+      "description": "Disable provenance-aware routing information.",
+      "completed_seeds": 3,
+      "metrics": {
+        "accuracy": 0.6111111111111112,
+        "balanced_accuracy": 0.5524909730792084,
+        "macro_f1": 0.5496656859545704,
+        "weighted_f1": 0.60283666616111,
+        "macro_auroc": 0.7552121836239111,
+        "macro_auprc": 0.59496818600129
+      },
+      "delta_from_full": {
+        "accuracy": -0.0035460992907800915,
+        "balanced_accuracy": -0.007189145040807476,
+        "macro_f1": -0.008413660534310141,
+        "weighted_f1": -0.005613527779677052,
+        "macro_auroc": 0.0006067875386768229,
+        "macro_auprc": 0.00039587753957515126
+      }
+    },
+    {
+      "id": "uniform_branch_weights",
+      "description": "Replace learned branch-confidence weighting with uniform branch weights.",
+      "completed_seeds": 3,
+      "metrics": {
+        "accuracy": 0.6117021276595744,
+        "balanced_accuracy": 0.5535488665923448,
+        "macro_f1": 0.5510688659216049,
+        "weighted_f1": 0.6038446403710839,
+        "macro_auroc": 0.7554369050173593,
+        "macro_auprc": 0.5951050470037734
+      },
+      "delta_from_full": {
+        "accuracy": -0.002955082742316817,
+        "balanced_accuracy": -0.006131251527671022,
+        "macro_f1": -0.007010480567275712,
+        "weighted_f1": -0.004605553569703158,
+        "macro_auroc": 0.0008315089321250246,
+        "macro_auprc": 0.0005327385420585973
+      }
+    }
+  ]
+}

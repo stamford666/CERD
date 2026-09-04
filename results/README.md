@@ -1,5 +1,14 @@
 # Public result artifact
 
+## ABCD fixed-25% random-missing ablations
+
+[`abcd_random_missing25_ablations_v1.md`](abcd_random_missing25_ablations_v1.md)
+and its aggregate-only
+[`JSON artifact`](abcd_random_missing25_ablations_v1.json) report the completed
+three-seed component ablations under one shared fixed missing-modality mask.
+They are validation-only descriptive evidence and do not replace or modify the
+existing primary experiment artifacts below.
+
 ## Current CGHC-v1 result bundle
 
 `cghc_v1.json` is the current model-comparison artifact. It reports the same
