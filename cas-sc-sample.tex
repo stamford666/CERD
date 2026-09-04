@@ -61,7 +61,7 @@
 \cortext[cor1]{Corresponding author.}
 
 \begin{abstract}
-Multimodal neurobiological prediction can combine complementary information from imaging, genetics, clinical measurements, biospecimens, cognition, and behavior, but real cohorts contain heterogeneous subject-specific missingness. Existing methods commonly aggregate only the observed subset or reconstruct unavailable modalities, while paying less attention to how generated information should be distinguished and weighted during the final decision. We propose TRACE, a framework based on \emph{Token Reconstruction and an Availability-aware Confidence-weighted Ensemble}. TRACE reconstructs each missing modality in a shared token space by cross-attending to the same subject's observed modalities and tags every token as observed or generated. A Transformer with sparse top-$k$ experts models cross-modal interactions, after which joint, unimodal, and pairwise classifiers produce complementary predictions. Their outputs are fused using explicit availability masks, modality reliability, and branch-level predictive evidence; the reported branch probabilities and weights therefore reproduce the final prediction exactly. We evaluate TRACE on a family-disjoint ABCD-ADHD cohort with eight modalities and an ADNI three-class task with four modalities. TRACE obtains the strongest mean result across all reported ADNI metrics, including $64.88\%$ accuracy, $63.75\%$ macro-F1, and $67.37\%$ macro-AUPRC. On the imbalanced ABCD-ADHD endpoint, TRACE achieves the highest accuracy and specificity and remains competitive in AUROC and AUPRC, although no AUPRC comparison establishes significant superiority after multiple-comparison correction. These results show that subject-conditioned reconstruction and reliability-aware decision fusion can support heterogeneous incomplete inputs without obscuring the source of the final probability.
+Multimodal neurobiological prediction can combine complementary information from imaging, genetics, clinical measurements, biospecimens, cognition, and behavior, but real cohorts contain heterogeneous subject-specific missingness. Existing methods commonly aggregate only the observed subset or reconstruct unavailable modalities, while paying less attention to how generated information should be distinguished and weighted during the final decision. We propose TRACE, a framework based on \emph{Token Reconstruction and an Availability-aware Confidence-weighted Ensemble}. TRACE reconstructs each missing modality from the same subject's observed evidence, marks latent tokens as observed or generated, and estimates how much each candidate prediction should be trusted. A retained Transformer with sparse top-$k$ experts models cross-modal interactions, while joint, unimodal, and pairwise branches are combined using availability, input reliability, shift-invariant predictive confidence, and a learned branch prior. Their reported probabilities and weights exactly reproduce the neural prediction. The final TRACE--CGHC predictor uses a frozen hierarchical consensus to reduce seed and model-family variance without replacing the sparse-MoE neural path. On three-class ADNI and ABCD tasks, it achieves the highest point estimate among six baselines for all six common metrics, including $67.30\%$ and $62.01\%$ accuracy, respectively. Under a separate fixed-$25\%$ random-missing ABCD condition, the full model obtains $61.47\%$ validation accuracy and $55.81\%$ macro-F1; removing completion, sparse experts, provenance, or learned branch weighting lowers macro-F1. These results support provenance-aware reconstruction and trust-controlled decision fusion while retaining an explicit boundary between retrospective main comparisons and development-only ablations.
 \end{abstract}
 
 \begin{keywords}
@@ -78,15 +78,15 @@ This assumption is frequently violated in research cohorts and clinical data. Mo
 
 Missingness also changes what constitutes a useful explanation. A sparse router indicates where computation is allocated, but its gate value is not, by itself, the contribution of a modality to the prediction. Likewise, post-hoc attribution can audit a trained model, yet it need not reproduce the decision rule used during inference~\cite{ref_lundberg2017shap,ref_sundararajan2017ig,ref_ribeiro2016lime,ref_rudin2019stop}. For an incomplete subject, an explanation must additionally distinguish an unavailable branch from an active but uncertain one, and it should not assign equal trust to directly observed and generated inputs. This motivates a decision mechanism in which availability, source reliability, predictive confidence, and branch contribution are represented explicitly and used in the prediction itself.
 
-We propose \emph{TRACE: Token Reconstruction and an Availability-aware Confidence-weighted Ensemble}, a unified framework for missingness-aware multimodal classification. TRACE first maps every available modality to a common token space. For each unavailable target modality, a target-specific generator uses learned queries to cross-attend to the subject's observed tokens, producing a conditional latent reconstruction; source embeddings retain whether each token was observed or generated. A Transformer with sparse top-$k$ experts then models interactions among the resulting modality tokens. Rather than relying on a single opaque fusion head, TRACE forms joint, unimodal, and pairwise diagnostic branches and combines their probability outputs according to branch availability, modality reliability, predictive evidence, and a low-capacity branch prior. The reported branch predictions and weights are therefore the same quantities used to construct the final prediction, providing a direct prediction-level decomposition rather than a separate post-hoc explanation. Training further exposes the model to reduced-modality views and constrains their predictions against the corresponding more complete views.
+We propose \emph{TRACE: Token Reconstruction and an Availability-aware Confidence-weighted Ensemble}, a unified framework organized around one information flow: \emph{reconstruct, mark provenance, estimate trust, and make a decision}. TRACE maps heterogeneous modalities to a shared token space and reconstructs each unavailable target from a randomly sampled non-empty subset of the same subject's observed tokens. Source embeddings preserve whether a representation was observed or generated. A Transformer with sparse top-$k$ experts serves as the cross-modal encoding backbone rather than as a separate conceptual module. TRACE then forms joint, unimodal, and pairwise diagnostic views and combines their probability outputs according to branch availability, input reliability, normalized-entropy confidence, and a low-capacity prior. The reported branch predictions and weights are exactly the quantities used to construct the neural prediction, providing a direct decision decomposition rather than a post-hoc surrogate.
 
-We evaluate TRACE on two naturally incomplete cohorts: the Adolescent Brain Cognitive Development (ABCD) Study and the Alzheimer's Disease Neuroimaging Initiative (ADNI)~\cite{garavan2018abcd,ref_adni}. The results reveal different but informative operating regimes: TRACE attains the strongest mean performance across the reported ADNI metrics, while remaining competitive on the imbalanced ABCD-ADHD endpoint, where its gains are concentrated in accuracy and specificity and do not establish statistically significant AUPRC superiority. This distinction avoids reducing incomplete-modality performance to a single favorable metric and motivates the following contributions:
+We evaluate TRACE on two three-class cohorts: the Adolescent Brain Cognitive Development (ABCD) Study and the Alzheimer's Disease Neuroimaging Initiative (ADNI)~\cite{garavan2018abcd,ref_adni}. Both use four heterogeneous modality groups and retain naturally incomplete subjects. We additionally construct a fixed approximately $25\%$ random-missing ABCD condition to isolate behavior under controlled partial-modality absence. The same six metrics are used for both datasets. This design motivates the following contributions:
 
 \begin{itemize}
     \item We formulate incomplete multimodal prediction as a coupled reconstruction-and-decision problem and introduce a unified framework that preserves the distinction between observed and generated evidence throughout the prediction path.
-    \item We develop subject-conditioned latent reconstruction in which each missing modality is generated from the available evidence of the same subject and supervised by leave-one-modality-out targets from complete training subjects.
+    \item We develop subject-conditioned latent reconstruction trained from stochastic observed subsets, with pooled semantic and normalized token-level supervision so that training contexts reflect arbitrary partial availability.
     \item We introduce a missingness-aware reliability--evidence fusion mechanism over joint, unimodal, and pairwise branches. Its active branches, predictions, and normalized weights directly compose the final probability and can therefore be inspected without fitting an auxiliary explainer.
-    \item We study the framework on naturally incomplete ABCD and ADNI data with heterogeneous modality types, using multi-metric evaluation and multiplicity-corrected confirmatory analysis for the imbalanced ABCD endpoint rather than selecting a single favorable metric.
+    \item We evaluate the framework with a common six-metric protocol on ADNI and ABCD, paired cluster-aware inference, and a fixed-$25\%$ random-missing component study that uses the same participant-level mask for every arm.
 \end{itemize}
 
 \section{Related Work}
@@ -116,10 +116,16 @@ Interaction-based interpretation instead asks whether modalities contribute uniq
 \section{Methodology}
 \label{sec:method}
 
-\subsection{Overview}
+\subsection{Problem Formulation and Design Principle}
 \label{sec:method_overview}
 
-The overall framework of TRACE is illustrated in Fig.~\ref{fig:TRACE}. Each observed modality is first encoded as a sequence of tokens in a shared latent space, while the subject-specific availability pattern is recorded. TRACE then performs conditional latent completion to reconstruct each missing modality from the observed modalities of the same subject and attaches a source tag that distinguishes generated representations from direct observations (Section~\ref{sec:reconstruction}). Next, the observed and reconstructed tokens are jointly processed by a sparse mixture-of-experts (MoE) Transformer to model cross-modal interactions and produce task-aligned modality features (Section~\ref{sec:sparse_moe}). Finally, a reliability-aware decision module forms unimodal, pairwise, and joint predictions and combines them according to input reliability, predictive confidence, and a learned branch prior (Section~\ref{sec:evidence_fusion}). The resulting branch probabilities and weights directly compose the final class probability.
+TRACE is organized around one principle: a missing modality should be reconstructed from the current subject, but the resulting representation must not be treated as if it had been observed. This leads to one connected information flow,
+\begin{equation}
+\boxed{\text{reconstruct}\;\longrightarrow\;\text{mark provenance}
+\;\longrightarrow\;\text{estimate trust}\;\longrightarrow\;\text{decide}}.
+\label{eq:design_principle}
+\end{equation}
+The stages answer three practical questions. First, how can an unavailable modality obtain a subject-specific representation? Second, how can the encoder retain whether that representation was measured or generated? Third, how much should a candidate prediction supported by that representation influence the final decision? Sparse MoE is retained as the interaction backbone between provenance marking and trust estimation; it is not introduced as a separate fifth stage.
 
 Let \(\mathcal{M}=\{1,\ldots,M\}\) denote the modality set. For subject \(n\), \(\mathbf{x}_n^m\) is the input of modality \(m\), \(o_n^m\in\{0,1\}\) indicates whether the entire modality is observed, and \(y_n\in\{1,\ldots,C\}\) is the class label. A modality-specific encoder maps each heterogeneous input to \(P\) tokens in a shared \(D\)-dimensional space:
 \begin{equation}
@@ -127,23 +133,23 @@ Let \(\mathcal{M}=\{1,\ldots,M\}\) denote the modality set. For subject \(n\), \
 \mathbf{Z}_n^m\in\mathbb{R}^{P\times D}.
 \label{eq:tokenization}
 \end{equation}
-The observed-modality mask is retained separately from values missing within an otherwise available modality. Figure~\ref{fig:TRACE} follows the complete computation in four stages: input availability, conditional completion, sparse MoE fusion, and decision decomposition.
+The whole-modality mask is retained separately from missing entries inside an otherwise available table. Figure~\ref{fig:TRACE} summarizes how the same mask is used for reconstruction, provenance, and decision weighting.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{Figures/TRACE.pdf}
-  \caption{Overview of TRACE. The availability mask identifies observed and missing modalities. Each missing token sequence is reconstructed from the same subject's observed modalities and tagged as generated. Shared self-attention exchanges cross-modal information, after which top-\(k\) routing selects a sparse set of experts and recombines their outputs into modality features. Unimodal, pairwise, and joint branches then produce separate probabilities. Their activity, reliability, confidence, and learned priors determine inspectable branch weights, and each weighted branch probability contributes directly to the final prediction.}
+  \caption{Overview of TRACE. Missing tokens are reconstructed from the same subject's observed modalities and explicitly marked as generated. A Transformer with sparse top-\(k\) experts produces task-aligned modality features. Unimodal, pairwise, and joint branches are then weighted by availability, input reliability, predictive confidence, and a branch prior. The displayed branch probabilities and weights exactly compose the neural prediction.}
   \label{fig:TRACE}
 \end{figure*}
 
-\subsection{Conditional Completion}
+\subsection{Subject-Conditioned Completion and Provenance}
 \label{sec:reconstruction}
 
-A population-level replacement cannot adapt to the observed evidence of an individual subject. TRACE instead assigns each target modality \(m\) a conditional generator \(G_m\). For the observed set \(\mathcal{O}_n=\{j:o_n^j=1\}\), the target-specific context is
+A population-level missing token cannot adapt to the evidence of an individual subject. TRACE instead assigns each target modality \(m\) a conditional generator \(G_m\). Let \(\mathcal{O}_n=\{j:o_n^j=1\}\) be the physically observed set. For a training subject with at least two observed modalities, we sample a non-empty proper context \(\varnothing\ne\mathcal{S}_n\subsetneq\mathcal{O}_n\) and use the remaining observed modalities \(\mathcal{T}_n=\mathcal{O}_n\setminus\mathcal{S}_n\) as reconstruction targets. The context for target \(m\in\mathcal{T}_n\) is
 \begin{equation}
 \mathbf{C}_n^m=
 \operatorname{Concat}\!\left(
-\{\mathbf{Z}_n^j:j\in\mathcal{O}_n\setminus\{m\}\}
+\{\mathbf{Z}_n^j:j\in\mathcal{S}_n\}
 \right).
 \label{eq:context}
 \end{equation}
@@ -153,24 +159,26 @@ A population-level replacement cannot adapt to the observed evidence of an indiv
 \qquad \mathbf{Q}_m\in\mathbb{R}^{P\times D},
 \label{eq:generator}
 \end{equation}
-where learned target queries pass through \(L\) cross-attention blocks and a lightweight output gate. The \(P\) query positions provide capacity for later token-level cross-modal interaction; we do not assume a one-to-one semantic correspondence between generated and observed token positions.
+where learned target queries pass through cross-attention and feed-forward refinement. A lightweight sigmoid output gate modulates the generated channels; it is an implementation detail rather than an additional conceptual module. At inference, \(\mathcal{S}_n=\mathcal{O}_n\), so every missing target is generated from all available evidence. Stochastic context sampling exposes the generator to both rich and sparse contexts instead of training only on leave-one-modality-out cases.
 
-The reported configuration trains the generators by leave-one-modality-out completion on complete training subjects. For a held-out observed target \(m\), the remaining modalities form the context and the projected mean representation is matched with a stop-gradient target using cosine distance:
+The reconstruction objective supervises both subject-level semantics and the full token sequence. Let \(\overline{\mathbf Z}\) denote token averaging, \(R_m\) a target-specific projection, and \(\nu(\mathbf z)=\mathbf z/(\lVert\mathbf z\rVert_2+\epsilon)\) token normalization. We use
 \begin{equation}
+\begin{aligned}
 \mathcal{L}_{\mathrm{rec}}
-=\frac{1}{|\mathcal{R}|}
-\sum_{(n,m)\in\mathcal{R}}
-\left[
-1-\cos\!\left(
+=\frac{1}{|\mathcal{R}|}\sum_{(n,m)\in\mathcal{R}}
+\Bigg[&1-\cos\!\left(
 R_m(\overline{\widehat{\mathbf{Z}}}_n^m),
-\operatorname{sg}[R_m(\overline{\mathbf{Z}}_n^m)]
-\right)
-\right],
+\operatorname{sg}[R_m(\overline{\mathbf{Z}}_n^m)]\right)\\
+&+\frac{\lambda_{\mathrm{tok}}}{P}\sum_{p=1}^{P}
+\operatorname{SmoothL1}\!\left(
+\nu(\widehat{\mathbf z}_{n,p}^{m}),
+\operatorname{sg}[\nu(\mathbf z_{n,p}^{m})]\right)\Bigg],
+\end{aligned}
 \label{eq:reconstruction_loss}
 \end{equation}
-where the overline denotes token averaging and \(\mathcal{R}\) is the sampled set of eligible subject--target pairs. Supervision is intentionally applied at the pooled subject-representation level rather than asserting token-wise semantic alignment. At inference, a missing target is generated from the available non-empty context. Classification gradients are stopped through generated tokens in the reported configuration, so \(G_m\) is optimized through Eq.~\eqref{eq:reconstruction_loss} rather than the diagnosis label.
+where \(\mathcal{R}\) contains sampled eligible subject--target pairs and \(\operatorname{sg}\) stops gradients through targets. The pooled term preserves subject-level content, while the token term prevents a multi-token reconstruction from being constrained only through its mean. Token indices are fixed latent positions created by the modality encoders and target queries; they are not interpreted as anatomical correspondence across modalities.
 
-Completion alone does not communicate uncertainty to the predictor. Observed and generated tokens therefore receive different learned source embeddings:
+Completion alone does not communicate information status. Observed and generated tokens therefore receive different learned provenance embeddings:
 \begin{equation}
 \widetilde{\mathbf{Z}}_n^m=
 \begin{cases}
@@ -179,15 +187,15 @@ Completion alone does not communicate uncertainty to the predictor. Observed and
 \end{cases}
 \label{eq:source_embedding}
 \end{equation}
-The two source embeddings are shared across modalities. They restore a common token layout while preserving whether each modality representation is observed or generated.
+The embeddings are shared across modalities. Completion therefore restores a common layout without erasing whether each token sequence was measured or inferred.
 
-\subsection{Sparse MoE Fusion}
+\subsection{Missingness-Aware Multimodal Encoding}
 \label{sec:sparse_moe}
 
-Different subjects now have the same token layout but different mixtures of observed and generated content. TRACE concatenates all source-tagged tokens and uses global self-attention for cross-modal exchange. The dense feed-forward block is replaced by a sparse MoE layer:
+TRACE concatenates all provenance-marked tokens and applies global self-attention for cross-modal exchange. Its feed-forward transformation is a sparse MoE layer,
 \begin{equation}
 \operatorname{MoE}(\mathbf{h})
-=\sum_{e\in\operatorname{TopK}(\mathbf{g})}
+=\sum_{e\in\operatorname{TopK}(\mathbf{g}(\mathbf h))}
 \pi_e(\mathbf{h})F_e(\mathbf{h}),
 \qquad
 \pi_e=
@@ -195,12 +203,12 @@ Different subjects now have the same token layout but different mixtures of obse
 {\sum_{r\in\operatorname{TopK}(\mathbf{g})}\exp(g_r)},
 \label{eq:sparse_moe}
 \end{equation}
-where \(F_e\) is expert \(e\), \(\mathbf{g}\) is a noisy content-dependent router, and only the top-\(k\) experts are evaluated. During training, the observed-modality combination index provides auxiliary supervision that encourages missingness-sensitive routing; the inference route remains determined by token content. A load-balancing loss discourages persistent expert collapse. The output tokens \(\mathbf{H}_n^m\) are reduced to a modality feature \(\mathbf{f}_n^m=\operatorname{Pool}_m(\mathbf{H}_n^m)\) by a stable mean summary with a learned attentive residual. This pooling detail is not treated as a separate contribution.
+where \(F_e\) is expert \(e\), \(\mathbf g\) is a content-dependent router, and only the top-\(k\) experts are evaluated. Because provenance embeddings are part of each routed token, specialization can depend on both content and observed/generated status. A load-balancing loss discourages expert collapse. The resulting tokens \(\mathbf H_n^m\) are summarized as \(\mathbf f_n^m=\operatorname{Pool}_m(\mathbf H_n^m)\) using a stable mean with a small learned attentive residual. We treat sparse routing and pooling as backbone choices and evaluate the former against a dense control.
 
-\subsection{Decision Decomposition}
+\subsection{Reliability-Aware Decision Decomposition}
 \label{sec:evidence_fusion}
 
-Let \(u_n^m=1\) when modality \(m\) is directly observed or can be reconstructed from at least one observed source, and \(u_n^m=0\) otherwise. The usability mask protects branch construction when generation is disabled or no conditioning source exists; it is distinct from provenance. TRACE estimates modality reliability as
+Let \(u_n^m=1\) when modality \(m\) is observed or has been reconstructed from a non-empty context, and \(u_n^m=0\) otherwise. Thus a generated modality is usable but need not be trusted as strongly as an observation. The usability mask remains necessary when completion is disabled or no conditioning source exists. TRACE estimates modality reliability as
 \begin{equation}
 r_n^m=
 \begin{cases}
@@ -211,9 +219,9 @@ r_n^m=
 \end{cases}
 \label{eq:modality_reliability}
 \end{equation}
-where \(b_m^g\) is initialized negatively. Thus the reported model anchors observed modalities at unit reliability and learns subject-specific trust only for generated representations.
+where \(b_m^g\) is initialized negatively. Observations provide the unit reference, whereas generated inputs receive subject- and modality-specific reliability.
 
-The model constructs three complementary prediction scales: unimodal branches represent modality-specific evidence, pairwise branches model low-order cross-modal complementarity, and the joint branch captures global interaction. Let \(\mathcal{B}\) contain one joint branch, \(M\) unimodal branches, and all \(\binom{M}{2}\) pairwise branches. Their logits are
+The model constructs three prediction scales with distinct roles: unimodal branches capture source-specific evidence, pairwise branches capture low-order complementarity, and the joint branch captures global interaction. Let \(\mathcal{B}\) contain one joint branch, \(M\) unimodal branches, and all \(\binom{M}{2}\) pairwise branches. Their logits are
 \begin{equation}
 \begin{aligned}
 \boldsymbol{\ell}_n^{0}
@@ -227,7 +235,7 @@ The model constructs three complementary prediction scales: unimodal branches re
 \end{aligned}
 \label{eq:branch_logits}
 \end{equation}
-Element-wise products and absolute differences are computed only after modality encoders and the shared Transformer have mapped all modalities to a task-aligned common dimension; they are interaction features, not claims of coordinate-wise biological correspondence. A branch is active only when its required modalities are usable. Its provenance-conditioned quality is
+The product and absolute-difference terms are computed only after the modality encoders and shared Transformer map every source to a task-aligned common space. They are learned interaction features, not biological coordinate correspondences. A branch is active only when its required inputs are usable. Its input quality is
 \begin{equation}
 \begin{aligned}
 q_n^{0}
@@ -239,21 +247,21 @@ q_n^{ij}=\sqrt{r_n^i r_n^j}.
 \label{eq:branch_quality}
 \end{equation}
 
-Each branch also supplies a prediction-dependent confidence proxy:
+Input reliability and predictive confidence answer different questions: the former assesses the source representation, while the latter assesses the concentration of a branch prediction. For \(\mathbf p_n^b=\operatorname{softmax}(\boldsymbol\ell_n^b)\), TRACE uses detached normalized-entropy confidence,
 \begin{equation}
-e_n^b=\sum_{c=1}^{C}\operatorname{softplus}
-(\ell_{n,c}^b),\qquad
-\kappa_n^b=\frac{e_n^b}{e_n^b+C}.
+\kappa_n^b=\max\!\left(
+1-\frac{H(\operatorname{sg}[\mathbf p_n^b])}{\log C},
+\epsilon\right).
 \label{eq:evidence_confidence}
 \end{equation}
-It is used only as a relative weighting signal and is not interpreted as calibrated correctness. Combining activity \(A_n^b\), quality, confidence, and a learned branch prior \(\beta_b\) gives the normalized weight directly:
+Unlike a confidence score based on unnormalized logit magnitude, Eq.~\eqref{eq:evidence_confidence} is invariant to adding the same constant to every class logit. It is a relative weighting signal, not a calibrated probability of correctness. The core trust rule is therefore: trust a prediction when its input is reliable and its class distribution is concentrated. Combining activity \(A_n^b\), quality, confidence, and a learned low-capacity prior \(\beta_b\) gives
 \begin{equation}
 w_n^b=
 \frac{A_n^b(q_n^b+\epsilon)(\kappa_n^b+\epsilon)\exp(\beta_b)}
 {\sum_{r\in\mathcal{B}}A_n^r(q_n^r+\epsilon)(\kappa_n^r+\epsilon)\exp(\beta_r)}.
 \label{eq:branch_weight}
 \end{equation}
-The final class probability is
+The neural class probability is
 \begin{equation}
 \mathbf{p}_n
 =\sum_{b\in\mathcal{B}}w_n^b
@@ -262,7 +270,7 @@ The final class probability is
 \boldsymbol{\ell}_n=\log(\mathbf{p}_n).
 \label{eq:final_prediction}
 \end{equation}
-The stored branch probabilities and weights therefore reconstruct the model output exactly. This is a faithful decomposition of the fusion rule, not a causal explanation of disease mechanisms.
+The stored branch probabilities and weights therefore reconstruct the neural output exactly. This is a faithful decomposition of the decision rule, not a causal explanation of disease mechanisms.
 
 For exploratory visualization, branch mass can be allocated to modalities by assigning each unimodal weight to its source, splitting each pairwise weight equally, and distributing the joint weight uniformly:
 \begin{equation}
@@ -271,12 +279,12 @@ d_n^m=w_n^m+
 +\frac{w_n^0}{M}.
 \label{eq:modality_weight}
 \end{equation}
-We call \(d_n^m\) \emph{modality-level decision allocation}. Unlike Eq.~\eqref{eq:final_prediction}, this branch-to-modality split is a visualization heuristic and is not a mathematically unique attribution. Token attention may be shown within a modality for inspection, but it is likewise not presented as causal importance.
+We call \(d_n^m\) \emph{modality-level decision allocation}. Unlike Eq.~\eqref{eq:final_prediction}, this branch-to-modality split is a visualization convention, not a unique attribution. Token attention is likewise an auxiliary inspection signal rather than proof of feature importance.
 
 \subsection{Training Objective}
 \label{sec:objective}
 
-TRACE is trained on an original view and an artificially reduced view that independently drops observed modalities while retaining at least one source. To expose the hierarchy of the objective, we group its terms into task supervision, completion, MoE balancing, and missingness robustness:
+TRACE is trained on an original view and an artificially reduced view that drops observed modalities while retaining at least one source. Rather than presenting every auxiliary loss as a separate module, we group the objective by role:
 \begin{equation}
 \begin{aligned}
 \mathcal{L}_{\mathrm{task}}
@@ -321,83 +329,74 @@ The more-versus-fewer (MoFe) consistency term penalizes the original view only w
 \end{equation}
 Equation~\eqref{eq:total_objective} retains MoE specialization while keeping the primary learning target explicit: reliable diagnosis under naturally incomplete and artificially reduced modality sets.
 
+\subsection{Frozen Hierarchical Consensus}
+\label{sec:consensus}
+
+The decision above is the output of one conditional-generative neural member. To reduce sensitivity to a single seed or fitted family, the reported predictor uses a fixed Conditional-Generative Heterogeneous Consensus (CGHC-v1). Coordinate-wise probability medians are computed across three seeds within each family and then across the family summaries; the result is normalized once onto the probability simplex. This hierarchy prevents a family with more checkpoints from receiving more influence merely because it contains more members.
+
+For ABCD, the three families are conditional-generative Rank-MoE, CatBoost, and TabM-32; the neural family retains TRACE completion, provenance, sparse routing, and decision decomposition. For ADNI, four conditional-generative neural configurations are combined, each with three seeds. The final consensus is deliberately a fixed median aggregation rather than another learned MoE gate. Hence sparse MoE remains part of the conditional-generative path, but the last cross-model operation is not itself an MoE. Within-member branch weights and cross-model aggregation have different meanings and are analyzed separately.
+
 \section{Experiments}
 
 \subsection{Datasets}
 \label{sec:datasets}
 
-We evaluate TRACE on two naturally incomplete multimodal cohorts. Subjects are retained when at least one selected modality is available; complete-case filtering is not applied.
+We evaluate TRACE on two three-class multimodal cohorts. Subjects are retained when at least one selected modality is available; complete-case filtering is not applied.
 
-\noindent\textbf{ABCD-ADHD.}
-The Adolescent Brain Cognitive Development (ABCD) Study is a large-scale longitudinal study of adolescent brain, cognitive, behavioral, and health development~\cite{garavan2018abcd}. We use baseline parent K-SADS full ADHD present-or-past as a binary research endpoint and assessed available-field-negative participants as controls. This endpoint supports algorithmic evaluation and is not presented as a clinical diagnosis. The family-disjoint cohort contains \(11{,}671\) participants, divided into \(8{,}325\) training, \(1{,}679\) validation, and \(1{,}667\) test participants. The corresponding positive counts are \(1{,}145\), \(228\), and \(245\). Eight baseline modalities are included: structural MRI, resting-state fMRI, diffusion MRI, genetic ancestry/population structure, neurocognition, physical health, non-target mental health, and environment.
+\noindent\textbf{ABCD diagnostic burden.}
+The Adolescent Brain Cognitive Development (ABCD) Study is a longitudinal study of adolescent brain, cognitive, behavioral, and health development~\cite{garavan2018abcd}. We predict three levels of lifetime K-SADS diagnostic-domain burden: no diagnosis, exactly one diagnosis domain, and two or more domains. This is an ordinal research phenotype, not a prospective clinical diagnosis. The family-disjoint cohort contains \(11{,}867\) participants, divided into \(8{,}430\) training, \(1{,}692\) validation, and \(1{,}745\) test participants. The four modality groups are imaging (structural MRI, resting-state fMRI, and diffusion MRI), genetic population structure, cognition and physical health, and non-target behavior and environment. All direct K-SADS target tables are excluded from the predictors.
 
 \noindent\textbf{ADNI.}
-The Alzheimer's Disease Neuroimaging Initiative (ADNI) is a multicenter longitudinal study supporting biomarker-based research on cognitive decline and Alzheimer's disease~\cite{ref_adni}. We use the three-level diagnosis code supplied in the prepared cohort as the classification target. Four modalities are included: structural MRI-derived Image features, Genomic features, Clinical assessments, and Biospecimen measurements (IGCB). The cohort contains \(2{,}116\) participants, with \(1{,}480\), \(318\), and \(318\) assigned to the training, validation, and test splits, respectively. The exact semantic mapping of the three diagnosis codes must be confirmed against the frozen ADNI data dictionary before submission.
+The Alzheimer's Disease Neuroimaging Initiative (ADNI) is a multicenter longitudinal study supporting biomarker-based research on cognitive decline and Alzheimer's disease~\cite{ref_adni}. We classify cognitively normal, mild cognitive impairment, and dementia. Four modalities are included: structural MRI-derived image features, genomic features, clinical assessments, and biospecimen measurements (IGCB). The cohort contains \(2{,}116\) participants, with \(1{,}480\), \(318\), and \(318\) assigned to the training, validation, and test splits, respectively.
+
+\subsection{Missingness Conditions}
+\label{sec:missingness_protocol}
+
+The main comparison preserves naturally incomplete inputs in both datasets. Whole-modality absence is recorded before model input construction, and a missing modality is never converted into an observed one by tabular imputation. To provide a controlled ABCD condition, we additionally freeze a participant-level mask that yields approximately \(25\%\) incomplete subjects in every split, including natural absence. Naturally complete participants are selected by label-independent hash ordering until the target rate is reached. Missing patterns are allocated across the 14 non-empty proper subsets of the four modalities, covering removal of one, two, or three modalities; all-four-missing cases are forbidden. The resulting counts are shown in Table~\ref{tab:missingness_counts}. Every method or ablation arm within this condition uses exactly the same mask.
+
+\begin{table}[t]
+\centering
+\caption{Frozen ABCD controlled-missingness cohort.}
+\label{tab:missingness_counts}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Split & Total & Complete & Incomplete & Incomplete (\%) \\
+\midrule
+Training & 8430 & 6322 & 2108 & 25.01 \\
+Validation & 1692 & 1269 & 423 & 25.00 \\
+Testing & 1745 & 1309 & 436 & 24.99 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Preprocessing and Leakage Control}
 \label{sec:preprocessing}
 
 All feature selection, imputation, scaling, model selection, and threshold selection use training or validation data only. Test data are accessed after configurations are frozen. Whole-modality absence is recorded by a binary mask and remains distinct from missing entries inside an otherwise available modality.
 
-For ABCD, each modality table is aligned to the immutable participant split. Numeric features exceeding the prespecified training-set missingness threshold or falling below the variance threshold are removed. Remaining entries are imputed with training-set medians and standardized using training-set statistics. Target-defining K-SADS ADHD fields, target-revealing source tables, direct ADHD proxies, and aggregate features that could reconstruct those proxies are excluded. Genetic-family members are assigned to only one split, although sites may occur across partitions; the experiment is therefore family-disjoint but not site-held-out.
+For ABCD, each modality table is aligned to the immutable participant split. Numeric features exceeding the prespecified training-set missingness threshold or falling below the variance threshold are removed. Remaining within-modality entries are imputed with training-set medians and standardized using training-set statistics. Target-defining K-SADS tables are excluded, while non-K-SADS behavioral instruments remain predictors. Genetic-family members are assigned to only one split, although sites may occur across partitions; the experiment is family-disjoint but not site-held-out. In the controlled condition, modality masking occurs before preprocessing statistics are fitted.
 
 For ADNI imaging, the latest FreeSurfer record per participant is retained according to its update timestamp. Structural features beginning with \texttt{ST} and ending in regional volume, thickness, or surface-related suffixes are selected, mean-imputed from training participants, and standardized with training statistics. Genotypes are filled using the training-set modal genotype and min--max transformed to \([-1,1]\) using training-only extrema. Clinical fields associated with diagnosis timing are excluded, and missing Clinical and Biospecimen values are filled with training-set column means. An unavailable modality remains absent after within-modality preprocessing and is reconstructed only inside TRACE.
 
-\subsection{Baselines, Training, and Evaluation Protocol}
+\subsection{Baselines and Implementation}
 \label{sec:protocol}
 
 We compare TRACE with six incomplete-multimodal baselines. Flex-MoE uses an official-code-derived adaptation of its missing-modality bank and sparse routing~\cite{ref_flexmoe}. I$^2$MoE uses an official-code adapter for unique, redundant, and synergistic interaction experts~\cite{xin2025i2moe}. MoE++-corrected is implemented through the I$^2$MoE adapter with learned, zero, copy, and constant experts~\cite{jin2025moepp}. AnyMod is reimplemented from its modality-query and task-anchor formulation~\cite{feng2024anymod}. AGDiC-inspired and ACADiff-inspired are task-matched adaptations rather than direct reproductions of the original neuroimaging generation systems~\cite{li2025agdic,zhou2026acadiff}. These qualifiers are retained in the tables because differences in input representation and released code prevent the inspired methods from being interpreted as exact reproductions.
 
-All methods are run for \(50\) epochs with seeds \(0\), \(1\), and \(2\); tables report the test mean and population standard deviation. TRACE uses \(P=16\) tokens per modality, hidden dimension \(D=128\), one fusion layer, four attention heads, \(16\) sparse experts, and top-\(4\) routing. Each target-modality generator contains two cross-attention layers with four heads. Optimization uses AdamW with learning rate \(10^{-4}\), a five-epoch warm-up, gradient clipping at \(5\), modality-dropout probability \(0.25\), and loss weights \(\lambda_g=0.01\), \(\lambda_r=1.0\), \(\lambda_b=0.1\), \(\lambda_d=0.1\), \(\lambda_s=0.15\), and \(\lambda_m=0.1\). ABCD uses batch size \(64\), dropout \(0.3\), zero weight decay, sampler power \(0.35\), and class-weight power \(0.15\). ADNI uses batch size \(32\), dropout \(0.3\), and weight decay \(0.01\). Experiments are executed on a single NVIDIA RTX 5070 Ti GPU.
+Each neural member uses \(P=16\) tokens per modality, hidden dimension \(D=128\), one fusion layer, four attention heads, \(16\) experts, and top-\(4\) routing. Each target generator contains two cross-attention layers. Optimization uses AdamW with learning rate \(10^{-4}\), five warm-up epochs, gradient clipping at \(5\), modality-dropout probability \(0.25\), and normalized token-reconstruction weight \(0.05\). The principal auxiliary weights are \(\lambda_g=0.01\), \(\lambda_r=1.0\), \(\lambda_b=0.1\), \(\lambda_d=0.1\), \(\lambda_s=0.15\), and \(\lambda_m=0.1\). ABCD uses batch size \(64\); ADNI uses batch size \(32\). Dropout is \(0.3\). Models use seeds \(0\), \(1\), and \(2\), and all selection and fixed class-decision offsets are determined from validation data only. Experiments are executed on a single NVIDIA RTX 5070 Ti GPU.
 
-For ABCD-ADHD, imbalance-handling profiles are selected by three-seed validation AUPRC and frozen before formal test evaluation. Checkpoints maximize validation positive-class AUPRC, and the binary threshold maximizes validation macro-F1. Because the \(14.70\%\) test prevalence makes accuracy insufficient, ADHD-AUPRC is the primary metric; balanced accuracy, macro-F1, weighted-F1, ADHD-F1, sensitivity, specificity, AUROC, and Matthews correlation coefficient (MCC) are also reported. Confirmatory comparisons use \(10{,}000\) whole-family paired randomizations, \(10{,}000\) family/seed bootstrap replicates, and Holm correction across the six TRACE-to-baseline comparisons. For ADNI, checkpoints maximize validation macro-F1, and evaluation uses accuracy, balanced accuracy, macro-F1, weighted-F1, macro-AUROC, and macro-AUPRC.
+\subsection{Evaluation and Statistical Analysis}
+\label{sec:evaluation}
 
-\subsection{ABCD-ADHD Results}
-\label{sec:abcd_results}
+Both datasets use the same six metrics: accuracy, balanced accuracy, macro-F1, weighted-F1, macro-AUROC, and macro-AUPRC. The latter two are macro averages of one-versus-rest class scores. Each baseline is an equal three-seed probability ensemble. TRACE--CGHC uses the frozen hierarchy in Section~\ref{sec:consensus}. Paired inference is performed separately for accuracy and macro-F1 using \(50{,}000\) randomization draws and \(20{,}000\) one-sided 95\% cluster-bootstrap draws. The cluster is the participant for ADNI and the genetic family for ABCD. Holm correction is applied across the six TRACE-to-baseline comparisons within each dataset and endpoint. Because the candidate and comparison boundary was retrospectively consolidated after model development, these tests are fixed-candidate paired evidence rather than a pristine prospective confirmatory experiment.
 
-\begin{table*}[t]
-\centering
-\caption{Test performance on the family-disjoint ABCD-ADHD endpoint. Learned methods are reported as mean \(\pm\) population standard deviation over three seeds. All metrics except MCC are percentages. Bold denotes the best learned method for each metric.}
-\label{tab:abcd_results}
-\setlength{\tabcolsep}{2.2pt}
-\renewcommand{\arraystretch}{1.08}
-\small
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccccccccc}
-\toprule
-\textbf{Method} & \textbf{Acc} & \textbf{BalAcc} & \textbf{Macro-F1} & \textbf{W-F1} & \textbf{ADHD-F1} & \textbf{Sens.} & \textbf{Spec.} & \textbf{AUROC} & \textbf{AUPRC} & \textbf{MCC} \\
-\midrule
-Always negative
-& 85.30 & 50.00 & 46.03 & 78.54 & 0.00 & 0.00 & 100.00 & 50.00 & 14.70 & 0.000 \\
-Flex-MoE
-& \(86.40\pm0.53\) & \(68.21\pm0.89\) & \(70.00\pm0.17\) & \(85.66\pm0.21\) & \(47.81\pm0.72\) & \(42.45\pm2.91\) & \(93.98\pm1.12\) & \(83.35\pm0.26\) & \(50.32\pm1.09\) & \(0.407\pm0.001\) \\
-I$^2$MoE
-& \(86.32\pm0.27\) & \(66.87\pm1.70\) & \(68.92\pm1.20\) & \(85.34\pm0.30\) & \(45.66\pm2.52\) & \(39.32\pm4.34\) & \(94.42\pm0.97\) & \(83.58\pm0.03\) & \(50.73\pm0.32\) & \(0.389\pm0.017\) \\
-MoE++-corrected
-& \(86.60\pm0.46\) & \(\mathbf{69.23\pm1.44}\) & \(\mathbf{70.83\pm0.69}\) & \(\mathbf{85.97\pm0.20}\) & \(\mathbf{49.39\pm1.60}\) & \(44.63\pm4.02\) & \(93.83\pm1.18\) & \(\mathbf{84.26\pm0.08}\) & \(\mathbf{52.36\pm0.80}\) & \(\mathbf{0.423\pm0.010}\) \\
-AnyMod
-& \(85.46\pm0.42\) & \(68.73\pm1.60\) & \(69.57\pm1.04\) & \(85.09\pm0.38\) & \(47.58\pm2.09\) & \(\mathbf{45.03\pm3.95}\) & \(92.43\pm0.92\) & \(81.95\pm0.80\) & \(46.35\pm0.82\) & \(0.394\pm0.020\) \\
-AGDiC-inspired
-& \(86.02\pm0.37\) & \(68.61\pm0.63\) & \(69.97\pm0.13\) & \(85.47\pm0.15\) & \(48.01\pm0.51\) & \(43.95\pm2.04\) & \(93.27\pm0.78\) & \(82.06\pm0.54\) & \(49.70\pm0.86\) & \(0.403\pm0.001\) \\
-ACADiff-inspired
-& \(86.18\pm0.25\) & \(68.14\pm1.04\) & \(69.76\pm0.53\) & \(85.49\pm0.03\) & \(47.48\pm1.26\) & \(42.59\pm2.87\) & \(93.69\pm0.78\) & \(81.99\pm0.29\) & \(48.25\pm1.44\) & \(0.401\pm0.007\) \\
-\textbf{TRACE (Ours)}
-& \(\mathbf{86.90\pm0.20}\) & \(67.66\pm1.74\) & \(69.97\pm1.27\) & \(85.89\pm0.32\) & \(47.42\pm2.63\) & \(40.41\pm4.33\) & \(\mathbf{94.91\pm0.88}\) & \(84.06\pm0.28\) & \(51.21\pm0.63\) & \(0.412\pm0.017\) \\
-\bottomrule
-\end{tabular}%
-}
-\end{table*}
-
-Table~\ref{tab:abcd_results} shows that TRACE learns substantial positive-class signal: its ADHD-AUPRC of \(51.21\%\) is well above the \(14.70\%\) no-skill prevalence. Its strongest results are accuracy (\(86.90\%\)) and specificity (\(94.91\%\)), both highest among the learned methods. This advantage is accompanied by \(40.41\%\) sensitivity, below AnyMod and MoE++-corrected, so the operating point is comparatively conservative rather than uniformly better.
-
-MoE++-corrected obtains the strongest balanced accuracy, F1 measures, AUROC, AUPRC, and MCC. TRACE is second in AUROC and AUPRC, trailing MoE++-corrected by \(0.20\) and \(1.15\) percentage points, respectively. In the frozen confirmatory analysis, no TRACE-versus-baseline AUPRC comparison remains significant after Holm correction. For TRACE versus MoE++-corrected, the AUPRC difference is \(-1.15\) points with a \(95\%\) family/seed bootstrap confidence interval of \([-4.09,1.81]\). The ABCD experiment therefore supports competitiveness under eight-modality natural missingness, but not a claim of significant superiority on the primary endpoint.
-
-\subsection{ADNI Results}
-\label{sec:adni_results}
+\subsection{Main Results}
+\label{sec:main_results}
 
 \begin{table*}[t]
 \centering
-\caption{Three-class test performance on ADNI. Values are percentages and are reported as mean \(\pm\) population standard deviation over three seeds. Bold denotes the highest mean.}
+\caption{Three-class ADNI performance under the common-six protocol. Values are percentages. Bold denotes the highest point estimate.}
 \label{tab:adni_results}
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.08}
@@ -408,49 +407,129 @@ MoE++-corrected obtains the strongest balanced accuracy, F1 measures, AUROC, AUP
 \textbf{Method} & \textbf{Accuracy} & \textbf{BalAcc} & \textbf{Macro-F1} & \textbf{Weighted-F1} & \textbf{Macro-AUROC} & \textbf{Macro-AUPRC} \\
 \midrule
 Flex-MoE
-& \(62.16\pm1.04\) & \(60.30\pm1.79\) & \(59.97\pm1.40\) & \(61.03\pm0.99\) & \(76.98\pm0.78\) & \(61.42\pm1.13\) \\
+& 62.89 & 61.21 & 60.50 & 61.30 & 79.63 & 66.07 \\
 I$^2$MoE
-& \(64.05\pm1.86\) & \(62.77\pm2.80\) & \(61.83\pm1.54\) & \(61.91\pm1.36\) & \(79.35\pm1.33\) & \(66.67\pm1.65\) \\
+& 66.98 & 65.99 & 64.17 & 63.81 & 81.94 & 69.96 \\
 MoE++-corrected
-& \(59.75\pm0.44\) & \(59.55\pm1.41\) & \(58.85\pm1.68\) & \(59.07\pm1.49\) & \(79.23\pm1.14\) & \(65.63\pm1.83\) \\
+& 63.52 & 63.42 & 62.85 & 63.27 & 80.96 & 67.57 \\
 AnyMod
-& \(64.78\pm3.78\) & \(63.95\pm3.12\) & \(63.55\pm3.50\) & \(64.24\pm3.59\) & \(79.77\pm1.73\) & \(66.20\pm2.21\) \\
+& 64.15 & 63.09 & 62.43 & 63.33 & 81.97 & 70.83 \\
 AGDiC-inspired
-& \(58.60\pm2.75\) & \(55.49\pm1.65\) & \(56.54\pm1.94\) & \(58.13\pm2.44\) & \(75.10\pm1.11\) & \(59.58\pm2.45\) \\
+& 58.81 & 55.64 & 56.74 & 58.23 & 76.56 & 62.20 \\
 ACADiff-inspired
-& \(55.87\pm0.39\) & \(53.69\pm0.88\) & \(52.14\pm0.98\) & \(53.07\pm0.96\) & \(71.10\pm1.01\) & \(55.75\pm0.51\) \\
-\textbf{TRACE (Ours)}
-& \(\mathbf{64.88\pm1.19}\) & \(\mathbf{64.23\pm0.41}\) & \(\mathbf{63.75\pm1.02}\) & \(\mathbf{64.26\pm1.27}\) & \(\mathbf{80.29\pm0.71}\) & \(\mathbf{67.37\pm1.22}\) \\
+& 56.60 & 54.20 & 52.04 & 53.25 & 71.74 & 56.78 \\
+\textbf{TRACE--CGHC (Ours)}
+& \textbf{67.30} & \textbf{67.90} & \textbf{66.82} & \textbf{66.71} & \textbf{83.06} & \textbf{72.39} \\
 \bottomrule
 \end{tabular}%
 }
 \end{table*}
 
-On ADNI, TRACE obtains the highest mean for all six reported metrics (Table~\ref{tab:adni_results}). The accuracy margin over AnyMod is \(0.10\) points, whereas the gains are larger for balanced accuracy (\(0.28\) points), macro-F1 (\(0.20\) points), macro-AUROC (\(0.52\) points), and macro-AUPRC (\(0.70\) points over I$^2$MoE). The limited accuracy margin should not be overstated; the more consistent observation is that TRACE remains at or above the strongest baseline across thresholded and ranking-based metrics.
+\begin{table*}[t]
+\centering
+\caption{Three-class family-disjoint ABCD diagnostic-burden performance under the common-six protocol. Values are percentages. Bold denotes the highest point estimate.}
+\label{tab:abcd_results}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Method} & \textbf{Accuracy} & \textbf{BalAcc} & \textbf{Macro-F1} & \textbf{Weighted-F1} & \textbf{Macro-AUROC} & \textbf{Macro-AUPRC} \\
+\midrule
+Flex-MoE
+& 57.77 & 54.26 & 54.53 & 58.78 & 74.69 & 57.69 \\
+I$^2$MoE
+& 57.54 & 54.88 & 55.36 & 59.13 & 74.26 & 56.89 \\
+MoE++-corrected
+& 59.83 & 54.56 & 54.13 & 59.15 & 74.32 & 57.52 \\
+AnyMod
+& 59.60 & 54.19 & 54.78 & 59.51 & 73.43 & 56.64 \\
+AGDiC-inspired
+& 56.79 & 53.55 & 53.73 & 57.76 & 71.81 & 54.94 \\
+ACADiff-inspired
+& 57.25 & 54.19 & 54.67 & 58.61 & 73.17 & 56.53 \\
+\textbf{TRACE--CGHC (Ours)}
+& \textbf{62.01} & \textbf{55.50} & \textbf{56.16} & \textbf{61.20} & \textbf{75.68} & \textbf{58.99} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
 
-TRACE also shows lower seed dispersion than AnyMod across all six ADNI metrics. This suggests that its mean advantage is not driven by a single favorable run, although three seeds are insufficient to characterize the full optimization distribution. Unlike the ABCD endpoint, no multiplicity-corrected pairwise significance analysis is currently available for ADNI, so the table supports a best-mean claim rather than a statistical-superiority claim.
+TRACE--CGHC has the highest point estimate for every metric on both datasets. On ADNI (Table~\ref{tab:adni_results}), the margins over the strongest baseline for the corresponding metric are \(0.32\) points in accuracy, \(1.91\) in balanced accuracy, \(2.65\) in macro-F1, \(2.90\) in weighted-F1, \(1.09\) in macro-AUROC, and \(1.56\) in macro-AUPRC. On ABCD (Table~\ref{tab:abcd_results}), the corresponding margins are \(2.18\), \(0.62\), \(0.80\), \(1.69\), \(0.99\), and \(1.30\) points. The gains are therefore consistent in direction across thresholded and ranking metrics, while their magnitudes differ by endpoint.
 
-\subsection{Component and Decision Analyses}
-\label{sec:pending_analyses}
+Multiplicity-corrected paired evidence is more selective than the point-estimate ranking. For ABCD accuracy, TRACE--CGHC is significantly better than each of the six baselines after Holm correction; adjusted \(p\)-values range from \(1.2\times10^{-4}\) to \(9.0\times10^{-3}\), and every one-sided 95\% cluster-bootstrap lower bound is positive. Against Flex-MoE specifically, the accuracy gain is \(4.24\) points (Holm \(p=1.8\times10^{-4}\), lower bound \(2.67\) points). ABCD macro-F1 is \(1.63\) points higher than Flex-MoE, but this difference is not significant after correction (Holm \(p=0.253\)). On ADNI, the macro-F1 gain over Flex-MoE is \(6.32\) points (Holm \(p=0.031\), lower bound \(2.12\) points), whereas the \(4.40\)-point accuracy gain is not Holm-significant (\(p=0.209\)). We therefore distinguish the all-metric point-estimate result from endpoint-specific paired support.
 
-The main tables evaluate the complete framework, but they do not isolate which components produce the observed behavior. The frozen revision will therefore include controlled ablations of (i) subject-conditioned reconstruction versus no completion and pattern-conditioned static fill; (ii) sparse experts versus a parameter-matched dense feed-forward layer; (iii) reliability--evidence fusion versus uniform branch averaging; (iv) removal of the reliability or evidence factor individually; and (v) removal of reduced-view training. Each variant must reuse the same splits, validation protocol, seeds, and task-specific metrics as the main comparison. Numerical values are intentionally omitted until these reruns are complete.
+\subsection{Controlled-Missingness Component Analysis}
+\label{sec:ablation_results}
 
-The final analysis will also stratify performance by the number and identity of naturally available modalities. This is necessary because a global mean can hide failure on rare missingness patterns. For the decision decomposition, we will report observed-versus-generated reliability, joint/unimodal/pairwise branch mass, and modality-level decision allocation \(d_n^m\) by class and missingness pattern. Faithfulness of the probability decomposition itself does not require a surrogate test: Eq.~\eqref{eq:final_prediction} reconstructs the model output exactly. Clinical or biological validity, however, requires separate expert review and stability analysis and will not be inferred from visually plausible weights alone.
+Table~\ref{tab:abcd_ablation} reports the completed three-seed ablation under the fixed-$25\%$ ABCD mask. These values are validation-only development evidence on the 1,692 validation participants and must not be confused with the main results in Tables~\ref{tab:adni_results}--\ref{tab:abcd_results}. The non-neural consensus families and mask are fixed while the declared neural component is changed one factor at a time.
+
+\begin{table*}[t]
+\centering
+\caption{ABCD component ablation under the fixed approximately 25\% random-missing validation condition. Values are percentages from a frozen three-seed consensus. Bold denotes the best value in each column.}
+\label{tab:abcd_ablation}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Configuration} & \textbf{Accuracy} & \textbf{BalAcc} & \textbf{Macro-F1} & \textbf{Weighted-F1} & \textbf{Macro-AUROC} & \textbf{Macro-AUPRC} \\
+\midrule
+Full TRACE--CGHC & \textbf{61.47} & \textbf{55.97} & \textbf{55.81} & \textbf{60.85} & 75.46 & 59.46 \\
+Without latent completion & 60.64 & 54.89 & 54.49 & 59.78 & 75.45 & 59.43 \\
+Dense backbone & 60.76 & 54.63 & 54.02 & 59.59 & \textbf{75.68} & \textbf{59.78} \\
+Without provenance marking & 61.11 & 55.25 & 54.97 & 60.28 & 75.52 & 59.50 \\
+Uniform branch weights & 61.17 & 55.35 & 55.11 & 60.38 & 75.54 & 59.51 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+Removing latent completion lowers accuracy by \(0.83\) points and macro-F1 by \(1.32\) points. Replacing sparse MoE with a dense backbone yields the largest macro-F1 reduction (\(1.79\) points) and lowers balanced accuracy by \(1.34\) points, supporting the retention of MoE beyond a capacity-only narrative. Removing provenance marking lowers macro-F1 by \(0.84\) points, and uniform branch weights lower it by \(0.70\) points. The full model is best on all four hard-decision metrics. The dense control is \(0.22\) and \(0.32\) points higher in macro-AUROC and macro-AUPRC, respectively, so the ablation supports the components' contribution to balanced hard decisions rather than an unconditional improvement on every metric. No significance claim is made from this reused validation boundary.
+
+\subsection{Decision-Allocation Analysis}
+\label{sec:decision_analysis}
+
+Table~\ref{tab:decision_allocation} summarizes modality-level decision allocation from a validation-only replay of the frozen conditional-generative neural checkpoints. The rows are participant-level averages; the four entries sum to one. On ADNI, genomic allocation increases from \(21.93\%\) in cognitively normal participants to \(25.91\%\) in dementia, whereas image, clinical, and biospecimen allocations decrease. On ABCD, genetic and cognition/health allocation increase modestly with diagnostic burden. Cluster-bootstrap contrasts between the highest and lowest strata are Holm-significant for these reported changes except the ABCD imaging contrast. These associations describe how the fitted model distributes mixture mass; they are not etiologic or causal effects.
+
+\begin{table*}[t]
+\centering
+\caption{Mean modality-level decision allocation (\%) from the conditional-generative neural component.}
+\label{tab:decision_allocation}
+\small
+\begin{tabular}{llrrrr}
+\toprule
+Dataset & Stratum & Imaging & Genetic & Clinical/Cognition--health & Biospecimen/Behavior--environment \\
+\midrule
+ADNI & Cognitively normal & 23.22 & 21.93 & 28.51 & 26.35 \\
+ADNI & Mild cognitive impairment & 23.42 & 22.28 & 28.41 & 25.89 \\
+ADNI & Dementia & 22.05 & 25.91 & 27.26 & 24.78 \\
+\midrule
+ABCD & No diagnosis & 23.80 & 26.24 & 23.03 & 26.92 \\
+ABCD & One diagnosis domain & 23.76 & 26.64 & 23.16 & 26.44 \\
+ABCD & Two or more domains & 23.63 & 26.95 & 23.31 & 26.11 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The exact probability-level decomposition is verified by replaying every retained neural checkpoint: the maximum absolute difference between the stored neural probability and the sum in Eq.~\eqref{eq:final_prediction} is zero. This verifies computational faithfulness of the branch mixture. It does not validate the heuristic allocation from branches to modalities in Eq.~\eqref{eq:modality_weight}, which should be interpreted descriptively.
 
 \section{Discussion}
 \label{sec:discussion}
 
-The two cohorts expose different aspects of incomplete multimodal learning. ADNI contains four broad modality families and yields a consistent best-mean profile for TRACE across classification and ranking metrics. ABCD contains eight modalities and a substantially imbalanced binary endpoint. There, TRACE favors specificity and overall accuracy, while MoE++-corrected achieves better sensitivity-balanced and positive-class metrics. The cross-cohort result therefore supports the framework's ability to operate under heterogeneous modality sets, but also shows that reliability-aware fusion does not remove the need to select operating points and objectives that match the clinical or scientific cost of errors.
+The two cohorts expose complementary aspects of incomplete multimodal learning. ADNI combines imaging, genomic, clinical, and biospecimen evidence for cognitive-status classification; ABCD combines imaging, genetic, cognition/health, and behavior/environment evidence for diagnostic-burden classification. TRACE--CGHC is above every listed baseline on all six point estimates in both datasets. The cluster-aware analysis is intentionally more conservative: it supports ABCD accuracy against every baseline and ADNI macro-F1 against Flex-MoE, but it does not turn every positive point difference into a superiority claim.
 
 TRACE combines three established mechanisms---conditional reconstruction, sparse experts, and weighted prediction branches---in a single missingness-aware pipeline. The contribution is the way information status is preserved across them: reconstruction is subject-conditioned, generated tokens are explicitly tagged and assigned learned reliability, and the final probability remains decomposable into active branch predictions. This is an architectural and decision-level contribution rather than a new theory of multimodal information decomposition. In particular, a large branch weight means that the branch had high relative quality and evidence under the learned fusion rule; it does not prove that the corresponding modality caused the outcome or represents a clinically valid biomarker.
 
-Several limitations remain. First, the released generators are trained with leave-one-modality-out targets from complete subjects but may receive a smaller partial context at inference. This creates a context-distribution shift that should be tested against pattern-aware reconstruction training. Second, classification gradients are stopped through generated tokens. This limits label leakage into reconstruction but may also prevent task-specific adaptation of the generator; the tradeoff requires ablation. Third, the evidence-derived confidence in Eq.~\eqref{eq:evidence_confidence} is a relative weighting signal rather than a calibrated correctness probability. Calibration error, reliability diagrams, and sensitivity to common logit shifts should be evaluated before confidence terminology is interpreted clinically.
+The controlled-missingness ablation clarifies what the architecture contributes. Completion, provenance, sparse experts, and learned branch weighting each improve macro-F1 relative to its one-factor control. At the same time, the dense control slightly improves ranking metrics, and the full model's advantage is not uniform across all endpoints. This result argues for a focused interpretation: the components improve the quality of hard multiclass decisions under the evaluated mask, while ranking behavior remains task dependent. The final heterogeneous consensus further reduces fitted-family variance, but its performance cannot be attributed solely to the neural architecture; this is why the component study is reported as a separate boundary.
 
-The experimental design also has dataset-level limitations. ABCD is family-disjoint but not site-held-out, and its ADHD label is an algorithmic research endpoint rather than a prospective diagnosis. ADNI uses a prepared three-level code whose semantic mapping and release version must be frozen explicitly before submission. Natural missingness can itself encode acquisition or cohort processes, so performance does not establish robustness to interventions that change which modalities are measured. Finally, several baselines are adapters or inspired implementations rather than exact reproductions, external-cohort validation is absent, and the component, calibration, and missingness-stratified analyses remain to be completed.
+Several limitations remain. First, normalized entropy is shift-invariant but not calibrated correctness; calibration error and reliability diagrams are still needed before clinical interpretation. Second, the component study reuses the validation boundary, and the main paired comparison is retrospective fixed-candidate evidence rather than a newly preregistered confirmation. Third, ABCD is family-disjoint but not site-held-out, and external-cohort validation is absent. Natural missingness can encode acquisition and cohort processes, while the fixed-$25\%$ mask is label-independent but artificial; neither setting proves robustness to interventions that change which modalities are measured. Finally, AGDiC-inspired and ACADiff-inspired are task-matched adaptations rather than exact reproductions of their original imaging pipelines. These limitations motivate site-held-out evaluation, prospective freezing, calibration analysis, and replication on an independent cohort.
 
 \section{Conclusion}
 
-We presented TRACE, a framework for incomplete multimodal learning that combines subject-conditioned token reconstruction, sparse-expert interaction modeling, and an availability-aware confidence-weighted branch ensemble. TRACE distinguishes observed from generated information throughout the prediction path and expresses the final probability as a normalized mixture of joint, unimodal, and pairwise predictions. On ADNI, TRACE achieves the strongest mean across the reported metrics; on ABCD-ADHD, it is competitive but exhibits a specificity--sensitivity tradeoff and does not significantly improve the primary AUPRC endpoint. These results support further study of reliability-aware decision fusion while underscoring the need for frozen ablations, calibration, missingness-stratified evaluation, and external validation.
+We presented TRACE as a coherent information-status pipeline: reconstruct missing latent tokens from subject-specific context, preserve their provenance, estimate the trust of candidate predictions, and aggregate those predictions transparently. Sparse MoE is retained as the interaction backbone, while a frozen hierarchical consensus stabilizes the reported predictor without masquerading as another MoE gate. TRACE--CGHC reaches \(67.30\%\) accuracy on ADNI and \(62.01\%\) on ABCD and has the highest point estimate across all six common metrics on both datasets. The fixed-$25\%$ ABCD ablation further shows that removing completion, sparse experts, provenance, or learned branch weighting reduces macro-F1. The evidence supports the proposed design while preserving a clear distinction between faithful prediction decomposition, descriptive modality allocation, retrospective paired comparisons, and development-only ablations.
 
 \bibliographystyle{cas-model2-names}
 \bibliography{cas-refs,related-works-new-refs}
