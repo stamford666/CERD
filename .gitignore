@@ -55,6 +55,15 @@ data/*
 *.pvar
 *.psam
 *.log
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.xdv
+*.abs
 
 wandb/
 mlruns/

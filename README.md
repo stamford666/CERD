@@ -7,6 +7,14 @@ members retain a sparse mixture-of-experts (MoE) backbone. The frozen CGHC-v1
 predictor then combines independently trained member families by hierarchical
 median consensus; this final cross-model consensus is not itself an MoE.
 
+## Manuscript
+
+The current Information Fusion / Elsevier CAS double-column manuscript is
+available as [LaTeX source](cas-sc-sample.tex), a [compiled PDF](cas-sc-sample.pdf),
+and a [self-contained submission archive](Journal_Conditional_Evidence_Reconstruction_and_Decomposition.zip).
+See [LATEX_README.md](LATEX_README.md) for build instructions and the required
+project files.
+
 ## Method at a glance
 
 ```text
