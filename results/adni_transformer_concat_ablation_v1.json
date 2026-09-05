@@ -20,7 +20,7 @@
     "test_partition_reused": true,
     "selection_independent": false,
     "confirmatory_support": false,
-    "note": "The Transformer comparator was requested after review of an earlier dense-backbone control. Results are descriptive and are not prospective confirmatory evidence."
+    "note": "The Transformer comparator and additional stage-removal controls were requested after review of earlier ablation results. Results are descriptive and are not prospective confirmatory evidence."
   },
   "protocol": {
     "common_metrics": [
@@ -33,6 +33,8 @@
     ],
     "full_model_members": 12,
     "full_model_aggregation": "coordinate-wise median over three seeds within each of four fixed neural variants, coordinate-wise median over variants, simplex normalization, argmax",
+    "component_ablation_members": 12,
+    "component_ablation_aggregation": "the same four-variant, three-seed aggregation used by the full-model rerun",
     "transformer_members": 6,
     "transformer_aggregation": "coordinate-wise median over three seeds within each of mean and median image-imputation variants, coordinate-wise median over the two variants, simplex normalization, argmax",
     "transformer_architecture": {
@@ -47,7 +49,18 @@
       "conditional_completion": false,
       "provenance_marking": false,
       "reliability_aware_branch_fusion": false
-    }
+    },
+    "primary_component_comparisons": [
+      "no_completion",
+      "no_provenance",
+      "joint_branch_only"
+    ],
+    "architecture_comparison": "transformer_concat",
+    "diagnostic_negative_controls": [
+      "uniform_branch_weights",
+      "no_reduced_view_training"
+    ],
+    "interpretation_note": "The primary stage-removal comparisons isolate reconstruction, provenance marking, and multigranular decision fusion. The Transformer row is an architecture-level baseline rather than a single-factor ablation. Uniform branch weights and removal of reduced-view consistency training improved Macro-F1 on this reused test partition, so they do not support positive component-effect claims."
   },
   "configurations": [
     {
@@ -58,6 +71,8 @@
       "conditional_completion": true,
       "provenance_marking": true,
       "reliability_aware_fusion": true,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": true,
       "sparse_moe": true,
       "metrics": {
         "accuracy": 0.6729559748427673,
@@ -82,6 +97,8 @@
       "conditional_completion": true,
       "provenance_marking": true,
       "reliability_aware_fusion": true,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": true,
       "sparse_moe": true,
       "metrics": {
         "accuracy": 0.6729559748427673,
@@ -106,6 +123,8 @@
       "conditional_completion": false,
       "provenance_marking": true,
       "reliability_aware_fusion": true,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": true,
       "sparse_moe": true,
       "metrics": {
         "accuracy": 0.6635220125786163,
@@ -130,6 +149,8 @@
       "conditional_completion": true,
       "provenance_marking": false,
       "reliability_aware_fusion": true,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": true,
       "sparse_moe": true,
       "metrics": {
         "accuracy": 0.6792452830188679,
@@ -148,12 +169,14 @@
     },
     {
       "id": "uniform_branch_weights",
-      "role": "single_component_ablation",
+      "role": "diagnostic_negative_control",
       "label": "Uniform rather than reliability-aware fusion",
       "members": 12,
       "conditional_completion": true,
       "provenance_marking": true,
       "reliability_aware_fusion": false,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": true,
       "sparse_moe": true,
       "metrics": {
         "accuracy": 0.6823899371069182,
@@ -171,6 +194,60 @@
       "delta_macro_f1_points_vs_full_rerun": 0.7585011044571655
     },
     {
+      "id": "joint_branch_only",
+      "role": "single_stage_ablation",
+      "label": "Joint prediction branch only",
+      "members": 12,
+      "conditional_completion": true,
+      "provenance_marking": true,
+      "reliability_aware_fusion": false,
+      "multigranular_decision_fusion": false,
+      "reduced_view_consistency_training": true,
+      "sparse_moe": true,
+      "isolation_note": "Retains encoders, conditional completion, provenance marking, sparse MoE, specialist heads, and branch auxiliary training; prediction uses only the final joint branch.",
+      "metrics": {
+        "accuracy": 0.6477987421383647,
+        "balanced_accuracy": 0.6483426265384281,
+        "macro_f1": 0.6416420197412963,
+        "weighted_f1": 0.6434884044592389,
+        "macro_auroc": 0.8250233409811373,
+        "macro_auprc": 0.7086365434928786
+      },
+      "confusion_matrix": [
+        [105, 30, 4],
+        [38, 53, 21],
+        [3, 16, 48]
+      ],
+      "delta_macro_f1_points_vs_full_rerun": -3.1664005177631793
+    },
+    {
+      "id": "no_reduced_view_training",
+      "role": "diagnostic_negative_control",
+      "label": "Without reduced-view consistency training",
+      "members": 12,
+      "conditional_completion": true,
+      "provenance_marking": true,
+      "reliability_aware_fusion": true,
+      "multigranular_decision_fusion": true,
+      "reduced_view_consistency_training": false,
+      "sparse_moe": true,
+      "isolation_note": "Sets modality dropout, distillation, dropped-view cross-entropy, and more-versus-fewer-view ranking losses to zero while retaining the inference architecture.",
+      "metrics": {
+        "accuracy": 0.6855345911949685,
+        "balanced_accuracy": 0.6911610370552173,
+        "macro_f1": 0.6789729513352776,
+        "weighted_f1": 0.6783682973119655,
+        "macro_auroc": 0.83069307221731,
+        "macro_auprc": 0.7256053559057324
+      },
+      "confusion_matrix": [
+        [110, 25, 4],
+        [36, 55, 21],
+        [5, 9, 53]
+      ],
+      "delta_macro_f1_points_vs_full_rerun": 0.5666926416349471
+    },
+    {
       "id": "transformer_concat",
       "role": "architecture_baseline",
       "label": "Plain Transformer token concatenation",
@@ -178,6 +255,8 @@
       "conditional_completion": false,
       "provenance_marking": false,
       "reliability_aware_fusion": false,
+      "multigranular_decision_fusion": false,
+      "reduced_view_consistency_training": false,
       "sparse_moe": false,
       "metrics": {
         "accuracy": 0.660377358490566,
@@ -195,6 +274,6 @@
       "delta_macro_f1_points_vs_full_rerun": -1.8729510522998316
     }
   ],
-  "source_summary_sha256": "32bd0989f9b6fd48089e73e8b8594d7bb485b31489ab9cd2583ce24e0d730e50",
+  "source_summary_sha256": "8a4a9f2ab14693c188107edebbfb82dcb8777b6a71b8a52ce8d2ba0ba1cdfc5d",
   "privacy": "Aggregate metrics and confusion matrices only; no participant identifiers, labels, predictions, logits, split assignments, checkpoints, or local paths are included."
 }
