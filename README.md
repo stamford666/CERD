@@ -73,7 +73,8 @@ and the v5 audit in [`docs/ABCD_DATA_ZH.md`](docs/ABCD_DATA_ZH.md).
 
 The executable model is `AGMGFlexMoE` in [`MoE/models.py`](MoE/models.py),
 trained by [`MoE/baseline_runner.py`](MoE/baseline_runner.py). For each
-modality, a feature-to-token encoder creates 16 tokens of width 128. Conditional
+modality, a feature-to-token encoder creates a configurable number of tokens
+with width 128. Conditional
 generators complete missing token sets from the observed modalities while a
 provenance indicator distinguishes observed from generated tokens. Sparse MoE
 Transformer blocks use 16 experts with top-4 routing. Prediction combines one
