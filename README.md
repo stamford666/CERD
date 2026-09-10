@@ -17,6 +17,13 @@ independently trained seeds, not probability ensembles.
 
 ### ABCD presentation3 v4
 
+The current ABCD source-to-feature definitions are documented in Chinese in
+[`docs/ABCD_COURSE3_MODALITIES_ZH.md`](docs/ABCD_COURSE3_MODALITIES_ZH.md).
+The document gives the exact rs/task-fMRI contrasts, T1 and DTI quantities,
+training-only SNP QC/LD pruning, cognition/health instruments, and every
+family/community/address-linked environmental source used for the new
+clinical-course rerun.
+
 CERD and all six baselines use the same 2,868 participants, features,
 family-disjoint split, fixed 15% missingness manifest, and seeds 31/32/33.
 
