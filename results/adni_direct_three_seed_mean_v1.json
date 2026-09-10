@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "artifact_id": "adni-direct-three-seed-mean-v1",
+  "status": "complete",
+  "dataset": "ADNI",
+  "task": "three_class_classification",
+  "aggregation": {
+    "seeds": [0, 1, 2],
+    "rule": "arithmetic mean of independently evaluated seed-level metrics",
+    "dispersion": "sample standard deviation across the three seeds",
+    "probability_ensemble": false,
+    "metrics": ["accuracy", "macro_f1", "macro_auroc"]
+  },
+  "members": [
+    {
+      "seed": 0,
+      "best_epoch": 31,
+      "test": {
+        "accuracy": 0.6477987421,
+        "macro_f1": 0.6433027757,
+        "macro_auroc": 0.8035461409
+      }
+    },
+    {
+      "seed": 1,
+      "best_epoch": 33,
+      "test": {
+        "accuracy": 0.6729559748,
+        "macro_f1": 0.6554194493,
+        "macro_auroc": 0.8064591379
+      }
+    },
+    {
+      "seed": 2,
+      "best_epoch": 30,
+      "test": {
+        "accuracy": 0.6383647799,
+        "macro_f1": 0.6357732389,
+        "macro_auroc": 0.8142792958
+      }
+    }
+  ],
+  "mean": {
+    "accuracy": 0.6530398323,
+    "macro_f1": 0.6448318213,
+    "macro_auroc": 0.8080948582
+  },
+  "sample_sd": {
+    "accuracy": 0.0178812601,
+    "macro_f1": 0.0099119565,
+    "macro_auroc": 0.0055503909
+  },
+  "excluded_ensemble_accuracy": 0.6824,
+  "excluded_ensemble_reason": "Probability averaging is not the requested three-seed arithmetic-mean reporting rule."
+}

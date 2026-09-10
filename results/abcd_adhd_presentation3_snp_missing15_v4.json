@@ -1,0 +1,708 @@
+{
+  "schema_version": 1,
+  "artifact_id": "abcd-adhd-presentation3-snp-missing15-v4",
+  "dataset": "ABCD",
+  "task": "baseline_parent_ksads_adhd_clinical_presentation_three_class",
+  "endpoint": {
+    "session": "ses-00A",
+    "informant": "parent",
+    "class_mapping": {
+      "0": "no present/past/partial-remission/unspecified ADHD and at most 3 current symptoms in each domain",
+      "1": "full ADHD with predominantly inattentive presentation in the selected present-or-past episode",
+      "2": "full ADHD with a hyperactive/impulsive component in the selected present-or-past episode"
+    },
+    "presentation_threshold": 6,
+    "episode_rule": "use present symptoms for present full ADHD; otherwise use past symptoms for past-only full ADHD",
+    "selected_episode_symptoms_must_be_explicit_binary": true,
+    "cohort_size": 2868,
+    "class_counts": [
+      1270,
+      635,
+      963
+    ],
+    "strict_case_subtypes": {
+      "predominantly_inattentive": 635,
+      "hyperactive_impulsive_only": 177,
+      "combined": 786
+    }
+  },
+  "split": {
+    "strategy": "stratified group split by ABCD genetic-family identifier",
+    "seed": 2026,
+    "sizes": {
+      "training": 2041,
+      "validation": 414,
+      "testing": 413
+    },
+    "class_counts": {
+      "training": [
+        913,
+        442,
+        686
+      ],
+      "validation": [
+        170,
+        94,
+        150
+      ],
+      "testing": [
+        187,
+        99,
+        127
+      ]
+    },
+    "cross_split_family_overlap": {
+      "training_validation": 0,
+      "training_testing": 0,
+      "validation_testing": 0
+    }
+  },
+  "modalities": {
+    "order": [
+      "I",
+      "G",
+      "C",
+      "B"
+    ],
+    "I": {
+      "name": "imaging",
+      "raw_features": 785,
+      "effective_features": 785,
+      "coverage": 2843,
+      "components": {
+        "resting_state_gordon_network_network_correlation": 91,
+        "resting_state_gordon_network_subcortical_correlation": 247,
+        "resting_state_desikan_cortical_temporal_variance": 68,
+        "resting_state_subcortical_temporal_variance": 33,
+        "sst_correct_stop_vs_correct_go_beta": 68,
+        "nback_2back_vs_0back_beta": 68,
+        "mid_reward_anticipation_vs_neutral_beta": 68,
+        "t1_desikan_gray_matter_signal_intensity": 71,
+        "dti_desikan_aligned_white_matter_fa": 71
+      }
+    },
+    "G": {
+      "name": "genetic",
+      "raw_features": 1178,
+      "effective_features": 1178,
+      "coverage": 2808,
+      "representation": "additive SNP dosage",
+      "gene_window_build": "hg19 plus/minus 20 kb",
+      "candidate_genes": [
+        "DRD4",
+        "DRD5",
+        "DRD2",
+        "DRD3",
+        "DBH",
+        "SLC6A3",
+        "SLC6A2",
+        "ADRA2A",
+        "MAOA",
+        "HTR2A",
+        "HTR1B",
+        "SLC6A4",
+        "GABRB3",
+        "SORCS3"
+      ],
+      "input_variants": 2313,
+      "training_only_qc": {
+        "variant_missingness_max": 0.02,
+        "minor_allele_frequency_min": 0.01,
+        "ld_pruning": "--indep-pairwise 50 5 0.8"
+      },
+      "external_prs_features": 0,
+      "ancestry_pc_features": 0
+    },
+    "C": {
+      "name": "cognition_health",
+      "raw_features": 90,
+      "effective_features": 90,
+      "coverage": 2868,
+      "components": {
+        "nih_toolbox": 10,
+        "wisc_matrix_reasoning": 2,
+        "little_man_task": 25,
+        "ravlt": 24,
+        "sleep_disturbance_items": 26,
+        "physical_activity": 3
+      }
+    },
+    "B": {
+      "name": "behavior_environment",
+      "raw_features": 221,
+      "effective_features": 218,
+      "coverage": 2868,
+      "components": {
+        "non_adhd_cbcl": 122,
+        "bis_bas": 24,
+        "upps": 25,
+        "family_conflict": 10,
+        "parental_monitoring": 6,
+        "neighborhood_safety": 4,
+        "demographic_context": 15,
+        "residential_and_prenatal_environment": 15
+      },
+      "training_filtered_columns": [
+        "mh_p_cbcl__rule_005",
+        "mh_p_cbcl__rule_006",
+        "ab_p_demo__child__time_001__01"
+      ]
+    }
+  },
+  "preprocessing": {
+    "whole_modality_mask_applied_before_statistics": true,
+    "column_missingness_max": 0.8,
+    "minimum_variance": 1e-08,
+    "cell_imputation": "training-observed median per modality",
+    "scaling": "training-observed z-score per modality",
+    "validation_or_test_statistics_used": false
+  },
+  "missingness": {
+    "manifest_sha256": "c2a956bc60094786cefbe973d42de707c3592c33e2bfa43b435381c3ebfe94b2",
+    "seed": 2026,
+    "target_incomplete_ratio": 0.15,
+    "never_drop_all_four_modalities": true,
+    "observed_modality_count_distribution": {
+      "training": {
+        "1": 13,
+        "2": 59,
+        "3": 234,
+        "4": 1735
+      },
+      "validation": {
+        "1": 3,
+        "2": 10,
+        "3": 49,
+        "4": 352
+      },
+      "testing": {
+        "1": 2,
+        "2": 13,
+        "3": 47,
+        "4": 351
+      }
+    },
+    "complete_ratios": {
+      "training": 0.8500734933855953,
+      "validation": 0.8502415458937198,
+      "testing": 0.8498789346246973
+    }
+  },
+  "cerd_configuration": {
+    "hidden_dimension": 128,
+    "patches_per_modality": 8,
+    "patch_adapter_rank": 4,
+    "attention_heads": 4,
+    "fusion_layers": 1,
+    "experts": 16,
+    "routers": 1,
+    "top_k_experts": 4,
+    "generator_layers": 2,
+    "generator_heads": 4,
+    "generator_output_gate": true,
+    "provenance_embedding": true,
+    "decision_branches": 11,
+    "dropout": 0.35,
+    "trainable_parameters": 3069469
+  },
+  "training_protocol": {
+    "seeds": [
+      31,
+      32,
+      33
+    ],
+    "optimizer": "AdamW",
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "batch_size": 64,
+    "maximum_epochs": 50,
+    "early_stopping_patience": 10,
+    "checkpoint_selection": "validation Macro-F1",
+    "prediction_rule": "raw softmax argmax",
+    "class_weight_power": 1.0,
+    "checkpoint_ensemble": false,
+    "catboost_or_external_teacher": false,
+    "loss_weights": {
+      "reconstruction": 0.25,
+      "branch_auxiliary": 0.1,
+      "router_balance": 0.01,
+      "dropped_view_cross_entropy": 0.1,
+      "self_distillation": 0.15,
+      "more_fewer_rank": 0.1
+    },
+    "training_modality_dropout_probability": 0.25,
+    "formal_test_rule": "strict validation replay followed by one-time test evaluation",
+    "validation_replay_passed_checkpoints": 21,
+    "validation_replay_total_checkpoints": 21
+  },
+  "aggregation": {
+    "rule": "arithmetic mean of independently evaluated seed-level metrics",
+    "dispersion": "sample standard deviation across three seeds",
+    "probability_ensemble": false,
+    "metrics": [
+      "accuracy",
+      "macro_f1",
+      "macro_auroc"
+    ]
+  },
+  "results": {
+    "CERD": {
+      "seeds": {
+        "31": {
+          "best_epoch": 8,
+          "validation": {
+            "accuracy": 0.6111111111111112,
+            "macro_f1": 0.5710996495801249,
+            "macro_auroc": 0.7522440850505645
+          },
+          "test": {
+            "accuracy": 0.5738498789346247,
+            "macro_f1": 0.5205861390071916,
+            "macro_auroc": 0.7337116096337318
+          }
+        },
+        "32": {
+          "best_epoch": 10,
+          "validation": {
+            "accuracy": 0.5966183574879227,
+            "macro_f1": 0.5527898786095508,
+            "macro_auroc": 0.7514494974235056
+          },
+          "test": {
+            "accuracy": 0.5980629539951574,
+            "macro_f1": 0.5404524303162247,
+            "macro_auroc": 0.7449394084517468
+          }
+        },
+        "33": {
+          "best_epoch": 8,
+          "validation": {
+            "accuracy": 0.606280193236715,
+            "macro_f1": 0.5642015642015642,
+            "macro_auroc": 0.7548689186010235
+          },
+          "test": {
+            "accuracy": 0.6053268765133172,
+            "macro_f1": 0.5475271829106774,
+            "macro_auroc": 0.7543761738951916
+          }
+        }
+      },
+      "mean_sample_sd": {
+        "validation": {
+          "accuracy": [
+            0.604669887279,
+            0.007379348945
+          ],
+          "macro_f1": [
+            0.562697030797,
+            0.009247142468
+          ],
+          "macro_auroc": [
+            0.752854167025,
+            0.001789486046
+          ]
+        },
+        "test": {
+          "accuracy": [
+            0.592413236481,
+            0.016481499481
+          ],
+          "macro_f1": [
+            0.536188584078,
+            0.013967471146
+          ],
+          "macro_auroc": [
+            0.744342397327,
+            0.010345210039
+          ]
+        }
+      },
+      "test_per_class_mean": {
+        "0": {
+          "precision": 0.697946249448,
+          "recall": 0.770053475936,
+          "f1": 0.731829479948
+        },
+        "1": {
+          "precision": 0.330749058757,
+          "recall": 0.259259259259,
+          "f1": 0.290485671645
+        },
+        "2": {
+          "precision": 0.582847186858,
+          "recall": 0.590551181102,
+          "f1": 0.586250600642
+        }
+      }
+    },
+    "Flex-MoE": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.6207729468599034,
+            "macro_f1": 0.5371330387825234,
+            "macro_auroc": 0.7494359420295337
+          },
+          "test": {
+            "accuracy": 0.585956416464891,
+            "macro_f1": 0.5015863979184222,
+            "macro_auroc": 0.7387392665076403
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.5966183574879227,
+            "macro_f1": 0.539684342860605,
+            "macro_auroc": 0.7350908115423506
+          },
+          "test": {
+            "accuracy": 0.5811138014527845,
+            "macro_f1": 0.5104605179232045,
+            "macro_auroc": 0.7246027829956391
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.5942028985507246,
+            "macro_f1": 0.5236557120899193,
+            "macro_auroc": 0.7399994976203903
+          },
+          "test": {
+            "accuracy": 0.5641646489104116,
+            "macro_f1": 0.4899054474431359,
+            "macro_auroc": 0.7139188205888546
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.6038647343, 0.014692663117],
+        "macro_f1": [0.533491031244, 0.008612631147],
+        "macro_auroc": [0.741508750397, 0.007290684133]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.577078288943,
+          0.011442652848
+        ],
+        "macro_f1": [
+          0.500650787762,
+          0.01030942556
+        ],
+        "macro_auroc": [
+          0.725753623364,
+          0.012450179078
+        ]
+      }
+    },
+    "I2MoE": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.6111111111111112,
+            "macro_f1": 0.5619743158037367,
+            "macro_auroc": 0.7511152727813988
+          },
+          "test": {
+            "accuracy": 0.5617433414043583,
+            "macro_f1": 0.5044876824453941,
+            "macro_auroc": 0.7377462578650382
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.5869565217391305,
+            "macro_f1": 0.5437273324054593,
+            "macro_auroc": 0.7347875625505899
+          },
+          "test": {
+            "accuracy": 0.5375302663438256,
+            "macro_f1": 0.481002331002331,
+            "macro_auroc": 0.7219208542013661
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.6183574879227053,
+            "macro_f1": 0.5570413659358603,
+            "macro_auroc": 0.7540168363034933
+          },
+          "test": {
+            "accuracy": 0.559322033898305,
+            "macro_f1": 0.4882088370327655,
+            "macro_auroc": 0.7417669280189895
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.605475040258, 0.016441689096],
+        "macro_f1": [0.554247671382, 0.009438837202],
+        "macro_auroc": [0.746639890545, 0.010366437521]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.552865213882,
+          0.013335521906
+        ],
+        "macro_f1": [
+          0.49123295016,
+          0.012031183577
+        ],
+        "macro_auroc": [
+          0.733811346695,
+          0.010491868562
+        ]
+      }
+    },
+    "MoE++": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.6014492753623188,
+            "macro_f1": 0.5343092132342485,
+            "macro_auroc": 0.7479735320835236
+          },
+          "test": {
+            "accuracy": 0.5690072639225182,
+            "macro_f1": 0.48018563231617173,
+            "macro_auroc": 0.7357429243058471
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.5821256038647343,
+            "macro_f1": 0.5259343887857949,
+            "macro_auroc": 0.7289982610597519
+          },
+          "test": {
+            "accuracy": 0.5617433414043583,
+            "macro_f1": 0.481617071068921,
+            "macro_auroc": 0.7173035504208988
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.6159420289855072,
+            "macro_f1": 0.5309156153744498,
+            "macro_auroc": 0.7429297832626723
+          },
+          "test": {
+            "accuracy": 0.5811138014527845,
+            "macro_f1": 0.4943507624128263,
+            "macro_auroc": 0.7502636589943323
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.599838969404, 0.016965626011],
+        "macro_f1": [0.530386405798, 0.004212418334],
+        "macro_auroc": [0.739967192135, 0.009828424963]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.570621468927,
+          0.009785597783
+        ],
+        "macro_f1": [
+          0.485384488599,
+          0.007797935868
+        ],
+        "macro_auroc": [
+          0.73443671124,
+          0.016518832699
+        ]
+      }
+    },
+    "AnyMod": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.5748792270531401,
+            "macro_f1": 0.5381877124677522,
+            "macro_auroc": 0.6964396358570557
+          },
+          "test": {
+            "accuracy": 0.5060532687651331,
+            "macro_f1": 0.44007781806267543,
+            "macro_auroc": 0.6690885551895757
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.6014492753623188,
+            "macro_f1": 0.5315277777777777,
+            "macro_auroc": 0.7353370496126104
+          },
+          "test": {
+            "accuracy": 0.5932203389830508,
+            "macro_f1": 0.5242763772175537,
+            "macro_auroc": 0.7308543467924452
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.5483091787439613,
+            "macro_f1": 0.5137644737892373,
+            "macro_auroc": 0.6869917070729178
+          },
+          "test": {
+            "accuracy": 0.5351089588377724,
+            "macro_f1": 0.4893662402550631,
+            "macro_auroc": 0.6880029520584254
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.574879227053, 0.026570048309],
+        "macro_f1": [0.527826654678, 0.012625267563],
+        "macro_auroc": [0.706256130848, 0.025624026162]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.544794188862,
+          0.044383299709
+        ],
+        "macro_f1": [
+          0.484573478512,
+          0.042303395429
+        ],
+        "macro_auroc": [
+          0.695981951347,
+          0.031646509686
+        ]
+      }
+    },
+    "AGDiC": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.5748792270531401,
+            "macro_f1": 0.516358527535722,
+            "macro_auroc": 0.7207585526032189
+          },
+          "test": {
+            "accuracy": 0.5520581113801453,
+            "macro_f1": 0.47447118256529186,
+            "macro_auroc": 0.7153564138205399
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.5869565217391305,
+            "macro_f1": 0.53797916469683,
+            "macro_auroc": 0.7168377923468943
+          },
+          "test": {
+            "accuracy": 0.5544794188861986,
+            "macro_f1": 0.49277411748156014,
+            "macro_auroc": 0.7047890906519564
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.5362318840579711,
+            "macro_f1": 0.49227533464091283,
+            "macro_auroc": 0.6921039736420194
+          },
+          "test": {
+            "accuracy": 0.5375302663438256,
+            "macro_f1": 0.49001420397281276,
+            "macro_auroc": 0.7007862913332299
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.566022544283, 0.026496751485],
+        "macro_f1": [0.515537675624, 0.022862969379],
+        "macro_auroc": [0.709900106197, 0.015536081896]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.54802259887,
+          0.009166922269
+        ],
+        "macro_f1": [
+          0.485753168007,
+          0.009867455461
+        ],
+        "macro_auroc": [
+          0.706977265269,
+          0.00752749616
+        ]
+      }
+    },
+    "ACADiff": {
+      "seeds": {
+        "31": {
+          "validation": {
+            "accuracy": 0.5676328502415459,
+            "macro_f1": 0.49462348260791317,
+            "macro_auroc": 0.6830035768711483
+          },
+          "test": {
+            "accuracy": 0.5544794188861986,
+            "macro_f1": 0.478240855591389,
+            "macro_auroc": 0.6903589351950398
+          }
+        },
+        "32": {
+          "validation": {
+            "accuracy": 0.5966183574879227,
+            "macro_f1": 0.5243169047014037,
+            "macro_auroc": 0.6958462188057905
+          },
+          "test": {
+            "accuracy": 0.5447941888619855,
+            "macro_f1": 0.4658975047907252,
+            "macro_auroc": 0.6791626034444821
+          }
+        },
+        "33": {
+          "validation": {
+            "accuracy": 0.5652173913043478,
+            "macro_f1": 0.5095997961163453,
+            "macro_auroc": 0.692086734428827
+          },
+          "test": {
+            "accuracy": 0.5302663438256658,
+            "macro_f1": 0.4659764024052155,
+            "macro_auroc": 0.6797842274920477
+          }
+        }
+      },
+      "validation_mean_sample_sd": {
+        "accuracy": [0.576489533011, 0.017473860237],
+        "macro_f1": [0.509513394475, 0.014846899604],
+        "macro_auroc": [0.690312176702, 0.006602662668]
+      },
+      "test_mean_sample_sd": {
+        "accuracy": [
+          0.543179983858,
+          0.012186980525
+        ],
+        "macro_f1": [
+          0.470038254262,
+          0.007103770663
+        ],
+        "macro_auroc": [
+          0.683101922044,
+          0.006292438639
+        ]
+      }
+    }
+  },
+  "test_numerical_margin_over_strongest_baseline": {
+    "accuracy_percentage_points": 1.5335,
+    "macro_f1_percentage_points": 3.5538,
+    "macro_auroc_percentage_points": 0.9906
+  },
+  "claim_boundary": "Three-seed numerical comparison under one shared cohort, split, missingness manifest, metric implementation, checkpoint rule, and prediction rule. No formal paired significance test is claimed.",
+  "public_release_excludes": [
+    "raw ABCD tables",
+    "individual PLINK genotypes",
+    "participant identifiers",
+    "participant-level predictions",
+    "model checkpoints",
+    "external GWAS or PRS files"
+  ]
+}

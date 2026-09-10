@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "artifact_id": "abcd-adhd-presentation3-feature-refinement-v5",
+  "status": "complete",
+  "dataset": "ABCD",
+  "task": "baseline_parent_ksads_adhd_clinical_presentation_three_class",
+  "claim_boundary": {
+    "matched_baselines_available": false,
+    "superiority_claim_supported": false,
+    "reason": "The v4 baselines use the earlier feature representation and are not a matched comparison for this corrected representation."
+  },
+  "endpoint": {
+    "cohort_size": 2868,
+    "class_counts": [1270, 635, 963],
+    "class_mapping": {
+      "0": "low-symptom non-ADHD comparator",
+      "1": "full ADHD with predominantly inattentive presentation",
+      "2": "full ADHD with a hyperactive/impulsive component"
+    }
+  },
+  "split": {
+    "strategy": "stratified group split by ABCD genetic-family identifier",
+    "sizes": {
+      "training": 2041,
+      "validation": 414,
+      "testing": 413
+    },
+    "family_disjoint": true
+  },
+  "missingness": {
+    "target_incomplete_ratio": 0.15,
+    "fixed_and_label_independent": true,
+    "mostly_one_or_two_modalities_missing": true,
+    "rare_three_modalities_missing": true,
+    "all_four_modalities_missing": false
+  },
+  "representation_revision": {
+    "imaging": {
+      "features": 877,
+      "content": "rs-fMRI, SST/n-back/MID task-fMRI, Desikan cortical volume/ICV, cortical thickness, subcortical volume/ICV, intracranial volume, and DTI FA",
+      "correction": "Removed 71 regional T1 signal-intensity variables that had previously been described as gray-matter volume; added the actual structural volume and thickness variables."
+    },
+    "genetic_g1": {
+      "input_snps": 1178,
+      "candidate_gene_windows": 14,
+      "output_features": 14,
+      "representation": "one training-fitted within-gene principal component per prespecified candidate-gene window",
+      "external_prs_features": 0,
+      "ancestry_pc_features": 0,
+      "label_supervision": false
+    },
+    "cognition_health": {
+      "features": 109,
+      "addition": "19 label-independent SST, n-back, and MID task-performance summaries"
+    },
+    "behavior_environment": {
+      "base_features": 221,
+      "etiologic_context_variant_features": 245,
+      "etiologic_context_addition": "sex, developmental/perinatal history, and broad familial psychopathology history; no ADHD symptom, diagnosis, medication, or CBCL attention variable"
+    }
+  },
+  "aggregation": {
+    "seeds": [31, 32, 33],
+    "rule": "arithmetic mean of independently evaluated seed-level metrics",
+    "dispersion": "sample standard deviation across the three seeds",
+    "probability_ensemble": false,
+    "metrics": ["accuracy", "macro_f1", "macro_auroc"]
+  },
+  "validation_variants": {
+    "correct_struct_g8_task_behavior": {
+      "description": "correct structural imaging, eight PCs per candidate gene, and 19 task-performance variables",
+      "mean": {
+        "accuracy": 0.6111111111111112,
+        "macro_f1": 0.5607534875889758,
+        "macro_auroc": 0.7535568421317961
+      },
+      "sample_sd": {
+        "accuracy": 0.015839223488652188,
+        "macro_f1": 0.007918117025777537,
+        "macro_auroc": 0.005850128535542952
+      }
+    },
+    "correct_struct_g1_task_behavior": {
+      "description": "correct structural imaging, one PC per candidate gene, and 19 task-performance variables",
+      "mean": {
+        "accuracy": 0.6135265700483092,
+        "macro_f1": 0.5679369635217807,
+        "macro_auroc": 0.749465530406078
+      },
+      "sample_sd": {
+        "accuracy": 0.008367395205646723,
+        "macro_f1": 0.007030360248416825,
+        "macro_auroc": 0.006750905435705274
+      }
+    },
+    "correct_struct_g1_task_behavior_etiologic_context": {
+      "description": "G1 representation plus 24 developmental, perinatal, sex, and family-history variables",
+      "mean": {
+        "accuracy": 0.605475040257649,
+        "macro_f1": 0.570526125520214,
+        "macro_auroc": 0.749235562777364
+      },
+      "sample_sd": {
+        "accuracy": 0.02283002717996427,
+        "macro_f1": 0.0155592779584715,
+        "macro_auroc": 0.012750492251524049
+      }
+    },
+    "correct_struct_direct_snp_original_nonimaging": {
+      "description": "correct structural imaging, all 1178 retained SNP dosages, and the original cognition/health and behavior/environment variables",
+      "mean": {
+        "accuracy": 0.606280193236715,
+        "macro_f1": 0.5679128374796885,
+        "macro_auroc": 0.7487169301621921
+      },
+      "sample_sd": {
+        "accuracy": 0.010528741409518544,
+        "macro_f1": 0.01378205414970623,
+        "macro_auroc": 0.010923054557029863
+      }
+    }
+  },
+  "formal_seed_specific_checkpoint_evaluation": {
+    "representation": "correct_struct_g1_task_behavior",
+    "checkpoint_selection": "validation Macro-F1 independently within each seed",
+    "members": [
+      {
+        "seed": 31,
+        "best_epoch": 24,
+        "validation": {"accuracy": 0.6231884057971014, "macro_f1": 0.5748374355839492, "macro_auroc": 0.7572562482025642},
+        "test": {"accuracy": 0.5883777239709443, "macro_f1": 0.5408449370086198, "macro_auroc": 0.7461308064691069}
+      },
+      {
+        "seed": 32,
+        "best_epoch": 14,
+        "validation": {"accuracy": 0.6086956521739131, "macro_f1": 0.5681899124998399, "macro_auroc": 0.745339387272086},
+        "test": {"accuracy": 0.559322033898305, "macro_f1": 0.5175135700241961, "macro_auroc": 0.7295745687198808}
+      },
+      {
+        "seed": 33,
+        "best_epoch": 8,
+        "validation": {"accuracy": 0.6086956521739131, "macro_f1": 0.5607835424815532, "macro_auroc": 0.7458009557435838},
+        "test": {"accuracy": 0.5835351089588378, "macro_f1": 0.5215003152412775, "macro_auroc": 0.7330844656994725}
+      }
+    ],
+    "mean_sample_sd": {
+      "validation": {
+        "accuracy": [0.6135265700483092, 0.008367395205646723],
+        "macro_f1": [0.5679369635217807, 0.007030360248416825],
+        "macro_auroc": [0.749465530406078, 0.006750905435705274]
+      },
+      "test": {
+        "accuracy": [0.5770782889426957, 0.015566829315565741],
+        "macro_f1": [0.5266196074246978, 0.012479724984345027],
+        "macro_auroc": [0.7362632802961534, 0.008723869484482128]
+      }
+    }
+  },
+  "secondary_fixed_epoch_refit": {
+    "representation": "correct_struct_g1_task_behavior",
+    "fixed_epochs": 14,
+    "epoch_rule": "median of the three validation-selected epochs 24, 14, and 8",
+    "training_scope": "original training plus validation participants, with one development participant reserved in the unused runner test slot",
+    "evaluated_scope": "the original 413-participant held-out test set, stored under the runner validation key",
+    "members": [
+      {"seed": 31, "test": {"accuracy": 0.5786924939467313, "macro_f1": 0.5555133534103832, "macro_auroc": 0.7484551868571359}},
+      {"seed": 32, "test": {"accuracy": 0.612590799031477, "macro_f1": 0.5675625395829259, "macro_auroc": 0.7625496463727012}},
+      {"seed": 33, "test": {"accuracy": 0.5714285714285714, "macro_f1": 0.541691599816916, "macro_auroc": 0.7504698926897905}}
+    ],
+    "mean": {
+      "accuracy": 0.5875706214689266,
+      "macro_f1": 0.5549224976034083,
+      "macro_auroc": 0.7538249086398757
+    },
+    "sample_sd": {
+      "accuracy": 0.02197039158808101,
+      "macro_f1": 0.0129455866623574,
+      "macro_auroc": 0.0076226994088690655
+    }
+  },
+  "source_bindings": {
+    "g1_manifest_sha256": "34080db9c99ff4c455c4bef20edc72022b640089908a787cb84991147cea53ff",
+    "g1_representation_receipt_sha256": "a5426dee6b46dcc60e5325b103309690d6c083c69b5b92057c81cb9b4a84b98a",
+    "formal_result_sha256_by_seed": {
+      "31": "e03dc4a24c62dd48f47832569743ea93801788790f6f75de3445cd83a4ebd597",
+      "32": "58f05318c75f10525f7cdd15b4531d0c1a7f6dfb5164b6281c71a557a1f007a3",
+      "33": "4d99e2a7efd915bb7df4dd6cedd98a24205152e3c2a828bac55814545adeee8e"
+    },
+    "refit_manifest_sha256": "5068b79f1a986bc365907c345de0578593ca3c7f09047f2a7b684ff98f7f9c66",
+    "refit_result_sha256_by_seed": {
+      "31": "c5f4021d834095afdc18e0747053c2aa1027426c8f639e9a66325991531257de",
+      "32": "2a2c4e7d00c252f5f0c3e5fa1019ac4eaaa5874856b7fd02b8377258f8b179f7",
+      "33": "1ee2f1963acac2f959be13a40379469ca8e833357ba8eb85c8418b729f94cb3b"
+    }
+  }
+}
