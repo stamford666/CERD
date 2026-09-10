@@ -36,17 +36,23 @@ as if they were matched v5 comparisons.
 
 ## ADNI
 
-[`adni_direct_three_seed_mean_v1.md`](adni_direct_three_seed_mean_v1.md) and its
-[JSON receipt](adni_direct_three_seed_mean_v1.json) report the direct CERD
-evaluation using seeds 0/1/2. The result is 65.30 ± 1.79 Accuracy,
-64.48 ± 0.99 Macro-F1, and 80.81 ± 0.56 Macro-AUROC.
+[`adni_matched_updated_cerd_v4.md`](adni_matched_updated_cerd_v4.md) and its
+[JSON receipt](adni_matched_updated_cerd_v4.json) give the current seven-method
+comparison. Every row uses the same frozen split, test cohort, seeds 0/1/2,
+raw per-seed argmax predictions, and arithmetic three-seed aggregation. CERD
+obtains 65.72 ± 1.09 Accuracy, 64.56 ± 2.09 Macro-F1, and 81.07 ± 0.55
+Macro-AUROC, the highest mean in all three columns.
 
-Every aggregate is the arithmetic mean of seed-level metrics. The previously
-shown 68.24% value was obtained by averaging three models' class probabilities
-before taking argmax; it answers a different ensemble question and is not part
-of the current reporting rule.
+The CERD configuration was selected from six candidates on validation data
+only. Its seed-level validation and held-out results are in
+[`adni_direct_three_seed_mean_v2.md`](adni_direct_three_seed_mean_v2.md) and
+the corresponding [JSON receipt](adni_direct_three_seed_mean_v2.json).
 
-The separate [`adni_matched_formal_v3.md`](adni_matched_formal_v3.md) and
-[JSON receipt](adni_matched_formal_v3.json) provide the complete seven-method
-matched table. In that frozen campaign, CERD records 64.47/64.26/80.57; the
-later 65.30 direct run is not silently substituted into the older matched row.
+Every aggregate is the arithmetic mean of seed-level metrics. Probability
+ensembling and post-hoc test calibration are not part of the reporting rule.
+
+The earlier frozen campaign remains archived in
+[`adni_matched_formal_v3.md`](adni_matched_formal_v3.md); the updated report
+explicitly identifies its unchanged baseline source rather than silently
+rewriting that historical receipt. The preceding direct CERD result is likewise
+retained as `adni_direct_three_seed_mean_v1` for provenance.

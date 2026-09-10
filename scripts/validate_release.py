@@ -31,14 +31,14 @@ def check_members(receipt: dict, block: str = "members") -> None:
 
 def main() -> None:
     adni = json.loads(
-        (ROOT / "results/adni_direct_three_seed_mean_v1.json").read_text()
+        (ROOT / "results/adni_direct_three_seed_mean_v2.json").read_text()
     )
     check_members(adni)
     if adni["aggregation"]["probability_ensemble"]:
         raise AssertionError("ADNI receipt must use direct three-seed means")
 
     adni_matched = json.loads(
-        (ROOT / "results/adni_matched_formal_v3.json").read_text()
+        (ROOT / "results/adni_matched_updated_cerd_v4.json").read_text()
     )
     if adni_matched["aggregation"]["probability_ensemble"]:
         raise AssertionError("matched ADNI receipt must use direct three-seed means")

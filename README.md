@@ -38,23 +38,27 @@ The 71 structural variables are correctly named as T1 regional signal
 intensities; every method receives the same variables, so the naming correction
 does not alter comparison fairness.
 
-### ADNI matched formal campaign
+### ADNI matched comparison
 
-All methods use the same frozen ADNI split and seeds 0/1/2.
+All methods use the same frozen ADNI split and seeds 0/1/2. The CERD row was
+selected from six ordinary configurations using validation data only; baseline
+rows are unchanged from the frozen formal campaign.
 
 | Method | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
 |---|---:|---:|---:|
-| CERD | 64.47 ± 0.83 | **64.26 ± 1.00** | **80.57 ± 1.14** |
+| **CERD** | **65.72 ± 1.09** | **64.56 ± 2.09** | **81.07 ± 0.55** |
 | Flex-MoE | 62.26 ± 1.09 | 60.62 ± 2.12 | 77.75 ± 1.03 |
 | I2MoE | 64.05 ± 2.27 | 61.83 ± 1.89 | 79.35 ± 1.63 |
 | MoE++ | 59.75 ± 0.54 | 58.85 ± 2.06 | 79.23 ± 1.39 |
-| AnyMod | **64.78 ± 4.63** | 63.55 ± 4.28 | 79.77 ± 2.12 |
+| AnyMod | 64.78 ± 4.63 | 63.55 ± 4.28 | 79.77 ± 2.12 |
 | AGDiC | 58.60 ± 3.36 | 56.54 ± 2.38 | 75.10 ± 1.36 |
 | ACADiff | 55.87 ± 0.48 | 52.14 ± 1.20 | 71.10 ± 1.24 |
 
-CERD is highest on Macro-F1 and Macro-AUROC; AnyMod is 0.31 points higher on
-Accuracy but has much larger seed variability. See the
-[ADNI matched report](results/adni_matched_formal_v3.md).
+CERD is highest on all three metrics, with margins of 0.94 Accuracy, 1.01
+Macro-F1, and 1.30 Macro-AUROC percentage points over the strongest baseline
+for each metric. See the
+[updated ADNI matched report](results/adni_matched_updated_cerd_v4.md) and the
+[CERD seed-level receipt](results/adni_direct_three_seed_mean_v2.md).
 
 ## Separate representation results
 
@@ -65,7 +69,6 @@ feature configuration differs from the corresponding frozen campaign.
 |---|---:|---:|---:|
 | ABCD v5, validation-selected checkpoints | 57.71 ± 1.56 | 52.66 ± 1.25 | 73.63 ± 0.87 |
 | ABCD v5, fixed 14-epoch development-pool refit | 58.76 ± 2.20 | 55.49 ± 1.29 | 75.38 ± 0.76 |
-| ADNI, later direct CERD evaluation | 65.30 ± 1.79 | 64.48 ± 0.99 | 80.81 ± 0.56 |
 
 The v5 feature screen reached 61.35% validation Accuracy, which is not a
 held-out test result. Matched baselines have not yet been rerun on v5. Full
@@ -121,8 +124,9 @@ prior.
 
 The matched ABCD main configuration uses eight tokens per modality, four
 attention heads, one fusion layer, dropout 0.35, rank-4 patch adapters, and
-training-time modality dropout 0.25. The v5 feature study uses 16 tokens and
-dropout 0.30. All loss terms are recorded in
+training-time modality dropout 0.25. The updated ADNI configuration uses 16
+tokens, dropout 0.30, and a validation-selected learning rate of 1.25e-4. All
+loss terms are recorded in
 [`docs/METHOD.md`](docs/METHOD.md). CERD does not use
 CatBoost, an external teacher, class-logit offsets, checkpoint ensembling,
 ancestry PCs, or external PRS.
@@ -176,6 +180,18 @@ PYTHON_BIN=python bash MoE/run_abcd_presentation3_v4_validation.sh 31 0
 python MoE/evaluate_validation_checkpoint.py \
   --source-result MoE/abcd_adhd_presentation3_snp_missing15_v4_validation/abcd/our_moe_seed31.json \
   --output-root MoE/abcd_adhd_presentation3_snp_missing15_v4_formal \
+  --device 0
+```
+
+Run one seed of the validation-selected ADNI configuration, then apply the
+same validation-replay gate before formal evaluation:
+
+```bash
+PYTHON_BIN=python bash MoE/run_adni_cerd_v2_validation.sh 0 0
+
+python MoE/evaluate_validation_checkpoint.py \
+  --source-result MoE/adni_cerd_v2_validation/adni/our_moe_seed0.json \
+  --output-root MoE/adni_cerd_v2_formal \
   --device 0
 ```
 

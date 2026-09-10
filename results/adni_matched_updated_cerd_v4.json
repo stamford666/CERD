@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "artifact_id": "adni-matched-updated-cerd-v4-three-seed-mean",
+  "dataset": "ADNI",
+  "status": "complete",
+  "test_size": 318,
+  "test_class_counts": [139, 112, 67],
+  "seeds": [0, 1, 2],
+  "aggregation": {
+    "rule": "arithmetic mean of independently evaluated seed-level metrics",
+    "dispersion": "sample standard deviation across the three seeds",
+    "prediction_rule": "raw softmax argmax for each seed",
+    "probability_ensemble": false
+  },
+  "comparison_scope": {
+    "same_dataset": true,
+    "same_frozen_split": true,
+    "same_seed_set": true,
+    "same_metrics": true,
+    "updated_method": "CERD",
+    "unchanged_baseline_source": "adni-matched-formal-v3-three-seed-mean",
+    "cerd_selection_partition": "validation only",
+    "test_used_for_cerd_selection": false
+  },
+  "methods": {
+    "CERD": {
+      "accuracy": [0.6635220126, 0.6635220126, 0.6446540881],
+      "macro_f1": [0.6686039969, 0.6403915891, 0.6278477852],
+      "macro_auroc": [0.8097346099, 0.8165415492, 0.8057002703]
+    },
+    "Flex-MoE": {
+      "accuracy": [0.6289308176, 0.6100628931, 0.6289308176],
+      "macro_f1": [0.6216563181, 0.5820826864, 0.6149139081],
+      "macro_auroc": [0.7856853405, 0.7658944789, 0.7807801532]
+    },
+    "I2MoE": {
+      "accuracy": [0.6257861635, 0.6289308176, 0.6666666667],
+      "macro_f1": [0.6023162722, 0.6134857022, 0.6391810212],
+      "macro_auroc": [0.7922816684, 0.7778583300, 0.8104676925]
+    },
+    "MoE++": {
+      "accuracy": [0.6006289308, 0.6006289308, 0.5911949686],
+      "macro_f1": [0.6094015577, 0.5682382249, 0.5878793678],
+      "macro_auroc": [0.7852300656, 0.8082888209, 0.7832570182]
+    },
+    "AnyMod": {
+      "accuracy": [0.5974842767, 0.6572327044, 0.6886792453],
+      "macro_f1": [0.5892216682, 0.6437310398, 0.6736676730],
+      "macro_auroc": [0.7734065710, 0.8123155953, 0.8073440048]
+    },
+    "AGDiC": {
+      "accuracy": [0.5566037736, 0.6226415094, 0.5786163522],
+      "macro_f1": [0.5416615526, 0.5892698058, 0.5653769725],
+      "macro_auroc": [0.7455761492, 0.7664154601, 0.7408819672]
+    },
+    "ACADiff": {
+      "accuracy": [0.5534591195, 0.5597484277, 0.5628930818],
+      "macro_f1": [0.5078060326, 0.5262552309, 0.5302410614],
+      "macro_auroc": [0.7252968193, 0.7048530525, 0.7029776245]
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": 2,
+  "artifact_id": "adni-direct-three-seed-mean-v2",
+  "status": "complete",
+  "dataset": "ADNI",
+  "task": "three_class_classification",
+  "test_size": 318,
+  "test_class_counts": [139, 112, 67],
+  "configuration": {
+    "model": "CERD",
+    "modalities": "IGCB",
+    "hidden_dim": 128,
+    "num_patches": 16,
+    "num_experts": 16,
+    "top_k": 4,
+    "dropout": 0.3,
+    "learning_rate": 0.000125,
+    "batch_size": 32,
+    "patch_adapter_rank": 4,
+    "external_teacher": false,
+    "probability_ensemble": false
+  },
+  "selection": {
+    "partition": "validation only",
+    "metric": "three-seed mean Macro-F1 subject to an Accuracy non-inferiority guardrail",
+    "candidate_count": 6,
+    "test_accessed_during_selection": false
+  },
+  "aggregation": {
+    "seeds": [0, 1, 2],
+    "rule": "arithmetic mean of independently evaluated seed-level metrics",
+    "dispersion": "sample standard deviation across the three seeds",
+    "prediction_rule": "raw softmax argmax for each seed",
+    "probability_ensemble": false,
+    "metrics": ["accuracy", "macro_f1", "macro_auroc"]
+  },
+  "members": [
+    {
+      "seed": 0,
+      "best_epoch": 30,
+      "validation": {
+        "accuracy": 0.6635220126,
+        "macro_f1": 0.6695338825,
+        "macro_auroc": 0.8045829207
+      },
+      "test": {
+        "accuracy": 0.6635220126,
+        "macro_f1": 0.6686039969,
+        "macro_auroc": 0.8097346099
+      }
+    },
+    {
+      "seed": 1,
+      "best_epoch": 15,
+      "validation": {
+        "accuracy": 0.6666666667,
+        "macro_f1": 0.6595735897,
+        "macro_auroc": 0.8003979606
+      },
+      "test": {
+        "accuracy": 0.6635220126,
+        "macro_f1": 0.6403915891,
+        "macro_auroc": 0.8165415492
+      }
+    },
+    {
+      "seed": 2,
+      "best_epoch": 23,
+      "validation": {
+        "accuracy": 0.6666666667,
+        "macro_f1": 0.6520278145,
+        "macro_auroc": 0.8085837938
+      },
+      "test": {
+        "accuracy": 0.6446540881,
+        "macro_f1": 0.6278477852,
+        "macro_auroc": 0.8057002703
+      }
+    }
+  ],
+  "validation_mean": {
+    "accuracy": 0.6656184486,
+    "macro_f1": 0.6603784289,
+    "macro_auroc": 0.8045215584
+  },
+  "mean": {
+    "accuracy": 0.6572327044,
+    "macro_f1": 0.6456144571,
+    "macro_auroc": 0.8106588098
+  },
+  "sample_sd": {
+    "accuracy": 0.0108934013,
+    "macro_f1": 0.0208740499,
+    "macro_auroc": 0.0054794106
+  },
+  "validation_replay_before_test": true,
+  "all_validation_replay_gates_passed": true,
+  "supersedes_for_current_direct_reporting": "adni-direct-three-seed-mean-v1"
+}
