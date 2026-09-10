@@ -7,84 +7,84 @@
     "modalities": [
       {
         "allocation_percent": {
-          "mean": 25.22794486760859,
-          "sd": 1.1345922402295052
+          "mean": 24.38138024798798,
+          "sd": 1.1388797326926563
         },
         "decrease": {
           "accuracy": {
-            "mean": 23.3256351039261,
-            "sd": 20.000586692481267
+            "mean": 6.742640075973412,
+            "sd": 7.814443144224393
           },
           "macro_auroc": {
-            "mean": 6.545634639423045,
-            "sd": 6.488591790711777
+            "mean": 0.9689624562256967,
+            "sd": 2.6291037447292664
           },
           "macro_f1": {
-            "mean": 25.298477406483897,
-            "sd": 18.575951706394974
+            "mean": 5.0801563335351885,
+            "sd": 5.558277928902397
           }
         },
         "modality": "Imaging"
       },
       {
         "allocation_percent": {
-          "mean": 23.972188077071717,
-          "sd": 0.6471212352089467
+          "mean": 23.684358686250818,
+          "sd": 4.162327711796366
         },
         "decrease": {
           "accuracy": {
-            "mean": 25.635103926097003,
-            "sd": 15.400884660257933
+            "mean": 8.736942070275404,
+            "sd": 8.965687183386791
           },
           "macro_auroc": {
-            "mean": 4.776297261662634,
-            "sd": 4.865217379521764
+            "mean": 0.8667236939797505,
+            "sd": 2.4897325398342134
           },
           "macro_f1": {
-            "mean": 30.69021714400037,
-            "sd": 8.518928599789112
+            "mean": 12.990745728788317,
+            "sd": 7.824182702065782
           }
         },
         "modality": "Genetics"
       },
       {
         "allocation_percent": {
-          "mean": 26.350938815186833,
-          "sd": 0.9122034623256303
+          "mean": 25.7447345679907,
+          "sd": 1.3560843300103498
         },
         "decrease": {
           "accuracy": {
-            "mean": 6.004618937644342,
-            "sd": 5.604924295386413
+            "mean": 14.245014245014247,
+            "sd": 1.241851550866287
           },
           "macro_auroc": {
-            "mean": -0.4031170791676762,
-            "sd": 0.5447584910297656
+            "mean": 0.7511613990910888,
+            "sd": 1.1091740220477324
           },
           "macro_f1": {
-            "mean": 16.68690261005558,
-            "sd": 12.151719586177238
+            "mean": 30.18352248213237,
+            "sd": 2.5826907315006
           }
         },
         "modality": "Cognition/health"
       },
       {
         "allocation_percent": {
-          "mean": 24.448929677309362,
-          "sd": 1.080857448396448
+          "mean": 26.189527993148328,
+          "sd": 3.3755536734840264
         },
         "decrease": {
           "accuracy": {
-            "mean": 10.700538876058504,
-            "sd": 0.3527771897579559
+            "mean": 15.289648622981957,
+            "sd": 1.9392761497304971
           },
           "macro_auroc": {
-            "mean": 19.066870060813983,
-            "sd": 1.2926749736592478
+            "mean": 15.201096858132836,
+            "sd": 2.1173804398032865
           },
           "macro_f1": {
-            "mean": 27.97048722833235,
-            "sd": 1.2647934021410665
+            "mean": 33.2453822354129,
+            "sd": 2.2939427784029642
           }
         },
         "modality": "Behavior/environment"
@@ -92,232 +92,232 @@
     ],
     "seed_records": [
       {
-        "checkpoint_sha256": "d192f6eb044a39503ecb54b75aeea26bea2af2a238a44dd5d5e3f622b5c54261",
-        "complete_test_rows": 433,
+        "checkpoint_sha256": "159eaa55f7f2e7787dd96e1915359a4eea8dbeba58c88b330e192e38740242c2",
+        "complete_test_rows": 351,
         "full_complete_case_metrics": {
-          "accuracy": 61.662817551963045,
-          "macro_auroc": 75.92203625532422,
-          "macro_f1": 50.59361366378911
+          "accuracy": 57.54985754985755,
+          "macro_auroc": 74.22475570140583,
+          "macro_f1": 51.737993487993485
         },
         "full_test_metrics": {
-          "accuracy": 61.493123772102166,
-          "macro_auroc": 75.24049807292276,
-          "macro_f1": 51.15091898838381
+          "accuracy": 57.384987893462466,
+          "macro_auroc": 73.37116096337319,
+          "macro_f1": 52.058613900719166
         },
-        "maximum_reference_replay_error": 2.9616546659561038e-08,
+        "maximum_reference_replay_error": 2.9676055945948576e-08,
         "modalities": [
           {
-            "allocation_percent": 23.977939766961605,
+            "allocation_percent": 23.550391727584906,
             "decrease": {
-              "accuracy": 0.23094688221708282,
-              "macro_auroc": -0.7155919933912003,
-              "macro_f1": 3.943889409138116
+              "accuracy": 1.1396011396011403,
+              "macro_auroc": -0.9272347754036758,
+              "macro_f1": 4.1034892587650305
             },
             "modality": "Imaging",
             "strict_removal_metrics": {
-              "accuracy": 61.43187066974596,
-              "macro_auroc": 76.63762824871542,
-              "macro_f1": 46.64972425465099
+              "accuracy": 56.41025641025641,
+              "macro_auroc": 75.1519904768095,
+              "macro_f1": 47.634504229228455
             }
           },
           {
-            "allocation_percent": 23.261900396911475,
+            "allocation_percent": 28.483459275874328,
             "decrease": {
-              "accuracy": 7.852193995381064,
-              "macro_auroc": -0.8166985568060738,
-              "macro_f1": 21.104917554430536
+              "accuracy": 19.088319088319082,
+              "macro_auroc": 3.694241704951324,
+              "macro_f1": 21.174443539464235
             },
             "modality": "Genetics",
             "strict_removal_metrics": {
-              "accuracy": 53.81062355658198,
-              "macro_auroc": 76.73873481213029,
-              "macro_f1": 29.48869610935857
+              "accuracy": 38.46153846153847,
+              "macro_auroc": 70.5305139964545,
+              "macro_f1": 30.56354994852925
             }
           },
           {
-            "allocation_percent": 27.383098600538403,
+            "allocation_percent": 25.664114609324614,
             "decrease": {
-              "accuracy": 10.623556581986136,
-              "macro_auroc": 0.07944864795921092,
-              "macro_f1": 28.065581044013367
+              "accuracy": 13.390313390313388,
+              "macro_auroc": -0.4189540251872046,
+              "macro_f1": 31.316386109864368
             },
             "modality": "Cognition/health",
             "strict_removal_metrics": {
-              "accuracy": 51.03926096997691,
-              "macro_auroc": 75.842587607365,
-              "macro_f1": 22.52803261977574
+              "accuracy": 44.15954415954416,
+              "macro_auroc": 74.64370972659303,
+              "macro_f1": 20.421607378129117
             }
           },
           {
-            "allocation_percent": 25.377062535414762,
+            "allocation_percent": 22.302035745639202,
             "decrease": {
-              "accuracy": 10.623556581986136,
-              "macro_auroc": 20.481271276332627,
-              "macro_f1": 28.065581044013367
+              "accuracy": 13.105413105413106,
+              "macro_auroc": 13.287438625737565,
+              "macro_f1": 30.67534668277242
             },
             "modality": "Behavior/environment",
             "strict_removal_metrics": {
-              "accuracy": 51.03926096997691,
-              "macro_auroc": 55.44076497899159,
-              "macro_f1": 22.52803261977574
+              "accuracy": 44.44444444444444,
+              "macro_auroc": 60.93731707566826,
+              "macro_f1": 21.062646805221064
             }
           }
         ],
-        "reference_sha256": "225c00d6e8c6e0a72f59cad55210b469b543ddf9577346a08c33f76670e96a83",
+        "reference_sha256": "99d32f1161b38d7c6481d93d5e2843cc2d084df53111128d87afa7efe66569f7",
         "seed": 31,
-        "test_rows": 509
+        "test_rows": 413
       },
       {
-        "checkpoint_sha256": "ac22f8a8f2ee97a21f3d46d30b04abbda0967828b19b2428aad78daca61f10eb",
-        "complete_test_rows": 433,
+        "checkpoint_sha256": "67f60786667dc2280fff4acb8980608942b413c8e414e4470deea26d3c62dcd0",
+        "complete_test_rows": 351,
         "full_complete_case_metrics": {
-          "accuracy": 61.43187066974596,
-          "macro_auroc": 75.16115238755641,
-          "macro_f1": 51.713082374811194
+          "accuracy": 60.96866096866097,
+          "macro_auroc": 75.13339629546022,
+          "macro_f1": 55.50731038302011
         },
         "full_test_metrics": {
-          "accuracy": 61.10019646365422,
-          "macro_auroc": 74.574660062178,
-          "macro_f1": 51.85820020388666
+          "accuracy": 59.80629539951574,
+          "macro_auroc": 74.49394084517468,
+          "macro_f1": 54.04524303162247
         },
-        "maximum_reference_replay_error": 2.9725646943923323e-08,
+        "maximum_reference_replay_error": 2.975158686080448e-08,
         "modalities": [
           {
-            "allocation_percent": 25.513219603562405,
+            "allocation_percent": 25.679563923984695,
             "decrease": {
-              "accuracy": 34.87297921478061,
-              "macro_auroc": 11.775549136556954,
-              "macro_f1": 37.72281473490852
+              "accuracy": 3.418803418803421,
+              "macro_auroc": -0.13611050983490713,
+              "macro_f1": 0.07494414855493403
             },
             "modality": "Imaging",
             "strict_removal_metrics": {
-              "accuracy": 26.558891454965355,
-              "macro_auroc": 63.38560325099946,
-              "macro_f1": 13.990267639902676
+              "accuracy": 57.54985754985755,
+              "macro_auroc": 75.26950680529512,
+              "macro_f1": 55.43236623446518
             }
           },
           {
-            "allocation_percent": 24.126373086497917,
+            "allocation_percent": 21.51162798581848,
             "decrease": {
-              "accuracy": 34.64203233256352,
-              "macro_auroc": 8.030111779981198,
-              "macro_f1": 37.39693807694843
+              "accuracy": 3.418803418803421,
+              "macro_auroc": -0.9971736714942097,
+              "macro_f1": 5.584058582606765
             },
             "modality": "Genetics",
             "strict_removal_metrics": {
-              "accuracy": 26.78983833718245,
-              "macro_auroc": 67.13104060757522,
-              "macro_f1": 14.316144297862762
+              "accuracy": 57.54985754985755,
+              "macro_auroc": 76.13056996695443,
+              "macro_f1": 49.92325180041335
             }
           },
           {
-            "allocation_percent": 25.652925446190395,
+            "allocation_percent": 24.43075874779761,
             "decrease": {
-              "accuracy": -0.23094688221708282,
-              "macro_auroc": -0.9938417158506212,
-              "macro_f1": 3.887110051444985
+              "accuracy": 15.669515669515668,
+              "macro_auroc": 0.8852319367063188,
+              "macro_f1": 32.006181795724785
             },
             "modality": "Cognition/health",
             "strict_removal_metrics": {
-              "accuracy": 61.662817551963045,
-              "macro_auroc": 76.15499410340703,
-              "macro_f1": 47.82597232336621
+              "accuracy": 45.2991452991453,
+              "macro_auroc": 74.2481643587539,
+              "macro_f1": 23.50112858729533
             }
           },
           {
-            "allocation_percent": 24.70748339192338,
+            "allocation_percent": 28.37805079418002,
             "decrease": {
-              "accuracy": 10.392609699769054,
-              "macro_auroc": 18.772719678426192,
-              "macro_f1": 29.185049755035454
+              "accuracy": 16.80911680911681,
+              "macro_auroc": 14.840073913569888,
+              "macro_f1": 35.085703004890995
             },
             "modality": "Behavior/environment",
             "strict_removal_metrics": {
-              "accuracy": 51.03926096997691,
-              "macro_auroc": 56.38843270913022,
-              "macro_f1": 22.52803261977574
+              "accuracy": 44.15954415954416,
+              "macro_auroc": 60.29332238189033,
+              "macro_f1": 20.421607378129117
             }
           }
         ],
-        "reference_sha256": "ac89bfcaf887525e80dea77dbde0c5868719bc69d156a3e07459b821380f7c81",
+        "reference_sha256": "f8b7bf3f1d5c2f17c848f6cebbce884e8b0ae9ea4442360c754b9928282b6511",
         "seed": 32,
-        "test_rows": 509
+        "test_rows": 413
       },
       {
-        "checkpoint_sha256": "476cdb5fbbbb19653d5f5293c515fe1bab884b134814a0b1c93c7c9c71856983",
-        "complete_test_rows": 433,
+        "checkpoint_sha256": "5b2400d3a76b8586fec84ea4e6a8936862cc2fd9c2336b14e3d56d8b9c5a2eb4",
+        "complete_test_rows": 351,
         "full_complete_case_metrics": {
-          "accuracy": 62.12471131639723,
-          "macro_auroc": 75.46713649025513,
-          "macro_f1": 49.18886350572397
+          "accuracy": 60.11396011396012,
+          "macro_auroc": 75.70401603821901,
+          "macro_f1": 54.3967043967044
         },
         "full_test_metrics": {
-          "accuracy": 61.68958742632613,
-          "macro_auroc": 74.81280999100225,
-          "macro_f1": 50.418397366749815
+          "accuracy": 60.53268765133172,
+          "macro_auroc": 75.43761738951916,
+          "macro_f1": 54.75271829106774
         },
-        "maximum_reference_replay_error": 2.9770660381345238e-08,
+        "maximum_reference_replay_error": 2.9468536388854716e-08,
         "modalities": [
           {
-            "allocation_percent": 26.19267523230176,
+            "allocation_percent": 23.914185092394348,
             "decrease": {
-              "accuracy": 34.8729792147806,
-              "macro_auroc": 8.57694677510338,
-              "macro_f1": 34.22872807540505
+              "accuracy": 15.669515669515675,
+              "macro_auroc": 3.970232653915673,
+              "macro_f1": 11.0620355932856
             },
             "modality": "Imaging",
             "strict_removal_metrics": {
-              "accuracy": 27.25173210161663,
-              "macro_auroc": 66.89018971515175,
-              "macro_f1": 14.96013543031892
+              "accuracy": 44.44444444444444,
+              "macro_auroc": 71.73378338430334,
+              "macro_f1": 43.3346688034188
             }
           },
           {
-            "allocation_percent": 24.528290747805755,
+            "allocation_percent": 21.05798879705965,
             "decrease": {
-              "accuracy": 34.41108545034643,
-              "macro_auroc": 7.115478561812779,
-              "macro_f1": 33.56879580062214
+              "accuracy": 3.7037037037037095,
+              "macro_auroc": -0.09689695151786282,
+              "macro_f1": 12.21373506429395
             },
             "modality": "Genetics",
             "strict_removal_metrics": {
-              "accuracy": 27.713625866050805,
-              "macro_auroc": 68.35165792844235,
-              "macro_f1": 15.620067705101832
+              "accuracy": 56.41025641025641,
+              "macro_auroc": 75.80091298973687,
+              "macro_f1": 42.18296933241045
             }
           },
           {
-            "allocation_percent": 26.0167923988317,
+            "allocation_percent": 27.13933034684987,
             "decrease": {
-              "accuracy": 7.6212471131639745,
-              "macro_auroc": -0.29495816961161836,
-              "macro_f1": 18.108016734708386
+              "accuracy": 13.675213675213683,
+              "macro_auroc": 1.7872062857541522,
+              "macro_f1": 27.227999540807954
             },
             "modality": "Cognition/health",
             "strict_removal_metrics": {
-              "accuracy": 54.50346420323326,
-              "macro_auroc": 75.76209465986675,
-              "macro_f1": 31.080846771015587
+              "accuracy": 46.438746438746435,
+              "macro_auroc": 73.91680975246486,
+              "macro_f1": 27.168704855896447
             }
           },
           {
-            "allocation_percent": 23.262243104589945,
+            "allocation_percent": 27.888497439625766,
             "decrease": {
-              "accuracy": 11.085450346420323,
-              "macro_auroc": 17.94661922768313,
-              "macro_f1": 26.660830885948233
+              "accuracy": 15.954415954415957,
+              "macro_auroc": 17.475778035091054,
+              "macro_f1": 33.97509701857528
             },
             "modality": "Behavior/environment",
             "strict_removal_metrics": {
-              "accuracy": 51.03926096997691,
-              "macro_auroc": 57.520517262572,
-              "macro_f1": 22.52803261977574
+              "accuracy": 44.15954415954416,
+              "macro_auroc": 58.228238003127956,
+              "macro_f1": 20.421607378129117
             }
           }
         ],
-        "reference_sha256": "1b988b973e77b20446d52d78dcd657240f95c894ca518fae5ccf6a06db3ab53a",
+        "reference_sha256": "eef94bb1b1a295ecd28be3037e8f4643772d2a12651ba0bc5fac731705eeeab0",
         "seed": 33,
-        "test_rows": 509
+        "test_rows": 413
       }
     ],
     "status": "PASS"

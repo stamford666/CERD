@@ -8,19 +8,21 @@ checkpoints are excluded.
 
 [`current_two_dataset_ablation_and_modality_audit_v1.md`](current_two_dataset_ablation_and_modality_audit_v1.md)
 reports matched component ablations and strict leave-one-modality-out results
-for both ADNI and the ABCD clinical-course task. The accompanying
+for both ADNI and the current ABCD presentation task. The accompanying
 [`cerd_three_seed_modality_audit_v1.json`](cerd_three_seed_modality_audit_v1.json)
 contains the participant-free seed-level replay audit and normalized modality
-allocation values.
+allocation values. The ABCD component seed records are stored separately in
+[`abcd_presentation3_component_ablation_v1.json`](abcd_presentation3_component_ablation_v1.json).
 
-## ABCD clinical-course rerun
+## Archived ABCD clinical-course endpoint
 
 [`abcd_adhd_course3_snp_missing15_v1.md`](abcd_adhd_course3_snp_missing15_v1.md)
 and its [JSON receipt](abcd_adhd_course3_snp_missing15_v1.json) report the
-mutually exclusive low-symptom / past-or-remitted / current-ADHD endpoint.
+alternative low-symptom / past-or-remitted / current-ADHD endpoint.
 CERD obtains 61.43 ± 0.30 Accuracy, 51.14 ± 0.72 Macro-F1, and
 74.88 ± 0.34 Macro-AUROC. It has the highest numerical mean Accuracy and AUC
-in the matched table, while AnyMod has the highest Macro-F1.
+in that matched table, while AnyMod has the highest Macro-F1. This artifact is
+retained for provenance and is not the current ABCD main task.
 
 ## ABCD v4 matched main comparison
 

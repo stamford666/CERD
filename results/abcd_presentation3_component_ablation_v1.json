@@ -1,0 +1,309 @@
+{
+  "schema": "abcd-presentation3-component-ablation-v1",
+  "endpoint": "low-symptom control vs predominantly inattentive ADHD vs ADHD with hyperactive/impulsive component",
+  "aggregation": "arithmetic mean and sample standard deviation across seeds 31/32/33; no probability ensemble",
+  "selection": "each arm independently selected by validation Macro-F1; test evaluated once after strict validation replay",
+  "records": [
+    {
+      "name": "Full CERD",
+      "arm": "full",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_adhd_presentation3_snp_missing15_formal_v4/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_adhd_presentation3_snp_missing15_formal_v4/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_adhd_presentation3_snp_missing15_formal_v4/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 57.384987893462466,
+          "macro_f1": 52.058613900719166,
+          "macro_auroc": 73.37116096337319
+        },
+        {
+          "seed": 32,
+          "accuracy": 59.80629539951574,
+          "macro_f1": 54.04524303162247,
+          "macro_auroc": 74.49394084517468
+        },
+        {
+          "seed": 33,
+          "accuracy": 60.53268765133172,
+          "macro_f1": 54.75271829106774,
+          "macro_auroc": 75.43761738951916
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 59.241323648103304,
+          "sd": 1.6481499480760433
+        },
+        "macro_f1": {
+          "mean": 53.618858407803124,
+          "sd": 1.396747114583035
+        },
+        "macro_auroc": {
+          "mean": 74.43423973268902,
+          "sd": 1.0345210038534838
+        }
+      }
+    },
+    {
+      "name": "Dense backbone",
+      "arm": "dense_backbone",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/dense_backbone/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/dense_backbone/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/dense_backbone/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 56.65859564164649,
+          "macro_f1": 53.19956295462528,
+          "macro_auroc": 74.53950272863548
+        },
+        {
+          "seed": 32,
+          "accuracy": 59.32203389830508,
+          "macro_f1": 53.86034508740205,
+          "macro_auroc": 74.45078653105142
+        },
+        {
+          "seed": 33,
+          "accuracy": 61.25907990314769,
+          "macro_f1": 55.942496784711956,
+          "macro_auroc": 76.35456554916634
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 59.07990314769975,
+          "sd": 2.3097801487093066
+        },
+        "macro_f1": {
+          "mean": 54.33413494224643,
+          "sd": 1.4315303416182223
+        },
+        "macro_auroc": {
+          "mean": 75.11495160295108,
+          "sd": 1.0744532063645051
+        }
+      }
+    },
+    {
+      "name": "w/o multigranular decomposition",
+      "arm": "no_multigranular_decomposition",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_multigranular_decomposition/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_multigranular_decomposition/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_multigranular_decomposition/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 55.205811138014525,
+          "macro_f1": 51.42548584789436,
+          "macro_auroc": 73.13333967615341
+        },
+        {
+          "seed": 32,
+          "accuracy": 54.47941888619855,
+          "macro_f1": 50.976650636318,
+          "macro_auroc": 73.76547951492056
+        },
+        {
+          "seed": 33,
+          "accuracy": 61.25907990314769,
+          "macro_f1": 56.72097043415527,
+          "macro_auroc": 75.26749748600574
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 56.98143664245359,
+          "sd": 3.722309138853976
+        },
+        "macro_f1": {
+          "mean": 53.04103563945588,
+          "sd": 3.1948088098847407
+        },
+        "macro_auroc": {
+          "mean": 74.0554388923599,
+          "sd": 1.0962274945293875
+        }
+      }
+    },
+    {
+      "name": "Joint branch only",
+      "arm": "joint_branch_only",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/joint_branch_only/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/joint_branch_only/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/joint_branch_only/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 56.17433414043583,
+          "macro_f1": 51.44264623660789,
+          "macro_auroc": 73.84258211015114
+        },
+        {
+          "seed": 32,
+          "accuracy": 58.35351089588377,
+          "macro_f1": 54.44065330737412,
+          "macro_auroc": 74.7540656198045
+        },
+        {
+          "seed": 33,
+          "accuracy": 59.32203389830508,
+          "macro_f1": 55.73744217106849,
+          "macro_auroc": 75.39626981376556
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 57.949959644874895,
+          "sd": 1.6121859851039684
+        },
+        "macro_f1": {
+          "mean": 53.873580571683505,
+          "sd": 2.2028383157502835
+        },
+        "macro_auroc": {
+          "mean": 74.66430584790707,
+          "sd": 0.7807233713543924
+        }
+      }
+    },
+    {
+      "name": "w/o conditional completion",
+      "arm": "no_completion",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_completion/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_completion/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_completion/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 55.44794188861986,
+          "macro_f1": 51.40766484138042,
+          "macro_auroc": 70.30923932712675
+        },
+        {
+          "seed": 32,
+          "accuracy": 53.753026634382564,
+          "macro_f1": 49.19372896475864,
+          "macro_auroc": 71.56729917462489
+        },
+        {
+          "seed": 33,
+          "accuracy": 57.6271186440678,
+          "macro_f1": 52.25463388809622,
+          "macro_auroc": 72.34421683590425
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 55.6093623890234,
+          "sd": 1.9420838443125068
+        },
+        "macro_f1": {
+          "mean": 50.95200923141176,
+          "sd": 1.5805066477557101
+        },
+        "macro_auroc": {
+          "mean": 71.4069184458853,
+          "sd": 1.0269249480467668
+        }
+      }
+    },
+    {
+      "name": "w/o provenance encoding",
+      "arm": "no_provenance",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_provenance/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_provenance/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/no_provenance/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 57.14285714285714,
+          "macro_f1": 51.64933134889732,
+          "macro_auroc": 73.35958668694256
+        },
+        {
+          "seed": 32,
+          "accuracy": 59.56416464891041,
+          "macro_f1": 53.92237356024976,
+          "macro_auroc": 74.54973586113177
+        },
+        {
+          "seed": 33,
+          "accuracy": 60.77481840193705,
+          "macro_f1": 54.67659653695773,
+          "macro_auroc": 75.40110222878559
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 59.16061339790153,
+          "sd": 1.849304154542311
+        },
+        "macro_f1": {
+          "mean": 53.41610048203494,
+          "sd": 1.5758546735040144
+        },
+        "macro_auroc": {
+          "mean": 74.4368082589533,
+          "sd": 1.0254320598640303
+        }
+      }
+    },
+    {
+      "name": "Uniform branch weights",
+      "arm": "uniform_branch_weights",
+      "source_files": [
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/uniform_branch_weights/formal/abcd/our_moe_seed31.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/uniform_branch_weights/formal/abcd/our_moe_seed32.json",
+        "/data/mi2/shaowen/miccai2026/MoE/abcd_presentation3_component_ablation_v1/uniform_branch_weights/formal/abcd/our_moe_seed33.json"
+      ],
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 57.6271186440678,
+          "macro_f1": 52.213307366852305,
+          "macro_auroc": 72.92530614251791
+        },
+        {
+          "seed": 32,
+          "accuracy": 59.56416464891041,
+          "macro_f1": 54.04477048221602,
+          "macro_auroc": 74.15444064280408
+        },
+        {
+          "seed": 33,
+          "accuracy": 60.77481840193705,
+          "macro_f1": 56.78210678210678,
+          "macro_auroc": 74.3618900169636
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 59.32203389830509,
+          "sd": 1.5877575119375296
+        },
+        "macro_f1": {
+          "mean": 54.34672821039171,
+          "sd": 2.2993185678394306
+        },
+        "macro_auroc": {
+          "mean": 73.8138789340952,
+          "sd": 0.7764856825198906
+        }
+      }
+    }
+  ]
+}

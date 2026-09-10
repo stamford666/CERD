@@ -53,8 +53,18 @@ def members(dataset: str) -> list[tuple[int, Path, Path]]:
         reference_root = HERE / "fair_two_dataset_tuning_20260910" / "formal" / "predictions" / "adni"
         seeds = (0, 1, 2)
     else:
-        checkpoint_root = HERE / "abcd_adhd_course3_clinical_missing15_v1" / "validation" / "checkpoints" / "abcd"
-        reference_root = HERE / "abcd_adhd_course3_clinical_missing15_v1" / "formal" / "predictions" / "abcd"
+        checkpoint_root = Path(
+            os.environ.get(
+                "ABCD_MODALITY_AUDIT_CHECKPOINT_ROOT",
+                str(HERE / "abcd_adhd_course3_clinical_missing15_v1" / "validation" / "checkpoints" / "abcd"),
+            )
+        )
+        reference_root = Path(
+            os.environ.get(
+                "ABCD_MODALITY_AUDIT_REFERENCE_ROOT",
+                str(HERE / "abcd_adhd_course3_clinical_missing15_v1" / "formal" / "predictions" / "abcd"),
+            )
+        )
         seeds = (31, 32, 33)
     result = []
     for seed in seeds:

@@ -95,6 +95,15 @@ def main() -> None:
                 close(statistics.mean(values), float(expected_mean), tolerance=1e-9)
                 close(statistics.stdev(values), float(expected_sd), tolerance=1e-9)
 
+    ablation = json.loads(
+        (ROOT / "results/abcd_presentation3_component_ablation_v1.json").read_text()
+    )
+    for record in ablation["records"]:
+        for metric in ("accuracy", "macro_f1", "macro_auroc"):
+            values = [float(item[metric]) for item in record["seed_metrics"]]
+            close(statistics.mean(values), float(record["aggregate"][metric]["mean"]))
+            close(statistics.stdev(values), float(record["aggregate"][metric]["sd"]))
+
     tracked = subprocess.run(
         ["git", "ls-files"], cwd=ROOT, check=True, text=True,
         stdout=subprocess.PIPE,
