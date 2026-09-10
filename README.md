@@ -10,29 +10,66 @@ sparse mixture-of-experts encoding, and reliability-aware decision fusion.
 > status-3 artifacts, and probability-ensemble ADNI summary are intentionally
 > absent. They described a different data representation or aggregation rule.
 
-## Current result boundary
+## Main matched comparisons
 
-All entries below are arithmetic means and sample standard deviations across
-three independently trained seeds. They are not probability ensembles.
+All entries are arithmetic means and sample standard deviations across three
+independently trained seeds, not probability ensembles.
+
+### ABCD presentation3 v4
+
+CERD and all six baselines use the same 2,868 participants, features,
+family-disjoint split, fixed 15% missingness manifest, and seeds 31/32/33.
+
+| Method | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
+|---|---:|---:|---:|
+| **CERD** | **59.24 ± 1.65** | **53.62 ± 1.40** | **74.43 ± 1.03** |
+| Flex-MoE | 57.71 ± 1.14 | 50.07 ± 1.03 | 72.58 ± 1.25 |
+| I2MoE | 55.29 ± 1.33 | 49.12 ± 1.20 | 73.38 ± 1.05 |
+| MoE++ | 57.06 ± 0.98 | 48.54 ± 0.78 | 73.44 ± 1.65 |
+| AnyMod | 54.48 ± 4.44 | 48.46 ± 4.23 | 69.60 ± 3.16 |
+| AGDiC | 54.80 ± 0.92 | 48.58 ± 0.99 | 70.70 ± 0.75 |
+| ACADiff | 54.32 ± 1.22 | 47.00 ± 0.71 | 68.31 ± 0.63 |
+
+CERD is highest on all three metrics. Its margins over the strongest baseline
+for each metric are +1.53 Accuracy, +3.55 Macro-F1, and +0.99 Macro-AUROC
+percentage points. Seed-level values are in the
+[ABCD matched report](results/abcd_adhd_presentation3_snp_missing15_v4.md).
+The 71 structural variables are correctly named as T1 regional signal
+intensities; every method receives the same variables, so the naming correction
+does not alter comparison fairness.
+
+### ADNI matched formal campaign
+
+All methods use the same frozen ADNI split and seeds 0/1/2.
+
+| Method | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
+|---|---:|---:|---:|
+| CERD | 64.47 ± 0.83 | **64.26 ± 1.00** | **80.57 ± 1.14** |
+| Flex-MoE | 62.26 ± 1.09 | 60.62 ± 2.12 | 77.75 ± 1.03 |
+| I2MoE | 64.05 ± 2.27 | 61.83 ± 1.89 | 79.35 ± 1.63 |
+| MoE++ | 59.75 ± 0.54 | 58.85 ± 2.06 | 79.23 ± 1.39 |
+| AnyMod | **64.78 ± 4.63** | 63.55 ± 4.28 | 79.77 ± 2.12 |
+| AGDiC | 58.60 ± 3.36 | 56.54 ± 2.38 | 75.10 ± 1.36 |
+| ACADiff | 55.87 ± 0.48 | 52.14 ± 1.20 | 71.10 ± 1.24 |
+
+CERD is highest on Macro-F1 and Macro-AUROC; AnyMod is 0.31 points higher on
+Accuracy but has much larger seed variability. See the
+[ADNI matched report](results/adni_matched_formal_v3.md).
+
+## Separate representation results
+
+These rows are not inserted into either matched table because their model or
+feature configuration differs from the corresponding frozen campaign.
 
 | Dataset and evaluation | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
 |---|---:|---:|---:|
-| ABCD v4, matched main comparison | **59.24 ± 1.65** | **53.62 ± 1.40** | **74.43 ± 1.03** |
-| ABCD v5, seed-specific validation-selected checkpoints | 57.71 ± 1.56 | 52.66 ± 1.25 | 73.63 ± 0.87 |
+| ABCD v5, validation-selected checkpoints | 57.71 ± 1.56 | 52.66 ± 1.25 | 73.63 ± 0.87 |
 | ABCD v5, fixed 14-epoch development-pool refit | 58.76 ± 2.20 | 55.49 ± 1.29 | 75.38 ± 0.76 |
-| ADNI, direct three-seed evaluation | **65.30 ± 1.79** | **64.48 ± 0.99** | **80.81 ± 0.56** |
+| ADNI, later direct CERD evaluation | 65.30 ± 1.79 | 64.48 ± 0.99 | 80.81 ± 0.56 |
 
-The ABCD v4 row is the main matched experiment: CERD and six baselines share
-the same participants, features, family-disjoint split, and missingness table.
-The 71 structural variables in that experiment are correctly named here as T1
-regional signal intensities; correcting their description does not invalidate
-the common-input comparison. The v5 rows are a separate representation study
-using true regional volumes and thickness. Its validation feature screen
-reached 61.35% Accuracy, but that is not a held-out test result. Matched
-baselines have not yet been rerun on v5, so no v5 superiority claim is made.
-Exact seed-level records are in [`results/`](results/README.md).
-The results directory also contains the complete matched ADNI baseline table;
-the later 65.30 direct CERD run is kept separate from that earlier campaign.
+The v5 feature screen reached 61.35% validation Accuracy, which is not a
+held-out test result. Matched baselines have not yet been rerun on v5. Full
+seed-level records and scope notes are in [`results/`](results/README.md).
 
 ## Current ABCD endpoint and data
 
