@@ -82,6 +82,10 @@ for each metric. See the
 [updated ADNI matched report](results/adni_matched_updated_cerd_v4.md) and the
 [CERD seed-level receipt](results/adni_direct_three_seed_mean_v2.md).
 
+The current component ablations and strict modality-removal audit for both
+datasets are reported in
+[`results/current_two_dataset_ablation_and_modality_audit_v1.md`](results/current_two_dataset_ablation_and_modality_audit_v1.md).
+
 ## Separate representation results
 
 These rows are not inserted into either matched table because their model or

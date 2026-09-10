@@ -4,6 +4,15 @@ Only participant-free aggregate receipts are published here. Raw
 data, participant identifiers, per-participant predictions, logs, and model
 checkpoints are excluded.
 
+## Current two-dataset analyses
+
+[`current_two_dataset_ablation_and_modality_audit_v1.md`](current_two_dataset_ablation_and_modality_audit_v1.md)
+reports matched component ablations and strict leave-one-modality-out results
+for both ADNI and the ABCD clinical-course task. The accompanying
+[`cerd_three_seed_modality_audit_v1.json`](cerd_three_seed_modality_audit_v1.json)
+contains the participant-free seed-level replay audit and normalized modality
+allocation values.
+
 ## ABCD clinical-course rerun
 
 [`abcd_adhd_course3_snp_missing15_v1.md`](abcd_adhd_course3_snp_missing15_v1.md)
