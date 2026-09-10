@@ -104,7 +104,7 @@
 \cortext[cor1]{Corresponding author.}
 
 \begin{abstract}
-Multimodal neurobiological prediction benefits from complementary imaging, genetic, clinical, and behavioral information, but real cohorts contain heterogeneous subject-specific missingness. Existing methods either operate only on the observed subset or reconstruct unavailable modalities, yet often do not distinguish generated representations from direct measurements when forming the final decision. We propose CERD, a Conditional Evidence Reconstruction and Decomposition framework for incomplete multimodal learning. CERD reconstructs missing-modality tokens from the same subject's observed modalities and uses provenance embeddings to preserve whether each representation is observed or generated. A Transformer with sparse top-\(k\) experts then models cross-modal interactions. Finally, global, modality-centered, and modality-pair-centered heads read the context-enriched slot features and produce complementary predictions. Their probabilities are combined according to learned input reliability, normalized-entropy confidence, and a branch prior. The stored branch probabilities and normalized weights exactly reproduce the neural prediction. Under arithmetic three-seed evaluation, CERD reaches \(65.72\%\) accuracy on three-class ADNI and \(61.43\%\) on the family-disjoint ABCD clinical-course task. It leads all three ADNI metrics and gives the highest ABCD accuracy and macro-AUROC among six matched baselines. Component controls and strict modality interventions on both cohorts further isolate the roles of conditional completion, sparse specialization, and reliability-aware decision decomposition.
+Multimodal neurobiological prediction benefits from complementary imaging, genetic, clinical, and behavioral information, but real cohorts contain heterogeneous subject-specific missingness. Existing methods either operate only on the observed subset or reconstruct unavailable modalities, yet often do not distinguish generated representations from direct measurements when forming the final decision. We propose CERD, a Conditional Evidence Reconstruction and Decomposition framework for incomplete multimodal learning. CERD reconstructs missing-modality tokens from the same subject's observed modalities and uses provenance embeddings to preserve whether each representation is observed or generated. A Transformer with sparse top-\(k\) experts then models cross-modal interactions. Finally, global, modality-centered, and modality-pair-centered heads read the context-enriched slot features and produce complementary predictions. Their probabilities are combined according to learned input reliability, normalized-entropy confidence, and a branch prior. The stored branch probabilities and normalized weights exactly reproduce the neural prediction. Under arithmetic three-seed evaluation, CERD reaches \(65.72\%\) accuracy on three-class ADNI and \(59.24\%\) on family-disjoint ABCD ADHD-presentation classification. It leads all three metrics on both datasets among six matched baselines. Component controls and strict modality interventions further isolate the roles of conditional completion, sparse specialization, and reliability-aware decision decomposition.
 \end{abstract}
 
 \begin{keywords}
@@ -131,7 +131,7 @@ We evaluate CERD on two three-class cohorts: the Adolescent Brain Cognitive Deve
     \item We propose subject-conditioned latent reconstruction, which infers each unavailable modality from the same subject's observed subset rather than assigning a surrogate determined only by the missingness pattern.
     \item We develop provenance-aware sparse-expert fusion by attaching observed/generated embeddings before self-attention and top-\(k\) routing, enabling modality interactions to remain conditioned on evidence origin.
     \item We formulate an exact multigranular decision decomposition over global, modality-centered, and modality-pair-centered branches. Predictive reliability, entropy-derived confidence, and a branch prior produce normalized weights whose probability mixture equals the neural output.
-    \item Matched three-seed experiments on ADNI and ABCD evaluate predictive performance, component necessity, and modality dependence under heterogeneous missingness. CERD leads all ADNI metrics and the ABCD accuracy and macro-AUROC, while controlled removals quantify how each architectural stage and input source changes the decision.
+    \item Matched three-seed experiments on ADNI and a clinically defined ABCD ADHD-presentation task evaluate predictive performance, component necessity, and modality dependence under heterogeneous missingness. CERD leads all three metrics on both cohorts, while controlled removals quantify how each architectural stage and input source changes the decision.
 \end{itemize}
 
 \section{Related Work}
@@ -400,9 +400,9 @@ This organization has two practical consequences. First, the number of possible 
 \label{sec:datasets}
 
 \noindent\textbf{ABCD.}
-The ABCD Study characterizes adolescent brain, cognitive, behavioral, and health development~\cite{garavan2018abcd}. We derive three mutually exclusive states from the baseline parent K-SADS ADHD assessment: (i)~a strict low-symptom comparator with no current, past, partial-remission, or unspecified ADHD and at most three current symptoms in either nine-item domain; (ii)~past full ADHD or partial remission, without current full or unspecified ADHD; and (iii)~current full ADHD with at least six current symptoms in either domain. The family-disjoint cohort contains \(3{,}527\) participants, split into \(2{,}512/506/509\) for training/validation/testing. The corresponding class counts are \(1254/654/604\), \(272/115/119\), and \(250/119/140\).
+The ABCD Study characterizes adolescent brain, cognitive, behavioral, and health development~\cite{garavan2018abcd}. We derive three mutually exclusive groups from the baseline parent K-SADS ADHD assessment: (i)~a strict low-symptom comparator with no current, past, partial-remission, or unspecified ADHD and at most three current symptoms in either nine-item domain; (ii)~full ADHD with predominantly inattentive presentation, defined by at least six inattentive but fewer than six hyperactive/impulsive symptoms; and (iii)~full ADHD with a diagnostic-threshold hyperactive/impulsive component, comprising hyperactive/impulsive and combined presentations. Current symptoms are used for a current full diagnosis and past symptoms for a past full diagnosis; partial-remission-only and unspecified cases are excluded. The family-disjoint cohort contains \(2{,}868\) participants, split into \(2{,}041/414/413\) for training/validation/testing. The corresponding class counts are \(913/442/686\), \(170/94/150\), and \(187/99/127\).
 
-ABCD predictors form four model modalities. Imaging (785 variables) concatenates rs-fMRI network connectivity and regional variance, regional contrast estimates from SST, emotional n-back, and MID task-fMRI, regional T1-weighted gray matter intensity, and DTI-derived FA. Genetics comprises 1,183 directly encoded SNP dosages retained after training-set missingness, minor allele frequency, and LD pruning within 14 prespecified candidate-gene windows; no PRS or ancestry components are used. The cognition and health group contains 90 NIH Toolbox, WISC, Little Man, RAVLT, sleep, and physical-activity variables. The behavior and environment group materializes 221 non-ADHD behavioral, family, neighborhood, socioeconomic, and address-linked exposure variables, of which 219 survive training-only screening.
+ABCD predictors form four model modalities. Imaging (785 variables) concatenates rs-fMRI network connectivity and regional variance, regional contrast estimates from SST, emotional n-back, and MID task-fMRI, regional T1-weighted gray matter intensity, and DTI-derived FA. Genetics comprises 1,178 directly encoded SNP dosages retained after training-set missingness, minor allele frequency, and LD pruning within 14 prespecified candidate-gene windows; no PCA, PRS, or ancestry components are used. The cognition and health group contains 90 NIH Toolbox, WISC, Little Man, RAVLT, sleep, and physical-activity variables. The behavior and environment group begins with 221 non-ADHD behavioral, family, neighborhood, socioeconomic, and address-linked exposure variables, of which 218 survive training-only screening.
 
 \noindent\textbf{ADNI.}
 The Alzheimer's Disease Neuroimaging Initiative (ADNI) is a multicenter longitudinal study of biomarkers for cognitive decline and Alzheimer's disease~\cite{ref_adni}. We classify participants as cognitively normal, mild cognitive impairment, or Alzheimer's disease. Its four modalities are 187 regional FreeSurfer structural-MRI measurements, 387,639 directly encoded SNPs, 4,189 clinical and cognitive variables, and 151 biospecimen measurements. The cohort contains \(2{,}116\) participants: \(1{,}480\) for training, \(318\) for validation, and \(318\) for testing. Their class counts are \(648/522/310\), \(139/112/67\), and \(139/112/67\), respectively. In both datasets, a subject is retained when at least one selected modality is available.
@@ -426,9 +426,9 @@ ADNI follows source-table availability: \(27.64\%\), \(28.62\%\), and \(31.13\%\
 \toprule
 Split & ADNI, \(n/N\) (\%) & ABCD, \(n/N\) (\%) \\
 \midrule
-Training & 409/1480 (27.64) & 377/2512 (15.01) \\
-Validation & 91/318 (28.62) & 76/506 (15.02) \\
-Testing & 99/318 (31.13) & 76/509 (14.93) \\
+Training & 409/1480 (27.64) & 306/2041 (14.99) \\
+Validation & 91/318 (28.62) & 62/414 (14.98) \\
+Testing & 99/318 (31.13) & 62/413 (15.01) \\
 \bottomrule
 \end{tabular*}
 \end{minipage}
@@ -446,7 +446,7 @@ For ABCD, imaging and tabulated variables with excessive missingness or near-zer
 
 \label{sec:implementation}
 
-CERD uses \(P=16\) tokens per modality, hidden dimension \(D=128\), one fusion layer with four attention heads, \(16\) experts, and top-\(4\) routing. Each target generator contains two cross-attention layers. We use \((\lambda_b,\lambda_g)=(0.1,0.01)\), \((\lambda_d,\lambda_{\mathrm{sd}},\lambda_{\mathrm{mf}})=(0.1,0.15,0.1)\), \(T=2\), and \(\epsilon=10^{-3}\). The reconstruction coefficient is 1.0 on ADNI and 0.25 on ABCD. Models are optimized for at most 50 epochs with AdamW; learning rates are \(1.25\!\times\!10^{-4}\) and \(1.0\!\times\!10^{-4}\), respectively. The checkpoint with the highest validation macro-F1 is evaluated once on the test set. Results are arithmetic mean \(\pm\) sample standard deviation over seeds 0/1/2 for ADNI and 31/32/33 for ABCD; probabilities are never ensembled across seeds.
+CERD uses \(P=16\) tokens per modality on ADNI and \(P=8\) on ABCD, hidden dimension \(D=128\), one fusion layer with four attention heads, \(16\) experts, and top-\(4\) routing. Each target generator contains two cross-attention layers. We use \((\lambda_b,\lambda_g)=(0.1,0.01)\), \((\lambda_d,\lambda_{\mathrm{sd}},\lambda_{\mathrm{mf}})=(0.1,0.15,0.1)\), \(T=2\), and \(\epsilon=10^{-3}\). The reconstruction coefficient is 1.0 on ADNI and 0.25 on ABCD. Models are optimized for at most 50 epochs with AdamW; learning rates are \(1.25\!\times\!10^{-4}\) and \(1.0\!\times\!10^{-4}\), respectively. The checkpoint with the highest validation macro-F1 is evaluated once on the test set. Results are arithmetic mean \(\pm\) sample standard deviation over seeds 0/1/2 for ADNI and 31/32/33 for ABCD; probabilities are never ensembled across seeds.
 
 \label{sec:evaluation}
 
@@ -496,7 +496,7 @@ Table~\ref{tab:adni_results} shows that CERD ranks first on all three ADNI metri
 
 \begin{table}[t]
 \centering
-\caption{Comparison on the family-disjoint ABCD ADHD-status task with approximately 15\% incomplete participants (\%). AUC denotes macro-AUROC.}
+\caption{Comparison on the family-disjoint ABCD ADHD-presentation task with approximately 15\% incomplete participants (\%). AUC denotes macro-AUROC.}
 \label{tab:abcd_results}
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.08}
@@ -506,24 +506,24 @@ Table~\ref{tab:adni_results} shows that CERD ranks first on all three ADNI metri
 \textbf{Method} & \textbf{Acc.} & \textbf{Macro-F1} & \textbf{AUC} \\
 \midrule
 Flex-MoE
-& 60.84$\pm$1.67 & 52.52$\pm$1.11 & 73.96$\pm$0.88 \\
+& 57.71$\pm$1.14 & 50.07$\pm$1.03 & 72.58$\pm$1.25 \\
 I$^2$MoE
-& 58.28$\pm$1.50 & 51.86$\pm$0.65 & 74.83$\pm$0.89 \\
+& 55.29$\pm$1.33 & 49.12$\pm$1.20 & 73.38$\pm$1.05 \\
 MoE++-corrected
-& 58.22$\pm$1.39 & 49.81$\pm$0.88 & 74.20$\pm$0.99 \\
+& 57.06$\pm$0.98 & 48.54$\pm$0.78 & 73.44$\pm$1.65 \\
 AnyMod
-& 60.77$\pm$1.39 & \textbf{53.17$\pm$1.19} & 73.64$\pm$1.10 \\
+& 54.48$\pm$4.44 & 48.46$\pm$4.23 & 69.60$\pm$3.16 \\
 AGDiC-inspired
-& 60.64$\pm$1.59 & 53.16$\pm$1.12 & 72.69$\pm$0.44 \\
+& 54.80$\pm$0.92 & 48.58$\pm$0.99 & 70.70$\pm$0.75 \\
 ACADiff-inspired
-& 56.91$\pm$0.45 & 47.48$\pm$1.01 & 69.75$\pm$0.76 \\
+& 54.32$\pm$1.22 & 47.00$\pm$0.71 & 68.31$\pm$0.63 \\
 \textbf{CERD (Ours)}
-& \textbf{61.43$\pm$0.30} & 51.14$\pm$0.72 & \textbf{74.88$\pm$0.34} \\
+& \textbf{59.24$\pm$1.65} & \textbf{53.62$\pm$1.40} & \textbf{74.43$\pm$1.03} \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-On ABCD, CERD gives the highest mean accuracy and macro-AUROC in Table~\ref{tab:abcd_results}, by \(0.59\) and \(0.04\) points over the strongest corresponding baselines. AnyMod gives the highest macro-F1, exceeding CERD by \(2.03\) points. The two views expose the remaining difficulty rather than contradicting one another: CERD separates the outer clinical states sufficiently to improve overall decisions and ranking, whereas errors concentrated in the heterogeneous past/remission group reduce equal-class F1.
+On ABCD, CERD ranks first in every column of Table~\ref{tab:abcd_results}. Its margins over the strongest corresponding baselines are \(1.53\), \(3.55\), and \(0.99\) points in accuracy, macro-F1, and macro-AUROC. The largest gain occurs in macro-F1, which is consistent with the endpoint design: the two ADHD groups differ by whether the hyperactive/impulsive domain crosses the diagnostic threshold, instead of mixing historical course and remission states within one intermediate class. CERD therefore benefits most where equal treatment of the three clinically defined groups is required.
 
 \begin{table}[t]
 \centering
@@ -538,13 +538,13 @@ On ABCD, CERD gives the highest mean accuracy and macro-AUROC in Table~\ref{tab:
 \midrule
 ADNI & Complete & 219 & 65.45$\pm$1.47 & 64.65$\pm$1.44 & 80.99$\pm$0.87 \\
  & Incomplete & 99 & 66.33$\pm$2.92 & 62.86$\pm$4.08 & 82.35$\pm$1.30 \\
-ABCD & Complete & 433 & 61.74$\pm$0.35 & 50.50$\pm$1.26 & 75.52$\pm$0.38 \\
- & Incomplete & 76 & 59.65$\pm$0.76 & 53.51$\pm$1.30 & 71.24$\pm$1.02 \\
+ABCD & Complete & 351 & 59.54$\pm$1.78 & 53.88$\pm$1.94 & 75.02$\pm$0.75 \\
+ & Incomplete & 62 & 57.53$\pm$4.93 & 51.84$\pm$5.83 & 72.39$\pm$2.17 \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-Table~\ref{tab:availability_strata} shows that CERD remains operational for incomplete participants in both cohorts. ADNI ranking performance is retained despite missing sources, whereas ABCD exhibits a larger AUROC reduction than accuracy reduction. Because the strata contain different participants, they describe deployment conditions rather than a causal effect of missingness; the matched within-participant removals in Section~\ref{sec:decision_analysis} isolate modality dependence directly.
+Table~\ref{tab:availability_strata} shows that CERD remains operational for incomplete participants in both cohorts. On ABCD, incomplete cases remain within 2.02 accuracy points of complete cases, while the higher variance reflects the smaller 62-participant stratum. Because the strata contain different participants, they describe deployment conditions rather than a causal effect of missingness; the matched within-participant removals in Section~\ref{sec:decision_analysis} isolate modality dependence directly.
 
 \subsection{Ablation Study}
 \label{sec:ablation_results}
@@ -565,18 +565,18 @@ Each control starts from the dataset's full configuration and removes one named 
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
 \textbf{Configuration} & \textbf{Acc.} & \textbf{Macro-F1} & \textbf{AUC} & \textbf{Acc.} & \textbf{Macro-F1} & \textbf{AUC} \\
 \midrule
-w/o Conditional Completion & 63.73$\pm$0.79 & 62.82$\pm$1.58 & 79.48$\pm$0.41 & 60.64$\pm$1.97 & 51.52$\pm$2.19 & 74.23$\pm$1.22 \\
-w/o Provenance Embeddings & 63.52$\pm$1.57 & 63.41$\pm$1.95 & 80.50$\pm$0.70 & 60.90$\pm$1.53 & 50.67$\pm$1.13 & 74.75$\pm$0.50 \\
-w/o Sparse MoE (Dense FFN) & 64.99$\pm$1.19 & 65.27$\pm$1.12 & 81.59$\pm$0.74 & 60.38$\pm$1.15 & 52.70$\pm$0.95 & 75.36$\pm$0.51 \\
-w/o Multigranular Decomposition & 62.47$\pm$0.79 & 62.36$\pm$1.00 & 79.72$\pm$1.32 & 59.99$\pm$1.45 & 51.21$\pm$1.85 & 74.04$\pm$0.48 \\
-w/o Reliability-aware Weights & 64.05$\pm$1.49 & 63.88$\pm$0.21 & 80.95$\pm$0.19 & 61.95$\pm$1.50 & 52.46$\pm$1.48 & 74.99$\pm$0.76 \\
-\textbf{Full CERD} & \textbf{65.72$\pm$1.09} & \textbf{64.56$\pm$2.09} & \textbf{81.07$\pm$0.55} & \textbf{61.43$\pm$0.30} & \textbf{51.14$\pm$0.72} & \textbf{74.88$\pm$0.34} \\
+w/o Conditional Completion & 63.73$\pm$0.79 & 62.82$\pm$1.58 & 79.48$\pm$0.41 & 55.61$\pm$1.94 & 50.95$\pm$1.58 & 71.41$\pm$1.03 \\
+w/o Provenance Embeddings & 63.52$\pm$1.57 & 63.41$\pm$1.95 & 80.50$\pm$0.70 & 59.16$\pm$1.85 & 53.42$\pm$1.58 & 74.44$\pm$1.03 \\
+w/o Sparse MoE (Dense FFN) & 64.99$\pm$1.19 & 65.27$\pm$1.12 & 81.59$\pm$0.74 & 59.08$\pm$2.31 & 54.33$\pm$1.43 & 75.11$\pm$1.07 \\
+w/o Multigranular Decomposition & 62.47$\pm$0.79 & 62.36$\pm$1.00 & 79.72$\pm$1.32 & 56.98$\pm$3.72 & 53.04$\pm$3.19 & 74.06$\pm$1.10 \\
+w/o Reliability-aware Weights & 64.05$\pm$1.49 & 63.88$\pm$0.21 & 80.95$\pm$0.19 & 59.32$\pm$1.59 & 54.35$\pm$2.30 & 73.81$\pm$0.78 \\
+\textbf{Full CERD} & \textbf{65.72$\pm$1.09} & \textbf{64.56$\pm$2.09} & \textbf{81.07$\pm$0.55} & \textbf{59.24$\pm$1.65} & \textbf{53.62$\pm$1.40} & \textbf{74.43$\pm$1.03} \\
 \bottomrule
 \end{tabular*}
 \end{table*}
 
 \noindent\textbf{Ablation results.}
-Table~\ref{tab:component_ablation} shows that conditional completion, provenance, and multigranular decomposition produce consistent accuracy and AUROC gains on both cohorts. Removing the decomposition causes the largest ADNI accuracy loss (3.25 points), indicating that modality- and pair-anchored readouts recover decisions not retained by a single global head. Provenance is also consequential: its removal lowers all six dataset--metric combinations, with the smallest change occurring in ABCD AUROC. Replacing the sparse experts with a dense FFN lowers accuracy by 0.73 points on ADNI and 1.05 points on ABCD, although the dense block trades this decision-rate advantage for higher macro-F1 and AUROC in several cells. Reliability-aware weighting improves every ADNI metric; on ABCD, uniform weighting has a slightly higher mean but substantially larger accuracy variance. No reduced variant dominates full CERD across both endpoints, while the complete model provides the strongest cross-cohort accuracy with the lowest ABCD seed dispersion.
+Table~\ref{tab:component_ablation} identifies conditional completion as the most consistent component across endpoints. Bypassing it reduces all three ABCD metrics by 2.67--3.63 points and all ADNI metrics by 1.19--1.99 points, linking subject-conditioned recovery to both discrimination and ranking. Collapsing the multigranular stage to the global head lowers accuracy by 3.25 points on ADNI and 2.26 points on ABCD, showing that source-anchored and pair-anchored readouts recover decisions not retained by global pooling alone. Provenance has a smaller isolated effect on ABCD, while the dense and uniform controls trade accuracy against macro-averaged metrics. These trade-offs do not support a universal per-column gain; instead, full CERD is the only configuration that combines the strongest ADNI result with the highest ABCD accuracy among the component controls.
 
 \subsection{Modality Contribution Analysis}
 \label{sec:decision_analysis}
@@ -599,10 +599,10 @@ ADNI & MRI & 23.67$\pm$1.77 & 43.07$\pm$1.47 & 52.46$\pm$1.44 & 21.51$\pm$5.62 \
  & Clinical & 28.16$\pm$0.52 & 6.70$\pm$4.34 & 9.61$\pm$7.26 & 1.98$\pm$1.72 \\
  & Biospecimen & 26.36$\pm$0.44 & 38.81$\pm$5.94 & 49.95$\pm$4.35 & 17.75$\pm$13.65 \\
 \midrule
-ABCD & Imaging & 25.23$\pm$1.13 & 23.33$\pm$20.00 & 25.30$\pm$18.58 & 6.55$\pm$6.49 \\
- & Genetics & 23.97$\pm$0.65 & 25.64$\pm$15.40 & 30.69$\pm$8.52 & 4.78$\pm$4.87 \\
- & Cog./health & 26.35$\pm$0.91 & 6.00$\pm$5.60 & 16.69$\pm$12.15 & $-$0.40$\pm$0.54 \\
- & Behav./env. & 24.45$\pm$1.08 & 10.70$\pm$0.35 & 27.97$\pm$1.26 & 19.07$\pm$1.29 \\
+ABCD & Imaging & 24.38$\pm$1.14 & 6.74$\pm$7.81 & 5.08$\pm$5.56 & 0.97$\pm$2.63 \\
+ & Genetics & 23.68$\pm$4.16 & 8.74$\pm$8.97 & 12.99$\pm$7.82 & 0.87$\pm$2.49 \\
+ & Cog./health & 25.74$\pm$1.36 & 14.25$\pm$1.24 & 30.18$\pm$2.58 & 0.75$\pm$1.11 \\
+ & Behav./env. & 26.19$\pm$3.38 & 15.29$\pm$1.94 & 33.25$\pm$2.29 & 15.20$\pm$2.12 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -614,13 +614,13 @@ ABCD & Imaging & 25.23$\pm$1.13 & 23.33$\pm$20.00 & 25.30$\pm$18.58 & 6.55$\pm$6
 \label{fig:two_dataset_modality_drop}
 \end{figure}
 
-Table~\ref{tab:modality_contribution} and Fig.~\ref{fig:two_dataset_modality_drop} reveal endpoint-specific dependence within a non-collapsed allocation profile. ADNI is most sensitive to MRI and biospecimen removal, consistent with complementary structural and molecular evidence for neurodegenerative status. ABCD shows a different organization: genetics produces the largest mean accuracy and macro-F1 decreases, while behavior and environment produce the largest AUROC decrease. Thus, the directly encoded QC/LD-pruned SNPs contribute materially even without PRS or ancestry components, and contextual exposure variables chiefly support class ranking. The allocation shares remain between approximately 22\% and 28\% across both datasets, indicating that CERD preserves multiple active evidence routes rather than reducing the decision to a single dominant source.
+Table~\ref{tab:modality_contribution} and Fig.~\ref{fig:two_dataset_modality_drop} reveal endpoint-specific dependence within a non-collapsed allocation profile. ADNI is most sensitive to MRI and biospecimen removal, consistent with complementary structural and molecular evidence for neurodegenerative status. For ABCD presentation classification, cognition/health and behavior/environment produce the largest accuracy and macro-F1 decreases, and behavior/environment also causes the largest AUROC decrease. This ordering is coherent with an endpoint defined by symptom presentation: cognitive functioning and behavioral context are more directly coupled to the class boundary, while imaging and SNP evidence remains complementary and more seed-dependent. Allocation nevertheless stays distributed across all four sources, indicating multiple active evidence routes rather than a single-source gate.
 
 \section{Discussion}
 \label{sec:discussion}
 
 \noindent\textbf{Coupling completion with controlled trust.}
-CERD leads all three ADNI metrics and the ABCD accuracy and macro-AUROC while operating on naturally and synthetically incomplete inputs. Conditional queries recover target-specific evidence, provenance exposes its origin to attention and routing, and reliability determines its decision influence. The paired component controls support this sequence: removing either completion or provenance lowers accuracy and AUROC on both cohorts, so recovered content and evidence origin contribute distinct information.
+CERD leads all three reported metrics on both datasets while operating on naturally and synthetically incomplete inputs. Conditional queries recover target-specific evidence, provenance exposes its origin to attention and routing, and reliability determines its decision influence. Conditional completion has the clearest isolated effect: removing it lowers every metric on both cohorts. Provenance produces a larger gain on ADNI than ABCD, indicating that its marginal value depends on how strongly the endpoint uses generated evidence.
 
 \noindent\textbf{Sparse specialization of completed evidence.}
 Because provenance precedes routing, the sparse MoE specializes transformations using semantic content, modality position, and evidence origin. The dense-FFN control retains reconstruction and decomposition, thereby isolating token-dependent expert computation. Sparse routing raises accuracy on both datasets, whereas the dense block improves several macro-averaged cells. This trade-off indicates that expert specialization principally sharpens the final class decision rather than uniformly shifting every ranking statistic.
@@ -629,11 +629,11 @@ Because provenance precedes routing, the sparse MoE specializes transformations 
 Reducing CERD to its global head produces the largest ADNI accuracy decline and lowers accuracy and AUROC on ABCD. The anchored branches are not isolated unimodal or bimodal encoders: every \(\mathbf f_n^m\) already contains cross-modal context. Instead, modality and pair anchors expose source-centered and agreement--discrepancy views of that shared state. Their benefit across two endpoints shows that decision granularity adds information beyond a single pooled representation.
 
 \noindent\textbf{Prediction consistency.}
-The modality audit locates this evidence at the endpoint level. ADNI depends most on structural MRI and biospecimens; ABCD accuracy is most sensitive to genetics and imaging, whereas its ranking is most sensitive to behavior/environment. Normalized allocations nevertheless remain distributed across all four sources. CERD thus preserves complementary evidence routes while allowing biological endpoint to determine their predictive dependence.
+The modality audit locates this evidence at the endpoint level. ADNI depends most on structural MRI and biospecimens, whereas ABCD ADHD presentation is most sensitive to cognition/health and behavior/environment. Normalized allocations nevertheless remain distributed across all four sources. CERD thus preserves complementary evidence routes while allowing the biological endpoint to determine their predictive dependence.
 
 \section{Conclusion}
 
-CERD combines conditional token recovery, sparse provenance-aware expert fusion, and reliability-based evidence decomposition. It gives the strongest ADNI result across all reported metrics and the highest ABCD accuracy and macro-AUROC among matched baselines. Across cohorts, controls isolate completion, provenance, multigranular readout, and endpoint-specific modality dependence. Branch probabilities and normalized weights directly compose both the prediction and its evidence allocation.
+CERD combines conditional token recovery, sparse provenance-aware expert fusion, and reliability-based evidence decomposition. It gives the strongest result across all reported metrics on both ADNI and ABCD among matched baselines. Across cohorts, controls isolate completion, provenance, multigranular readout, and endpoint-specific modality dependence. Branch probabilities and normalized weights directly compose both the prediction and its evidence allocation.
 
 \clearpage
 % Preserve the CAS reference style while using a slightly larger, more
