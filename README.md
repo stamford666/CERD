@@ -15,14 +15,29 @@ sparse mixture-of-experts encoding, and reliability-aware decision fusion.
 All entries are arithmetic means and sample standard deviations across three
 independently trained seeds, not probability ensembles.
 
-### ABCD presentation3 v4
+### ABCD clinical-course rerun
 
-The current ABCD source-to-feature definitions are documented in Chinese in
-[`docs/ABCD_COURSE3_MODALITIES_ZH.md`](docs/ABCD_COURSE3_MODALITIES_ZH.md).
-The document gives the exact rs/task-fMRI contrasts, T1 and DTI quantities,
-training-only SNP QC/LD pruning, cognition/health instruments, and every
-family/community/address-linked environmental source used for the new
-clinical-course rerun.
+The new mutually exclusive endpoint distinguishes strict low-symptom children,
+past ADHD or partial remission, and current full ADHD. It uses 3,527
+participants, a family-disjoint split, direct QC/LD-pruned SNP dosages, and the
+same fixed 15% missing-modality protocol for every method.
+
+| Method | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
+|---|---:|---:|---:|
+| **CERD** | **61.43 ± 0.30** | 51.14 ± 0.72 | **74.88 ± 0.34** |
+| Flex-MoE | 60.84 ± 1.67 | 52.52 ± 1.11 | 73.96 ± 0.88 |
+| I2MoE | 58.28 ± 1.50 | 51.86 ± 0.65 | 74.83 ± 0.89 |
+| MoE++ | 58.22 ± 1.39 | 49.81 ± 0.88 | 74.20 ± 0.99 |
+| AnyMod | 60.77 ± 1.39 | **53.17 ± 1.19** | 73.64 ± 1.10 |
+| AGDiC | 60.64 ± 1.59 | 53.16 ± 1.12 | 72.69 ± 0.44 |
+| ACADiff | 56.91 ± 0.45 | 47.48 ± 1.01 | 69.75 ± 0.76 |
+
+CERD is numerically highest on Accuracy and Macro-AUROC, but AnyMod is highest
+on Macro-F1. No significance claim is made. See the
+[course3 matched report](results/abcd_adhd_course3_snp_missing15_v1.md) and the
+[detailed Chinese modality audit](docs/ABCD_COURSE3_MODALITIES_ZH.md).
+
+### ABCD presentation3 v4
 
 CERD and all six baselines use the same 2,868 participants, features,
 family-disjoint split, fixed 15% missingness manifest, and seeds 31/32/33.

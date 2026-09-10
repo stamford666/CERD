@@ -4,6 +4,15 @@ Only participant-free aggregate receipts are published here. Raw
 data, participant identifiers, per-participant predictions, logs, and model
 checkpoints are excluded.
 
+## ABCD clinical-course rerun
+
+[`abcd_adhd_course3_snp_missing15_v1.md`](abcd_adhd_course3_snp_missing15_v1.md)
+and its [JSON receipt](abcd_adhd_course3_snp_missing15_v1.json) report the
+mutually exclusive low-symptom / past-or-remitted / current-ADHD endpoint.
+CERD obtains 61.43 ± 0.30 Accuracy, 51.14 ± 0.72 Macro-F1, and
+74.88 ± 0.34 Macro-AUROC. It has the highest numerical mean Accuracy and AUC
+in the matched table, while AnyMod has the highest Macro-F1.
+
 ## ABCD v4 matched main comparison
 
 [`abcd_adhd_presentation3_snp_missing15_v4.md`](abcd_adhd_presentation3_snp_missing15_v4.md)

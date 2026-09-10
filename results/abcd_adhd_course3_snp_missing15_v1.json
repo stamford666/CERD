@@ -1,0 +1,55 @@
+{
+  "schema": "cerd-abcd-course3-matched-result-v1",
+  "dataset": "ABCD",
+  "endpoint": {
+    "name": "baseline parent K-SADS ADHD clinical-course status",
+    "classes": {
+      "0": "strict low-symptom no-ADHD comparator",
+      "1": "past full ADHD or partial remission without current full ADHD",
+      "2": "current full ADHD with a DSM-consistent current symptom domain"
+    },
+    "class_counts": [1776, 888, 863],
+    "split_sizes": {
+      "training": 2512,
+      "validation": 506,
+      "testing": 509
+    },
+    "family_disjoint": true
+  },
+  "data": {
+    "manifest_sha256": "2eebd30c5bcfd4ab6c513ce8ca17ff5ef474e22079c2b772d2fc25987c24b0a2",
+    "input_dimensions": {
+      "imaging": 785,
+      "genetic": 1183,
+      "cognition_health": 90,
+      "behavior_environment_after_training_preprocessing": 219
+    },
+    "missing_participant_ratio": 0.15,
+    "genetics": "direct SNP dosage after training-only QC and LD pruning; no PRS or ancestry PCs"
+  },
+  "aggregation": {
+    "seeds": [31, 32, 33],
+    "rule": "arithmetic mean and sample standard deviation of independently evaluated seed-level metrics",
+    "probability_ensemble": false,
+    "prediction_rule": "raw softmax argmax"
+  },
+  "cerd": {
+    "per_seed_test_percent": [
+      {"seed": 31, "best_epoch": 7, "accuracy": 61.4931, "macro_f1": 51.1509, "macro_auroc": 75.2405},
+      {"seed": 32, "best_epoch": 19, "accuracy": 61.1002, "macro_f1": 51.8582, "macro_auroc": 74.5747},
+      {"seed": 33, "best_epoch": 14, "accuracy": 61.6896, "macro_f1": 50.4184, "macro_auroc": 74.8128}
+    ],
+    "test_mean_percent": {"accuracy": 61.4276, "macro_f1": 51.1425, "macro_auroc": 74.8760},
+    "test_sample_sd_percent": {"accuracy": 0.3001, "macro_f1": 0.7199, "macro_auroc": 0.3374}
+  },
+  "matched_test_mean_sd_percent": [
+    {"method": "CERD", "accuracy": "61.43 ± 0.30", "macro_f1": "51.14 ± 0.72", "macro_auroc": "74.88 ± 0.34"},
+    {"method": "Flex-MoE", "accuracy": "60.84 ± 1.67", "macro_f1": "52.52 ± 1.11", "macro_auroc": "73.96 ± 0.88"},
+    {"method": "I2MoE", "accuracy": "58.28 ± 1.50", "macro_f1": "51.86 ± 0.65", "macro_auroc": "74.83 ± 0.89"},
+    {"method": "MoE++", "accuracy": "58.22 ± 1.39", "macro_f1": "49.81 ± 0.88", "macro_auroc": "74.20 ± 0.99"},
+    {"method": "AnyMod", "accuracy": "60.77 ± 1.39", "macro_f1": "53.17 ± 1.19", "macro_auroc": "73.64 ± 1.10"},
+    {"method": "AGDiC", "accuracy": "60.64 ± 1.59", "macro_f1": "53.16 ± 1.12", "macro_auroc": "72.69 ± 0.44"},
+    {"method": "ACADiff", "accuracy": "56.91 ± 0.45", "macro_f1": "47.48 ± 1.01", "macro_auroc": "69.75 ± 0.76"}
+  ],
+  "claim_boundary": "CERD has the highest numerical three-seed mean Accuracy and Macro-AUROC, but not Macro-F1; no statistical-significance claim is made."
+}
