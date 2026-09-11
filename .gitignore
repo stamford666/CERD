@@ -19,3 +19,9 @@ predictions/
 *.h5
 *.h5ad
 *.csv
+*.aux
+*.bbl
+*.blg
+*.log
+*.abs
+*.synctex.gz

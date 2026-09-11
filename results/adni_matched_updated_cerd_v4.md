@@ -19,6 +19,5 @@ labels and test probabilities were unavailable to configuration selection.
 CERD has the highest three-seed mean on all three reported metrics. Compared
 with the strongest baseline for each metric, its descriptive margins are
 0.94 percentage point in Accuracy, 1.01 in Macro-F1, and 1.30 in
-Macro-AUROC. The direct CERD seed-level receipt and validation-selection scope
-are reported in
-[`adni_direct_three_seed_mean_v2.md`](adni_direct_three_seed_mean_v2.md).
+Macro-AUROC. Seed-level values and the validation-selection scope are retained
+in the machine-readable `adni_matched_updated_cerd_v4.json` receipt.

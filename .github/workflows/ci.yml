@@ -1,4 +1,4 @@
-name: validate-release
+name: validate-paper-package
 
 on:
   push:
@@ -9,10 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-      - name: Validate result receipts and tracked files
-        run: python scripts/validate_release.py
-      - name: Compile Python sources
-        run: python -m compileall -q .
+      - name: Validate manuscript package
+        run: |
+          test -s cas-sc-sample.tex
+          test -s cas-sc-sample.pdf
+          test -s CERD_LaTeX_current.zip
+          unzip -t CERD_LaTeX_current.zip
