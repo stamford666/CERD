@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared ABCD feature-building functions for the presentation-3 pipeline.
+"""Shared ABCD imaging, genetic, and environment feature-building functions.
 
 Variant eligibility and LD pruning are fitted on the fixed training split.  No
 label is read while selecting genetic or environmental predictors.  The

@@ -41,6 +41,7 @@ from baseline_runner import (  # noqa: E402
     acadiff_objective_protocol,
     adni_image_imputation_protocol,
     build_model,
+    binary_predictions_at_threshold,
     classification_generator_gradient_protocol,
     checkpoint_soup_protocol,
     clean_dynamic_router_protocol,
@@ -3706,6 +3707,23 @@ def evaluate(args_cli: argparse.Namespace) -> tuple[Path, Path]:
         validation["probabilities"],
         num_classes,
     )
+    if num_classes == 2:
+        decision_protocol = require_mapping(
+            source["protocol"].get("binary_decision"),
+            "source.protocol.binary_decision",
+        )
+        validation["raw_predictions"] = np.asarray(
+            validation["predictions"], dtype=np.int64
+        ).copy()
+        validation["predictions"] = binary_predictions_at_threshold(
+            validation["probabilities"], float(decision_protocol["threshold"])
+        )
+        replayed_validation_metrics = metric_bundle(
+            validation["labels"],
+            validation["predictions"],
+            validation["probabilities"],
+            num_classes,
+        )
     assert_metric_tree_close(
         source["validation"],
         replayed_validation_metrics,
@@ -3764,6 +3782,14 @@ def evaluate(args_cli: argparse.Namespace) -> tuple[Path, Path]:
         modality_dict,
         num_classes,
     )
+    if num_classes == 2:
+        testing["raw_predictions"] = np.asarray(
+            testing["predictions"], dtype=np.int64
+        ).copy()
+        testing["predictions"] = binary_predictions_at_threshold(
+            testing["probabilities"],
+            float(source["protocol"]["binary_decision"]["threshold"]),
+        )
     test_metrics = metric_bundle(
         testing["labels"], testing["predictions"], testing["probabilities"], num_classes
     )

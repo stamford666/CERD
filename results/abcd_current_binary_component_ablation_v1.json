@@ -1,0 +1,379 @@
+{
+  "schema": "abcd-current-binary-component-ablation-v1",
+  "endpoint": "strict low-symptom non-ADHD control vs current full ADHD",
+  "aggregation": "arithmetic mean and sample standard deviation across seeds 31/32/33; no probability ensemble",
+  "selection": "the full configuration was selected on validation only; every control changes only its named component, selects its checkpoint by the same validation rule, and is evaluated once on test after strict replay",
+  "records": [
+    {
+      "name": "Full CERD",
+      "arm": "full",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 78.87788778877888,
+          "macro_f1": 77.98565071292344,
+          "macro_auroc": 85.17303370786516
+        },
+        {
+          "seed": 32,
+          "accuracy": 77.55775577557755,
+          "macro_f1": 77.40393051412528,
+          "macro_auroc": 85.09662921348315
+        },
+        {
+          "seed": 33,
+          "accuracy": 78.87788778877888,
+          "macro_f1": 78.04546689611449,
+          "macro_auroc": 85.07865168539325
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 78.43784378437844,
+          "sd": 0.7621785731876309
+        },
+        "macro_f1": {
+          "mean": 77.81168270772106,
+          "sd": 0.3543880394137503
+        },
+        "macro_auroc": {
+          "mean": 85.11610486891385,
+          "sd": 0.05011454287243703
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 78.51851851851852,
+          "sd": 4.625924443258072
+        },
+        "macro_f1": {
+          "mean": 76.70190314678727,
+          "sd": 3.5174272760140752
+        },
+        "macro_auroc": {
+          "mean": 85.70370370370371,
+          "sd": 1.3021033949071885
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "Dense FFN",
+      "arm": "dense_backbone",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 78.21782178217822,
+          "macro_f1": 77.16706247716478,
+          "macro_auroc": 85.36629213483145
+        },
+        {
+          "seed": 32,
+          "accuracy": 79.20792079207921,
+          "macro_f1": 78.03564648080176,
+          "macro_auroc": 85.82921348314605
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.86798679867987,
+          "macro_f1": 78.80025233698458,
+          "macro_auroc": 86.02247191011236
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 79.09790979097909,
+          "sd": 0.8305648443642166
+        },
+        "macro_f1": {
+          "mean": 78.00098709831704,
+          "sd": 0.8171463970123269
+        },
+        "macro_auroc": {
+          "mean": 85.73932584269663,
+          "sd": 0.3371984805735322
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 76.29629629629629,
+          "sd": 3.3945005147821057
+        },
+        "macro_f1": {
+          "mean": 73.04126625211984,
+          "sd": 3.6616860794818056
+        },
+        "macro_auroc": {
+          "mean": 84.37037037037037,
+          "sd": 1.2239045660635757
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "Single expert (E=1)",
+      "arm": "single_expert",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 78.21782178217822,
+          "macro_f1": 77.41869918699187,
+          "macro_auroc": 85.96404494382023
+        },
+        {
+          "seed": 32,
+          "accuracy": 76.89768976897689,
+          "macro_f1": 76.80649112063686,
+          "macro_auroc": 86.71011235955055
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.86798679867987,
+          "macro_f1": 79.34975699681581,
+          "macro_auroc": 86.16629213483147
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 78.32783278327832,
+          "sd": 1.4882012385554135
+        },
+        "macro_f1": {
+          "mean": 77.85831576814819,
+          "sd": 1.3274024947448089
+        },
+        "macro_auroc": {
+          "mean": 86.28014981273408,
+          "sd": 0.38584559776763355
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 74.07407407407408,
+          "sd": 2.566001196398336
+        },
+        "macro_f1": {
+          "mean": 72.74981879786573,
+          "sd": 1.6184139478475754
+        },
+        "macro_auroc": {
+          "mean": 86.14814814814815,
+          "sd": 1.6679007776589168
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "w/o multigranular decomposition",
+      "arm": "no_multigranular_decomposition",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 79.53795379537954,
+          "macro_f1": 79.15631102432097,
+          "macro_auroc": 85.68988764044944
+        },
+        {
+          "seed": 32,
+          "accuracy": 77.55775577557755,
+          "macro_f1": 77.37812911725955,
+          "macro_auroc": 85.8561797752809
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.86798679867987,
+          "macro_f1": 78.51638324828845,
+          "macro_auroc": 85.52808988764046
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 78.98789878987897,
+          "sd": 1.2494847845545205
+        },
+        "macro_f1": {
+          "mean": 78.35027446328967,
+          "sd": 0.9006535515893342
+        },
+        "macro_auroc": {
+          "mean": 85.69138576779028,
+          "sd": 0.16405007431307966
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 74.81481481481482,
+          "sd": 5.592469952052409
+        },
+        "macro_f1": {
+          "mean": 72.79156223893067,
+          "sd": 3.9221769124809995
+        },
+        "macro_auroc": {
+          "mean": 84.74074074074075,
+          "sd": 1.4796284707731973
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "w/o conditional completion",
+      "arm": "no_completion",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 76.89768976897689,
+          "macro_f1": 75.38986354775828,
+          "macro_auroc": 84.52584269662921
+        },
+        {
+          "seed": 32,
+          "accuracy": 75.24752475247524,
+          "macro_f1": 75.13920948703081,
+          "macro_auroc": 85.43820224719101
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.86798679867987,
+          "macro_f1": 79.10226694555938,
+          "macro_auroc": 84.79101123595505
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 77.33773377337734,
+          "sd": 2.341451777094915
+        },
+        "macro_f1": {
+          "mean": 76.54377999344949,
+          "sd": 2.219256289306668
+        },
+        "macro_auroc": {
+          "mean": 84.9183520599251,
+          "sd": 0.4693205210326522
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 74.07407407407408,
+          "sd": 6.415002990995852
+        },
+        "macro_f1": {
+          "mean": 71.51914116520129,
+          "sd": 4.380306903792331
+        },
+        "macro_auroc": {
+          "mean": 82.66666666666667,
+          "sd": 2.784436463587031
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "w/o provenance encoding",
+      "arm": "no_provenance",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 78.87788778877888,
+          "macro_f1": 77.98565071292344,
+          "macro_auroc": 85.13258426966293
+        },
+        {
+          "seed": 32,
+          "accuracy": 80.85808580858085,
+          "macro_f1": 80.34404080171797,
+          "macro_auroc": 85.29438202247192
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.20792079207921,
+          "macro_f1": 78.10517864311521,
+          "macro_auroc": 85.06516853932584
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 79.64796479647964,
+          "sd": 1.06090767447667
+        },
+        "macro_f1": {
+          "mean": 78.81162338591888,
+          "sd": 1.3284574075623423
+        },
+        "macro_auroc": {
+          "mean": 85.16404494382023,
+          "sd": 0.11780083076028719
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 79.25925925925925,
+          "sd": 1.283000598199164
+        },
+        "macro_f1": {
+          "mean": 76.55098332523926,
+          "sd": 2.24722980567121
+        },
+        "macro_auroc": {
+          "mean": 85.48148148148148,
+          "sd": 0.925184888651617
+        }
+      },
+      "missing_subset_n": 45
+    },
+    {
+      "name": "Uniform branch weights",
+      "arm": "uniform_branch_weights",
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 78.87788778877888,
+          "macro_f1": 77.85896967482645,
+          "macro_auroc": 85.01123595505618
+        },
+        {
+          "seed": 32,
+          "accuracy": 76.23762376237624,
+          "macro_f1": 76.17924528301887,
+          "macro_auroc": 85.87865168539327
+        },
+        {
+          "seed": 33,
+          "accuracy": 79.53795379537954,
+          "macro_f1": 78.34916098100682,
+          "macro_auroc": 85.49662921348315
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 78.21782178217822,
+          "sd": 1.7463705023528604
+        },
+        "macro_f1": {
+          "mean": 77.46245864628405,
+          "sd": 1.1380023202570575
+        },
+        "macro_auroc": {
+          "mean": 85.46217228464418,
+          "sd": 0.43473321965064327
+        }
+      },
+      "missing_subset": {
+        "accuracy": {
+          "mean": 74.07407407407408,
+          "sd": 8.413197549333741
+        },
+        "macro_f1": {
+          "mean": 71.49643922664943,
+          "sd": 6.464327774247905
+        },
+        "macro_auroc": {
+          "mean": 85.7037037037037,
+          "sd": 0.3394500514782185
+        }
+      },
+      "missing_subset_n": 45
+    }
+  ]
+}

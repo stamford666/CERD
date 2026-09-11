@@ -1,0 +1,216 @@
+{
+  "schema": "abcd-current-binary-cerd-selection-v1",
+  "selection_scope": "validation only",
+  "rule": "highest three-seed arithmetic mean validation Macro-F1; then Accuracy and Macro-AUROC",
+  "selected_candidate": "p16d030e8k2",
+  "candidates": [
+    {
+      "name": "p16d030e8k2",
+      "validation": {
+        "accuracy": {
+          "mean": 77.32884399551067,
+          "sd": 1.8544008576720872
+        },
+        "macro_f1": {
+          "mean": 76.15202219071932,
+          "sd": 1.6683698473379964
+        },
+        "macro_auroc": {
+          "mean": 84.91839296924043,
+          "sd": 1.0994828393762728
+        }
+      }
+    },
+    {
+      "name": "p16d030cw0",
+      "validation": {
+        "accuracy": {
+          "mean": 78.00224466891133,
+          "sd": 1.5911837125429733
+        },
+        "macro_f1": {
+          "mean": 75.38251379944178,
+          "sd": 2.149884466417675
+        },
+        "macro_auroc": {
+          "mean": 84.86032642812305,
+          "sd": 1.1120118015167886
+        }
+      }
+    },
+    {
+      "name": "p16d035cw0",
+      "validation": {
+        "accuracy": {
+          "mean": 77.89001122334456,
+          "sd": 1.727811932473704
+        },
+        "macro_f1": {
+          "mean": 75.37468768371546,
+          "sd": 2.1911751506363597
+        },
+        "macro_auroc": {
+          "mean": 84.85404896421846,
+          "sd": 0.836121608096714
+        }
+      }
+    },
+    {
+      "name": "p8d030e8k2",
+      "validation": {
+        "accuracy": {
+          "mean": 76.31874298540964,
+          "sd": 0.514318259815471
+        },
+        "macro_f1": {
+          "mean": 75.1014828018772,
+          "sd": 0.7552271394293459
+        },
+        "macro_auroc": {
+          "mean": 84.2639673571877,
+          "sd": 0.7611020497791647
+        }
+      }
+    },
+    {
+      "name": "p8d030cw05",
+      "validation": {
+        "accuracy": {
+          "mean": 75.30864197530865,
+          "sd": 1.4017952858357818
+        },
+        "macro_f1": {
+          "mean": 74.8679479581413,
+          "sd": 1.1414112968656072
+        },
+        "macro_auroc": {
+          "mean": 84.0065913370998,
+          "sd": 0.5162832438667895
+        }
+      }
+    },
+    {
+      "name": "p8d035cw0",
+      "validation": {
+        "accuracy": {
+          "mean": 75.08417508417507,
+          "sd": 1.2139903284390585
+        },
+        "macro_f1": {
+          "mean": 74.73428487432176,
+          "sd": 0.9825564464823975
+        },
+        "macro_auroc": {
+          "mean": 84.14940364092905,
+          "sd": 0.5211831091316017
+        }
+      }
+    },
+    {
+      "name": "p8d030cw0",
+      "validation": {
+        "accuracy": {
+          "mean": 75.08417508417507,
+          "sd": 1.4676427419328877
+        },
+        "macro_f1": {
+          "mean": 74.70278144903916,
+          "sd": 1.2349432597091705
+        },
+        "macro_auroc": {
+          "mean": 84.01600753295669,
+          "sd": 0.390601918776809
+        }
+      }
+    },
+    {
+      "name": "p16d030cw05",
+      "validation": {
+        "accuracy": {
+          "mean": 75.86980920314255,
+          "sd": 2.2418613193533243
+        },
+        "macro_f1": {
+          "mean": 74.68288091924933,
+          "sd": 1.4347773344824633
+        },
+        "macro_auroc": {
+          "mean": 84.50721908349027,
+          "sd": 0.6699795947114224
+        }
+      }
+    }
+  ],
+  "aggregation": "arithmetic mean and sample standard deviation across independently trained seeds; no ensemble",
+  "seed_metrics": [
+    {
+      "seed": 31,
+      "best_epoch": 11,
+      "accuracy": 78.87788778877888,
+      "macro_f1": 77.98565071292344,
+      "macro_auroc": 85.17303370786516
+    },
+    {
+      "seed": 32,
+      "best_epoch": 10,
+      "accuracy": 77.55775577557755,
+      "macro_f1": 77.40393051412528,
+      "macro_auroc": 85.09662921348315
+    },
+    {
+      "seed": 33,
+      "best_epoch": 10,
+      "accuracy": 78.87788778877888,
+      "macro_f1": 78.04546689611449,
+      "macro_auroc": 85.07865168539325
+    }
+  ],
+  "test": {
+    "accuracy": {
+      "mean": 78.43784378437844,
+      "sd": 0.7621785731876309
+    },
+    "macro_f1": {
+      "mean": 77.81168270772106,
+      "sd": 0.3543880394137503
+    },
+    "macro_auroc": {
+      "mean": 85.11610486891385,
+      "sd": 0.05011454287243703
+    }
+  },
+  "test_subsets": {
+    "complete": {
+      "accuracy": {
+        "mean": 78.42377260981912,
+        "sd": 0.22377917410451267
+      },
+      "macro_f1": {
+        "mean": 77.94033687681281,
+        "sd": 0.26707482907034363
+      },
+      "macro_auroc": {
+        "mean": 85.44635544635544,
+        "sd": 0.3299465532921122
+      }
+    },
+    "missing": {
+      "accuracy": {
+        "mean": 78.51851851851852,
+        "sd": 4.625924443258072
+      },
+      "macro_f1": {
+        "mean": 76.70190314678727,
+        "sd": 3.5174272760140752
+      },
+      "macro_auroc": {
+        "mean": 85.70370370370371,
+        "sd": 1.3021033949071885
+      }
+    }
+  },
+  "test_subset_sizes": {
+    "complete": 258,
+    "missing": 45
+  }
+}

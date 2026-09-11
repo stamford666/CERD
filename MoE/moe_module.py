@@ -216,6 +216,13 @@ class AddtionalNoisyGate(NoisyGate):
         self.normalized_gate_loss = False
         self._normalized_loss_call_count = 0
 
+    @staticmethod
+    def cv_squared(x):
+        """Return a graph-safe on-device zero for <=1-expert groups."""
+        if x.ndim == 0 or x.numel() <= 1:
+            return x.sum() * 0.0
+        return NoisyGate.cv_squared(x)
+
     def set_topk_logit(self, logit):
         self.topk_logits.append(logit)
 
@@ -331,7 +338,11 @@ class AddtionalNoisyGate(NoisyGate):
                 )
             )
         else:
-            load = self._gates_to_load(gates)
+            load = (
+                (gates > 0).to(dtype=gates.dtype)
+                if self.training
+                else self._gates_to_load(gates)
+            )
 
         if (expert_indices != None):
             full_modality_mask = expert_indices == 0

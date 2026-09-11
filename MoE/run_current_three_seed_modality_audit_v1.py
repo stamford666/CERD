@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Three-seed CERD modality allocation and strict-removal audit.
+"""Three-seed CERD strict-removal modality faithfulness audit.
 
 The audit replays the frozen validation-selected checkpoints.  For each seed,
 it evaluates the ordinary test input and then, on originally complete test
@@ -56,13 +56,13 @@ def members(dataset: str) -> list[tuple[int, Path, Path]]:
         checkpoint_root = Path(
             os.environ.get(
                 "ABCD_MODALITY_AUDIT_CHECKPOINT_ROOT",
-                str(HERE / "abcd_adhd_course3_clinical_missing15_v1" / "validation" / "checkpoints" / "abcd"),
+                str(HERE / "abcd_current_binary_cerd_v1" / "validation" / "p16d030e8k2" / "checkpoints" / "abcd"),
             )
         )
         reference_root = Path(
             os.environ.get(
                 "ABCD_MODALITY_AUDIT_REFERENCE_ROOT",
-                str(HERE / "abcd_adhd_course3_clinical_missing15_v1" / "formal" / "predictions" / "abcd"),
+                str(HERE / "abcd_current_binary_cerd_v1" / "formal" / "predictions" / "abcd"),
             )
         )
         seeds = (31, 32, 33)
@@ -128,8 +128,27 @@ def strict_removal_forward(
     return torch.softmax(output["logits"], dim=1).detach().to(dtype=torch.float64, device="cpu").numpy()
 
 
-def metric_triplet(truth: np.ndarray, probability: np.ndarray) -> dict[str, float]:
-    bundle = baseline_runner.metric_bundle(truth, probability.argmax(axis=1), probability, 3)
+def predictions_from_probability(
+    probability: np.ndarray, decision_threshold: float | None
+) -> np.ndarray:
+    if decision_threshold is None:
+        return probability.argmax(axis=1)
+    return baseline_runner.binary_predictions_at_threshold(
+        probability, decision_threshold
+    )
+
+
+def metric_triplet(
+    truth: np.ndarray,
+    probability: np.ndarray,
+    decision_threshold: float | None,
+) -> dict[str, float]:
+    bundle = baseline_runner.metric_bundle(
+        truth,
+        predictions_from_probability(probability, decision_threshold),
+        probability,
+        probability.shape[1],
+    )
     return {metric: 100.0 * float(bundle[metric]) for metric in METRICS}
 
 
@@ -173,7 +192,18 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
         args.preprocessed,
         args.use_common_ids,
     )[3]
-    require(test_loader is not None and num_classes == 3, "invalid test loader")
+    require(test_loader is not None and num_classes >= 2, "invalid test loader")
+    if num_classes == 2:
+        decision_protocol = payload.get("decision_protocol")
+        require(
+            isinstance(decision_protocol, dict)
+            and decision_protocol.get("implementation_revision")
+            == "validation_absolute_threshold_v1",
+            "binary checkpoint lacks its frozen validation threshold",
+        )
+        decision_threshold = float(decision_protocol["threshold"])
+    else:
+        decision_threshold = None
     model = baseline_runner.build_model(args, 4, num_classes, full_modality_index).to(device)
     model.load_state_dict(payload["model"], strict=True)
     require(set(encoders) == set(payload["encoders"]), "encoder set mismatch")
@@ -225,31 +255,102 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
     complete_mask = observed.all(axis=1)
     require(int(complete_mask.sum()) == len(complete_truth_np), "complete-case alignment mismatch")
     reference_frame = pd.read_csv(reference)
-    columns = [f"probability_class_{index}" for index in range(3)]
+    columns = [f"probability_class_{index}" for index in range(num_classes)]
     require(len(reference_frame) == len(probability) and all(column in reference_frame for column in columns), "reference schema mismatch")
-    replay_error = float(np.max(np.abs(probability - reference_frame[columns].to_numpy(dtype=np.float64))))
+    reference_probability = reference_frame[columns].to_numpy(dtype=np.float64)
+    replay_error = float(np.max(np.abs(probability - reference_probability)))
     require(replay_error <= 2e-3, f"checkpoint replay mismatch: {replay_error}")
+    replay_prediction = predictions_from_probability(probability, decision_threshold)
+    reference_prediction = predictions_from_probability(
+        reference_probability, decision_threshold
+    )
+    require(
+        "prediction" in reference_frame
+        and np.array_equal(
+            reference_prediction,
+            reference_frame["prediction"].to_numpy(dtype=np.int64),
+        ),
+        "stored prediction does not match its frozen decision rule",
+    )
+    replay_prediction_mismatches = int(
+        np.sum(replay_prediction != reference_prediction)
+    )
 
-    full_complete = metric_triplet(complete_truth_np, complete_probability_np)
+    full_complete = metric_triplet(
+        complete_truth_np, complete_probability_np, decision_threshold
+    )
+    removed_probability_np = [np.concatenate(chunks) for chunks in removed_probability]
+    original_prediction = predictions_from_probability(
+        complete_probability_np, decision_threshold
+    )
+    row_index = np.arange(len(original_prediction))
+    original_confidence = complete_probability_np[row_index, original_prediction]
+    confidence_decreases = np.stack(
+        [
+            np.maximum(
+                original_confidence
+                - probability_removed[row_index, original_prediction],
+                0.0,
+            )
+            for probability_removed in removed_probability_np
+        ],
+        axis=1,
+    )
+    decrease_sum = confidence_decreases.sum(axis=1, keepdims=True)
+    relevance = np.divide(
+        confidence_decreases,
+        decrease_sum,
+        out=np.full_like(confidence_decreases, 0.25),
+        where=decrease_sum > 1e-12,
+    )
     rows = []
     for index, name in enumerate(DISPLAY[dataset]):
-        removed = metric_triplet(complete_truth_np, np.concatenate(removed_probability[index]))
+        probability_removed = removed_probability_np[index]
+        removed = metric_triplet(
+            complete_truth_np, probability_removed, decision_threshold
+        )
         rows.append(
             {
                 "modality": name,
                 "allocation_percent": 100.0 * float(allocation[:, index].mean()),
+                "counterfactual_relevance_percent": 100.0
+                * float(relevance[:, index].mean()),
+                "counterfactual_flip_rate_percent": 100.0
+                * float(
+                    np.mean(
+                        predictions_from_probability(
+                            probability_removed, decision_threshold
+                        )
+                        != original_prediction
+                    )
+                ),
                 "strict_removal_metrics": removed,
                 "decrease": {metric: full_complete[metric] - removed[metric] for metric in METRICS},
             }
         )
+    flip_rates = np.asarray(
+        [row["counterfactual_flip_rate_percent"] for row in rows],
+        dtype=np.float64,
+    )
+    decision_change_shares = (
+        100.0 * flip_rates / flip_rates.sum()
+        if flip_rates.sum() > 1e-12
+        else np.full(4, 25.0)
+    )
+    for row, share in zip(rows, decision_change_shares):
+        row["decision_change_relevance_percent"] = float(share)
     return {
         "seed": seed,
         "checkpoint_sha256": sha256(checkpoint),
         "reference_sha256": sha256(reference),
         "maximum_reference_replay_error": replay_error,
+        "reference_prediction_replay_mismatches": replay_prediction_mismatches,
         "test_rows": int(len(truth)),
         "complete_test_rows": int(complete_mask.sum()),
-        "full_test_metrics": metric_triplet(truth, probability),
+        "decision_threshold": decision_threshold,
+        "full_test_metrics": metric_triplet(
+            truth, probability, decision_threshold
+        ),
         "full_complete_case_metrics": full_complete,
         "modalities": rows,
     }
@@ -261,23 +362,87 @@ def mean_sd(values: list[float]) -> dict[str, float]:
 
 
 def aggregate(dataset: str, records: list[dict[str, Any]]) -> dict[str, Any]:
+    per_seed_drop_shares = []
+    for record in records:
+        positive_drops = np.maximum(
+            np.asarray(
+                [
+                    row["decrease"]["accuracy"]
+                    for row in record["modalities"]
+                ],
+                dtype=np.float64,
+            ),
+            0.0,
+        )
+        per_seed_drop_shares.append(
+            100.0 * positive_drops / positive_drops.sum()
+            if positive_drops.sum() > 1e-12
+            else np.full(4, 25.0)
+        )
     rows = []
     for index, name in enumerate(DISPLAY[dataset]):
         rows.append(
             {
                 "modality": name,
                 "allocation_percent": mean_sd([record["modalities"][index]["allocation_percent"] for record in records]),
+                "counterfactual_relevance_percent": mean_sd(
+                    [
+                        record["modalities"][index][
+                            "counterfactual_relevance_percent"
+                        ]
+                        for record in records
+                    ]
+                ),
+                "counterfactual_flip_rate_percent": mean_sd(
+                    [
+                        record["modalities"][index][
+                            "counterfactual_flip_rate_percent"
+                        ]
+                        for record in records
+                    ]
+                ),
+                "decision_change_relevance_percent": mean_sd(
+                    [
+                        record["modalities"][index][
+                            "decision_change_relevance_percent"
+                        ]
+                        for record in records
+                    ]
+                ),
+                "accuracy_drop_share_percent": mean_sd(
+                    [shares[index] for shares in per_seed_drop_shares]
+                ),
                 "decrease": {
                     metric: mean_sd([record["modalities"][index]["decrease"][metric] for record in records])
                     for metric in METRICS
                 },
             }
         )
+    relevance_vector = np.asarray(
+        [row["decision_change_relevance_percent"]["mean"] for row in rows]
+    )
+    drop_share_vector = np.asarray(
+        [row["accuracy_drop_share_percent"]["mean"] for row in rows]
+    )
+    relevance_rank = np.argsort(np.argsort(relevance_vector)).astype(np.float64)
+    drop_rank = np.argsort(np.argsort(drop_share_vector)).astype(np.float64)
     return {
         "dataset": dataset.upper(),
         "aggregation": "arithmetic mean and sample standard deviation across three independently trained seeds; no probability ensemble",
         "intervention": "originally complete test participants; selected input block zeroed, marked unavailable, and conditional completion disabled",
         "allocation": "mean normalized CERD modality decision allocation over the full test cohort; four shares sum to 100% within each seed",
+        "counterfactual_relevance": "label-free positive decrease in the original predicted-class probability after strict modality removal, normalized across four removals per participant; zero-total rows receive a uniform share",
+        "decision_change_relevance": "label-free strict-removal prediction-change rates normalized within each independently trained seed; four modality shares sum to 100%",
+        "accuracy_drop_share": "positive complete-case accuracy decreases normalized within each independently trained seed before arithmetic aggregation; four shares sum to 100%",
+        "faithfulness_correspondence": {
+            "pearson_r": float(
+                np.corrcoef(relevance_vector, drop_share_vector)[0, 1]
+            ),
+            "spearman_rho": float(
+                np.corrcoef(relevance_rank, drop_rank)[0, 1]
+            ),
+            "scope": "four modality-level mean shares; descriptive because n=4",
+        },
         "seed_records": records,
         "modalities": rows,
         "status": "PASS",
@@ -306,20 +471,48 @@ def plot(payload: dict[str, Any], output: Path) -> None:
     )
     x = np.arange(4)
     width = 0.34
-    fig, axis = plt.subplots(figsize=(3.45, 2.25))
-    for offset, dataset, color in ((-width / 2, "adni", "#355C7D"), (width / 2, "abcd", "#D17C2F")):
+    fig, axes = plt.subplots(1, 2, figsize=(7.05, 2.25), sharey=True)
+    for axis, dataset, title in zip(
+        axes, ("adni", "abcd"), ("ADNI", "ABCD")
+    ):
         rows = payload[dataset]["modalities"]
-        means = np.asarray([row["decrease"]["accuracy"]["mean"] for row in rows])
-        stds = np.asarray([row["decrease"]["accuracy"]["sd"] for row in rows])
-        axis.bar(x + offset, means, width, yerr=stds, capsize=2.0, color=color, edgecolor="white", linewidth=0.45, label=dataset.upper())
-    axis.axhline(0, color="#333333", linewidth=0.7)
-    axis.set_ylabel("Accuracy decrease (pp)")
-    axis.set_xticks(x, ("I", "G", "C", "B"))
-    axis.legend(frameon=False, ncol=2, loc="upper right")
-    axis.grid(axis="y", color="#dedede", linewidth=0.5)
-    axis.set_axisbelow(True)
-    axis.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout(pad=0.45)
+        relevance = np.asarray(
+            [row["decision_change_relevance_percent"]["mean"] for row in rows]
+        )
+        normalized_drop = np.asarray(
+            [row["accuracy_drop_share_percent"]["mean"] for row in rows]
+        )
+        axis.bar(
+            x - width / 2,
+            relevance,
+            width,
+            color="#355C7D",
+            edgecolor="white",
+            linewidth=0.45,
+            label="Decision-change relevance",
+        )
+        axis.bar(
+            x + width / 2,
+            normalized_drop,
+            width,
+            color="#D17C2F",
+            edgecolor="white",
+            linewidth=0.45,
+            label="Accuracy-drop share",
+        )
+        axis.set_title(title, pad=3.0, fontsize=8.7)
+        axis.set_xticks(x, ("I", "G", "C", "B"))
+        axis.grid(axis="y", color="#e4e4e4", linewidth=0.45)
+        axis.set_axisbelow(True)
+        axis.spines[["top", "right"]].set_visible(False)
+    axes[0].set_ylabel("Normalized contribution (%)")
+    axes[1].legend(
+        frameon=False,
+        ncol=2,
+        loc="upper right",
+        bbox_to_anchor=(1.0, 1.02),
+    )
+    fig.tight_layout(pad=0.45, w_pad=1.4)
     fig.savefig(output.with_suffix(".pdf"), bbox_inches="tight")
     fig.savefig(output.with_suffix(".png"), dpi=400, bbox_inches="tight")
     plt.close(fig)
@@ -333,7 +526,7 @@ def main() -> None:
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
     torch.set_float32_matmul_precision("high")
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    payload: dict[str, Any] = {"schema": "cerd-three-seed-modality-audit-v1"}
+    payload: dict[str, Any] = {"schema": "cerd-three-seed-modality-audit-v2"}
     original_cwd = Path.cwd()
     os.chdir(HERE)
     try:
@@ -345,7 +538,7 @@ def main() -> None:
             payload[dataset] = aggregate(dataset, records)
     finally:
         os.chdir(original_cwd)
-    output_json = args.output_dir / "cerd_three_seed_modality_audit_v1.json"
+    output_json = args.output_dir / "cerd_three_seed_modality_audit_v2.json"
     output_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     plot(payload, args.output_dir / "cerd_two_dataset_modality_drop_v1")
     print(output_json, flush=True)
