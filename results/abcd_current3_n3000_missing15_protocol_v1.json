@@ -1,0 +1,46 @@
+{
+  "status": "complete",
+  "started_at": "2026-09-12T15:01:44.439207+00:00",
+  "dataset_manifest": {
+    "path": "/data/mi2/shaowen/miccai2026/data/abcd_adhd_current3_snp_v2_n3000_random_missing15/manifest.json",
+    "sha256": "50368f54bc3e040fcb537d6edc8f8ea5c1c1eade7fa862a3804854ea6841e1ef"
+  },
+  "implementation": {
+    "runner": {
+      "path": "/tmp/CERD-correct.7AXOqU/MoE/baseline_runner.py",
+      "sha256": "92dbf3f7402a744bfddcaf515e8699a9507d650fb81eb6749b4b050f56c39313"
+    },
+    "evaluator": {
+      "path": "/tmp/CERD-correct.7AXOqU/MoE/evaluate_validation_checkpoint.py",
+      "sha256": "f59dd0cf491bc97e39f82187aea65fa6583fec7a75e203915aec42bfee773277"
+    }
+  },
+  "models": [
+    "our_moe",
+    "flex_moe",
+    "i2moe",
+    "moepp_corrected",
+    "anymod",
+    "agdic",
+    "acadiff"
+  ],
+  "seeds": [
+    31,
+    32,
+    33
+  ],
+  "aggregation": "arithmetic mean and sample standard deviation across three independent seeds; no ensemble",
+  "training_protocol": {
+    "epochs": 100,
+    "early_stopping": "disabled; every model/seed completes all 100 epochs",
+    "checkpoint_selection": "best validation Macro-F1; test evaluated once from the selected checkpoint",
+    "parallelism": "one training process per physical GPU; one seed assigned to each GPU"
+  },
+  "training_only_augmentation": {
+    "our_moe_modality_dropout_probability": 0.25,
+    "baseline_modality_dropout_probability": 0.25,
+    "class_weight_power": 0.75,
+    "note": "fixed method configurations inherited from the validation-selected protocol; the same frozen dataset manifest and class-weight rule are used by every method"
+  },
+  "completed_at": "2026-09-12T15:17:02.671605+00:00"
+}

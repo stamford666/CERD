@@ -1,0 +1,44 @@
+{
+  "schema": "adni-single-expert-control-v1",
+  "aggregation": "three-seed arithmetic mean and sample SD; no ensemble",
+  "seed_metrics": [
+    {
+      "seed": 0,
+      "best_epoch": 30,
+      "epochs_completed": 50,
+      "accuracy": 63.83647798742138,
+      "macro_f1": 63.61434806346696,
+      "macro_auroc": 82.26076280948945
+    },
+    {
+      "seed": 1,
+      "best_epoch": 19,
+      "epochs_completed": 50,
+      "accuracy": 64.77987421383648,
+      "macro_f1": 64.32328564681505,
+      "macro_auroc": 80.85806904508559
+    },
+    {
+      "seed": 2,
+      "best_epoch": 25,
+      "epochs_completed": 50,
+      "accuracy": 63.52201257861635,
+      "macro_f1": 63.15597671622426,
+      "macro_auroc": 80.28397557405889
+    }
+  ],
+  "aggregate": {
+    "accuracy": {
+      "mean": 64.0461215932914,
+      "sd": 0.6546119495176541
+    },
+    "macro_f1": {
+      "mean": 63.69787014216876,
+      "sd": 0.5881194505219636
+    },
+    "macro_auroc": {
+      "mean": 81.13426914287798,
+      "sd": 1.016925176232596
+    }
+  }
+}

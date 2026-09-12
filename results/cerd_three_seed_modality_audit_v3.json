@@ -1,0 +1,935 @@
+{
+  "abcd": {
+    "accuracy_drop_share": "positive complete-case accuracy decreases normalized within each independently trained seed before arithmetic aggregation; four shares sum to 100%",
+    "aggregation": "arithmetic mean and sample standard deviation across three independently trained seeds; no probability ensemble",
+    "allocation": "mean normalized CERD branch-weight allocation on the same originally complete participants used by strict removal; four shares sum to 100% within each seed",
+    "counterfactual_relevance": "label-free positive decrease in the original predicted-class probability after strict modality removal, normalized across four removals per participant; zero-total rows receive a uniform share",
+    "dataset": "ABCD",
+    "decision_change_relevance": "label-free strict-removal prediction-change rates normalized within each independently trained seed; four modality shares sum to 100%",
+    "intervention": "originally complete test participants; selected input block zeroed, marked unavailable, and conditional completion disabled",
+    "interventional_faithfulness_correspondence": {
+      "pearson_r": 0.8737558273486591,
+      "scope": "four modality-level mean shares; descriptive because n=4",
+      "spearman_rho": 0.7999999999999999
+    },
+    "modalities": [
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 12.063692820828743,
+          "sd": 10.567112134630799
+        },
+        "allocation_percent": {
+          "mean": 25.658196196572423,
+          "sd": 0.5283936298251867
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 22.64840182648402,
+          "sd": 6.4504889082777375
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 20.947185166514824,
+          "sd": 13.19029975664452
+        },
+        "decision_change_relevance_percent": {
+          "mean": 15.015803814254404,
+          "sd": 5.0204880903441165
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 5.022831050228308,
+            "sd": 3.5756661096715807
+          },
+          "macro_auroc": {
+            "mean": -0.17585050856037773,
+            "sd": 1.0081938039466394
+          },
+          "macro_f1": {
+            "mean": 4.410422902664162,
+            "sd": 1.9975660441766203
+          }
+        },
+        "modality": "Imaging",
+        "model_decision_evidence_percent": {
+          "mean": 25.69697163318662,
+          "sd": 0.5888289992637719
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 28.10421217042831,
+          "sd": 25.46509932166322
+        },
+        "allocation_percent": {
+          "mean": 24.175658470283363,
+          "sd": 1.1667100732504216
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 35.890410958904106,
+          "sd": 21.664633669555304
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 27.501210912481113,
+          "sd": 12.554087734044396
+        },
+        "decision_change_relevance_percent": {
+          "mean": 22.06719612594904,
+          "sd": 10.831538414511282
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 15.34246575342465,
+            "sd": 17.730070890261306
+          },
+          "macro_auroc": {
+            "mean": 1.756250004434989,
+            "sd": 4.129993500230264
+          },
+          "macro_f1": {
+            "mean": 19.023033303898483,
+            "sd": 18.31838926492355
+          }
+        },
+        "modality": "Genetics",
+        "model_decision_evidence_percent": {
+          "mean": 24.088492188007322,
+          "sd": 1.0895208076379777
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 27.628701750455818,
+          "sd": 9.262609285585533
+        },
+        "allocation_percent": {
+          "mean": 24.44400266187104,
+          "sd": 0.8197242017847807
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 47.21461187214612,
+          "sd": 3.6483989690298033
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 20.62105311387263,
+          "sd": 1.4092377352831
+        },
+        "decision_change_relevance_percent": {
+          "mean": 30.91170681148371,
+          "sd": 4.32982624310415
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 11.780821917808213,
+            "sd": 0.9878222672504064
+          },
+          "macro_auroc": {
+            "mean": 0.05643930851345166,
+            "sd": 1.3325318049267365
+          },
+          "macro_f1": {
+            "mean": 25.33970832757898,
+            "sd": 2.1793551852086805
+          }
+        },
+        "modality": "Cognition/health",
+        "model_decision_evidence_percent": {
+          "mean": 24.356038032193165,
+          "sd": 0.9268036376837184
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 32.20339325828713,
+          "sd": 10.397677245085225
+        },
+        "allocation_percent": {
+          "mean": 25.72214400693434,
+          "sd": 1.1771008253419937
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 48.949771689497716,
+          "sd": 3.1754043197650574
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 30.93055080713143,
+          "sd": 12.74671061799445
+        },
+        "decision_change_relevance_percent": {
+          "mean": 32.005293248312846,
+          "sd": 3.7286199634588346
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 13.789954337899538,
+            "sd": 1.1406389038170561
+          },
+          "macro_auroc": {
+            "mean": 14.052613788944171,
+            "sd": 2.3185883280548305
+          },
+          "macro_f1": {
+            "mean": 32.043165170302,
+            "sd": 0.575533085095292
+          }
+        },
+        "modality": "Behavior/environment",
+        "model_decision_evidence_percent": {
+          "mean": 25.858498166004818,
+          "sd": 1.1521525862354647
+        }
+      }
+    ],
+    "model_decision_evidence": "model-native predicted-class evidence from the ordinary forward pass: branch weight multiplied by that branch's predicted-class probability, with joint evidence divided over four modalities and pair evidence divided over its two modalities; four shares sum to 100% per participant",
+    "seed_records": [
+      {
+        "checkpoint_sha256": "aec9d5d488d5a494a47b8b55449999bf82fe7803af042f16a97b62c667a47bb4",
+        "complete_test_rows": 365,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 66.57534246575342,
+          "macro_auroc": 74.79853339681557,
+          "macro_f1": 55.421545567656935
+        },
+        "full_test_metrics": {
+          "accuracy": 66.43356643356644,
+          "macro_auroc": 73.77735795966785,
+          "macro_f1": 54.280897132865256
+        },
+        "maximum_reference_replay_error": 2.943954469092347e-08,
+        "modalities": [
+          {
+            "allocation_percent": 25.264545477008166,
+            "counterfactual_flip_rate_percent": 16.43835616438356,
+            "counterfactual_relevance_percent": 10.892006561840665,
+            "decision_change_relevance_percent": 9.27357032457496,
+            "decrease": {
+              "accuracy": 3.835616438356162,
+              "macro_auroc": 0.12204595884672642,
+              "macro_f1": 5.391423204741237
+            },
+            "modality": "Imaging",
+            "model_decision_evidence_percent": 25.434687238645882,
+            "strict_removal_metrics": {
+              "accuracy": 62.73972602739726,
+              "macro_auroc": 74.67648743796885,
+              "macro_f1": 50.0301223629157
+            }
+          },
+          {
+            "allocation_percent": 25.326372879008723,
+            "counterfactual_flip_rate_percent": 56.986301369863014,
+            "counterfactual_relevance_percent": 41.65428212650995,
+            "decision_change_relevance_percent": 32.14837712519319,
+            "decrease": {
+              "accuracy": 35.61643835616438,
+              "macro_auroc": 6.419657226979936,
+              "macro_f1": 38.62614053695779
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 25.127208608470553,
+            "strict_removal_metrics": {
+              "accuracy": 30.958904109589042,
+              "macro_auroc": 68.37887616983564,
+              "macro_f1": 16.795405030699147
+            }
+          },
+          {
+            "allocation_percent": 24.365514463757815,
+            "counterfactual_flip_rate_percent": 51.23287671232877,
+            "counterfactual_relevance_percent": 21.97448254462444,
+            "decision_change_relevance_percent": 28.902627511591962,
+            "decrease": {
+              "accuracy": 10.68493150684931,
+              "macro_auroc": -1.0912632043920496,
+              "macro_f1": 22.89577778637554
+            },
+            "modality": "Cognition/health",
+            "model_decision_evidence_percent": 24.25251987596897,
+            "strict_removal_metrics": {
+              "accuracy": 55.89041095890411,
+              "macro_auroc": 75.88979660120762,
+              "macro_f1": 32.525767781281395
+            }
+          },
+          {
+            "allocation_percent": 25.04356841620517,
+            "counterfactual_flip_rate_percent": 52.602739726027394,
+            "counterfactual_relevance_percent": 25.47922876702496,
+            "decision_change_relevance_percent": 29.675425038639872,
+            "decrease": {
+              "accuracy": 12.87671232876712,
+              "macro_auroc": 11.54845787799134,
+              "macro_f1": 32.12980462885717
+            },
+            "modality": "Behavior/environment",
+            "model_decision_evidence_percent": 25.185584409596167,
+            "strict_removal_metrics": {
+              "accuracy": 53.6986301369863,
+              "macro_auroc": 63.25007551882423,
+              "macro_f1": 23.291740938799762
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "eb7ec727963f81c16dc908601b30bc720bf74acd82db50ecab2840d2de2853b4",
+        "seed": 31,
+        "test_rows": 429
+      },
+      {
+        "checkpoint_sha256": "67d3f205df637aa3daad6e262632ef017e53bb0dacc74de800695b56d7b2fdc5",
+        "complete_test_rows": 365,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 68.76712328767123,
+          "macro_auroc": 75.64320929245123,
+          "macro_f1": 54.72096519619596
+        },
+        "full_test_metrics": {
+          "accuracy": 68.53146853146853,
+          "macro_auroc": 74.87083337378448,
+          "macro_f1": 53.63020183674975
+        },
+        "maximum_reference_replay_error": 2.9286956748642012e-08,
+        "modalities": [
+          {
+            "allocation_percent": 26.258728332715492,
+            "counterfactual_flip_rate_percent": 29.315068493150687,
+            "counterfactual_relevance_percent": 16.067502135297442,
+            "decision_change_relevance_percent": 18.57638888888889,
+            "decrease": {
+              "accuracy": 2.1917808219178028,
+              "macro_auroc": -1.2994258593431596,
+              "macro_f1": 5.727821782639509
+            },
+            "modality": "Imaging",
+            "model_decision_evidence_percent": 26.371367696213394,
+            "strict_removal_metrics": {
+              "accuracy": 66.57534246575342,
+              "macro_auroc": 76.94263515179439,
+              "macro_f1": 48.99314341355645
+            }
+          },
+          {
+            "allocation_percent": 22.993584975396118,
+            "counterfactual_flip_rate_percent": 36.986301369863014,
+            "counterfactual_relevance_percent": 17.709339185930993,
+            "decision_change_relevance_percent": 23.4375,
+            "decrease": {
+              "accuracy": 7.671232876712317,
+              "macro_auroc": -1.439352396905477,
+              "macro_f1": 16.102760481534247
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 22.954433450143632,
+            "strict_removal_metrics": {
+              "accuracy": 61.09589041095891,
+              "macro_auroc": 77.08256168935671,
+              "macro_f1": 38.618204714661715
+            }
+          },
+          {
+            "allocation_percent": 23.666345623053918,
+            "counterfactual_flip_rate_percent": 44.109589041095894,
+            "counterfactual_relevance_percent": 20.726721026452495,
+            "decision_change_relevance_percent": 27.951388888888893,
+            "decrease": {
+              "accuracy": 12.602739726027387,
+              "macro_auroc": -0.2572482891377206,
+              "macro_f1": 26.04206638534993
+            },
+            "modality": "Cognition/health",
+            "model_decision_evidence_percent": 23.485339536038165,
+            "strict_removal_metrics": {
+              "accuracy": 56.16438356164384,
+              "macro_auroc": 75.90045758158895,
+              "macro_f1": 28.678898810846032
+            }
+          },
+          {
+            "allocation_percent": 27.081342449743456,
+            "counterfactual_flip_rate_percent": 47.397260273972606,
+            "counterfactual_relevance_percent": 45.49643765231907,
+            "decision_change_relevance_percent": 30.034722222222225,
+            "decrease": {
+              "accuracy": 15.068493150684922,
+              "macro_auroc": 14.484475787966382,
+              "macro_f1": 31.4292242573962
+            },
+            "modality": "Behavior/environment",
+            "model_decision_evidence_percent": 27.188859410481907,
+            "strict_removal_metrics": {
+              "accuracy": 53.6986301369863,
+              "macro_auroc": 61.15873350448485,
+              "macro_f1": 23.291740938799762
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "bfee46a508c205046e650fca0672615d32744567c87b6353fa7a43553ed5668c",
+        "seed": 32,
+        "test_rows": 429
+      },
+      {
+        "checkpoint_sha256": "d4f0d47b7fecf247e80e00c95a22dca77c0e2c107b591fa65cc7c4f05dd07e8b",
+        "complete_test_rows": 365,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 67.12328767123287,
+          "macro_auroc": 76.48025148526986,
+          "macro_f1": 55.86220756345237
+        },
+        "full_test_metrics": {
+          "accuracy": 67.13286713286713,
+          "macro_auroc": 75.61500084709249,
+          "macro_f1": 55.23843980908117
+        },
+        "maximum_reference_replay_error": 2.9553222646860888e-08,
+        "modalities": [
+          {
+            "allocation_percent": 25.451314779993606,
+            "counterfactual_flip_rate_percent": 22.19178082191781,
+            "counterfactual_relevance_percent": 35.88204680240637,
+            "decision_change_relevance_percent": 17.197452229299365,
+            "decrease": {
+              "accuracy": 9.041095890410958,
+              "macro_auroc": 0.6498283748153,
+              "macro_f1": 2.112023720611738
+            },
+            "modality": "Imaging",
+            "model_decision_evidence_percent": 25.284859964700594,
+            "strict_removal_metrics": {
+              "accuracy": 58.082191780821915,
+              "macro_auroc": 75.83042311045456,
+              "macro_f1": 53.750183842840634
+            }
+          },
+          {
+            "allocation_percent": 24.20701755644524,
+            "counterfactual_flip_rate_percent": 13.698630136986301,
+            "counterfactual_relevance_percent": 23.140011425002395,
+            "decision_change_relevance_percent": 10.615711252653927,
+            "decrease": {
+              "accuracy": 2.7397260273972535,
+              "macro_auroc": 0.2884451832305075,
+              "macro_f1": 2.3401988932034143
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 24.183834505407777,
+            "strict_removal_metrics": {
+              "accuracy": 64.38356164383562,
+              "macro_auroc": 76.19180630203935,
+              "macro_f1": 53.52200867024896
+            }
+          },
+          {
+            "allocation_percent": 25.300147898801384,
+            "counterfactual_flip_rate_percent": 46.3013698630137,
+            "counterfactual_relevance_percent": 19.161955770540963,
+            "decision_change_relevance_percent": 35.881104033970274,
+            "decrease": {
+              "accuracy": 12.054794520547944,
+              "macro_auroc": 1.5178294190701251,
+              "macro_f1": 27.081280811011467
+            },
+            "modality": "Cognition/health",
+            "model_decision_evidence_percent": 25.330254684572353,
+            "strict_removal_metrics": {
+              "accuracy": 55.06849315068493,
+              "macro_auroc": 74.96242206619974,
+              "macro_f1": 28.780926752440905
+            }
+          },
+          {
+            "allocation_percent": 25.041521154854397,
+            "counterfactual_flip_rate_percent": 46.849315068493155,
+            "counterfactual_relevance_percent": 21.81598600205027,
+            "decision_change_relevance_percent": 36.30573248407644,
+            "decrease": {
+              "accuracy": 13.42465753424657,
+              "macro_auroc": 16.124907700874793,
+              "macro_f1": 32.57046662465261
+            },
+            "modality": "Behavior/environment",
+            "model_decision_evidence_percent": 25.201050677936372,
+            "strict_removal_metrics": {
+              "accuracy": 53.6986301369863,
+              "macro_auroc": 60.35534378439507,
+              "macro_f1": 23.291740938799762
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "853d3a2dd35c35bb1aa6b691e32725fc8821f9843735141b2829869c1cccae59",
+        "seed": 33,
+        "test_rows": 429
+      }
+    ],
+    "status": "PASS"
+  },
+  "adni": {
+    "accuracy_drop_share": "positive complete-case accuracy decreases normalized within each independently trained seed before arithmetic aggregation; four shares sum to 100%",
+    "aggregation": "arithmetic mean and sample standard deviation across three independently trained seeds; no probability ensemble",
+    "allocation": "mean normalized CERD branch-weight allocation on the same originally complete participants used by strict removal; four shares sum to 100% within each seed",
+    "counterfactual_relevance": "label-free positive decrease in the original predicted-class probability after strict modality removal, normalized across four removals per participant; zero-total rows receive a uniform share",
+    "dataset": "ADNI",
+    "decision_change_relevance": "label-free strict-removal prediction-change rates normalized within each independently trained seed; four modality shares sum to 100%",
+    "intervention": "originally complete test participants; selected input block zeroed, marked unavailable, and conditional completion disabled",
+    "interventional_faithfulness_correspondence": {
+      "pearson_r": 0.9788307402297922,
+      "scope": "four modality-level mean shares; descriptive because n=4",
+      "spearman_rho": 0.7999999999999999
+    },
+    "modalities": [
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 44.02824050978265,
+          "sd": 3.0956641976166996
+        },
+        "allocation_percent": {
+          "mean": 22.308798079893467,
+          "sd": 1.543533053237482
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 71.0806697108067,
+          "sd": 2.9709621455012343
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 37.30762487638014,
+          "sd": 4.815158818440221
+        },
+        "decision_change_relevance_percent": {
+          "mean": 35.438928336711875,
+          "sd": 3.791703317938472
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 43.074581430745816,
+            "sd": 1.4678311660567642
+          },
+          "macro_auroc": {
+            "mean": 21.506217728450462,
+            "sd": 5.616269338414991
+          },
+          "macro_f1": {
+            "mean": 52.462999495767555,
+            "sd": 1.4354661226917071
+          }
+        },
+        "modality": "MRI",
+        "model_decision_evidence_percent": {
+          "mean": 20.805923162167115,
+          "sd": 1.3382671791762046
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 9.185902916310438,
+          "sd": 10.519111134578745
+        },
+        "allocation_percent": {
+          "mean": 26.52590538813099,
+          "sd": 1.1637619409127522
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 35.92085235920852,
+          "sd": 11.590740556161903
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 19.765812982575717,
+          "sd": 0.9155437495528354
+        },
+        "decision_change_relevance_percent": {
+          "mean": 17.54770892641139,
+          "sd": 3.8229198908957787
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 9.28462709284627,
+            "sd": 12.35692145801814
+          },
+          "macro_auroc": {
+            "mean": 2.4921153562768645,
+            "sd": 3.1901868931233692
+          },
+          "macro_f1": {
+            "mean": 18.137834710224613,
+            "sd": 21.489066302505943
+          }
+        },
+        "modality": "Genetics",
+        "model_decision_evidence_percent": {
+          "mean": 27.2777928427837,
+          "sd": 1.246352354720891
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 6.614365375419038,
+          "sd": 3.798866695655464
+        },
+        "allocation_percent": {
+          "mean": 26.239485349194283,
+          "sd": 0.4369869959163412
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 21.46118721461187,
+          "sd": 7.248633728944083
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 11.42030548847877,
+          "sd": 0.5334356799368564
+        },
+        "decision_change_relevance_percent": {
+          "mean": 10.443363209213434,
+          "sd": 2.2512565710179184
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 6.6971080669710785,
+            "sd": 4.339901804987284
+          },
+          "macro_auroc": {
+            "mean": 1.9772383329235719,
+            "sd": 1.7173392190840304
+          },
+          "macro_f1": {
+            "mean": 9.609325657062698,
+            "sd": 7.255501698051995
+          }
+        },
+        "modality": "Clinical",
+        "model_decision_evidence_percent": {
+          "mean": 26.826515173485657,
+          "sd": 1.0900934734249623
+        }
+      },
+      {
+        "accuracy_drop_share_percent": {
+          "mean": 40.17149119848788,
+          "sd": 9.750749252511772
+        },
+        "allocation_percent": {
+          "mean": 24.925812838465834,
+          "sd": 0.5746304334786386
+        },
+        "counterfactual_flip_rate_percent": {
+          "mean": 73.6681887366819,
+          "sd": 5.485790347318137
+        },
+        "counterfactual_relevance_percent": {
+          "mean": 31.506256652565366,
+          "sd": 3.8105952577986795
+        },
+        "decision_change_relevance_percent": {
+          "mean": 36.5699995276633,
+          "sd": 1.9026500210578108
+        },
+        "decrease": {
+          "accuracy": {
+            "mean": 38.81278538812786,
+            "sd": 5.936073059360734
+          },
+          "macro_auroc": {
+            "mean": 17.74749924912849,
+            "sd": 13.64925660364726
+          },
+          "macro_f1": {
+            "mean": 49.94679548582354,
+            "sd": 4.346394244778195
+          }
+        },
+        "modality": "Biospecimen",
+        "model_decision_evidence_percent": {
+          "mean": 25.089768969271006,
+          "sd": 1.062019851647463
+        }
+      }
+    ],
+    "model_decision_evidence": "model-native predicted-class evidence from the ordinary forward pass: branch weight multiplied by that branch's predicted-class probability, with joint evidence divided over four modalities and pair evidence divided over its two modalities; four shares sum to 100% per participant",
+    "seed_records": [
+      {
+        "checkpoint_sha256": "2147c2a9255594ad266e51007df454b1eb8a446d2c5470da6f1943ac65ad9a9f",
+        "complete_test_rows": 219,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 64.84018264840182,
+          "macro_auroc": 80.9185814676748,
+          "macro_f1": 65.9226136377407
+        },
+        "full_test_metrics": {
+          "accuracy": 66.35220125786164,
+          "macro_auroc": 80.97346099322684,
+          "macro_f1": 66.86039968999575
+        },
+        "maximum_reference_replay_error": 2.9428863568270458e-08,
+        "modalities": [
+          {
+            "allocation_percent": 20.600774455560398,
+            "counterfactual_flip_rate_percent": 73.97260273972603,
+            "counterfactual_relevance_percent": 36.32654296074577,
+            "decision_change_relevance_percent": 38.29787234042553,
+            "decrease": {
+              "accuracy": 42.465753424657535,
+              "macro_auroc": 22.140500053382368,
+              "macro_f1": 53.73355891137254
+            },
+            "modality": "MRI",
+            "model_decision_evidence_percent": 19.346265052551548,
+            "strict_removal_metrics": {
+              "accuracy": 22.37442922374429,
+              "macro_auroc": 58.77808141429243,
+              "macro_f1": 12.189054726368159
+            }
+          },
+          {
+            "allocation_percent": 27.805787876044235,
+            "counterfactual_flip_rate_percent": 26.48401826484018,
+            "counterfactual_relevance_percent": 19.051715571067852,
+            "decision_change_relevance_percent": 13.711583924349878,
+            "decrease": {
+              "accuracy": -1.3698630136986338,
+              "macro_auroc": 0.22750376010304763,
+              "macro_f1": 1.440906957701415
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 28.58915953603509,
+            "strict_removal_metrics": {
+              "accuracy": 66.21004566210046,
+              "macro_auroc": 80.69107770757175,
+              "macro_f1": 64.48170668003928
+            }
+          },
+          {
+            "allocation_percent": 26.362353039386612,
+            "counterfactual_flip_rate_percent": 18.72146118721461,
+            "counterfactual_relevance_percent": 11.778184750157415,
+            "decision_change_relevance_percent": 9.692671394799053,
+            "decrease": {
+              "accuracy": 6.849315068493141,
+              "macro_auroc": 0.33226240254009554,
+              "macro_f1": 5.938836991824829
+            },
+            "modality": "Clinical",
+            "model_decision_evidence_percent": 26.49595198225757,
+            "strict_removal_metrics": {
+              "accuracy": 57.99086757990868,
+              "macro_auroc": 80.5863190651347,
+              "macro_f1": 59.98377664591587
+            }
+          },
+          {
+            "allocation_percent": 25.231086404900573,
+            "counterfactual_flip_rate_percent": 73.97260273972603,
+            "counterfactual_relevance_percent": 32.843556718028964,
+            "decision_change_relevance_percent": 38.29787234042553,
+            "decrease": {
+              "accuracy": 42.465753424657535,
+              "macro_auroc": 10.37493289461922,
+              "macro_f1": 53.73355891137254
+            },
+            "modality": "Biospecimen",
+            "model_decision_evidence_percent": 25.568623606915068,
+            "strict_removal_metrics": {
+              "accuracy": 22.37442922374429,
+              "macro_auroc": 70.54364857305558,
+              "macro_f1": 12.189054726368159
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "66247f4936cd33673da00df00e3d2964c4b1f8863ba62955dad6cc792af095bb",
+        "seed": 0,
+        "test_rows": 318
+      },
+      {
+        "checkpoint_sha256": "c47acc2fb00ac8422d5579d7898fc62ce4a404bfb1c2a30f432cfb24ac32a138",
+        "complete_test_rows": 219,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 67.12328767123287,
+          "macro_auroc": 81.89333112984866,
+          "macro_f1": 64.93863245781405
+        },
+        "full_test_metrics": {
+          "accuracy": 66.35220125786164,
+          "macro_auroc": 81.65415492009593,
+          "macro_f1": 64.03915891078799
+        },
+        "maximum_reference_replay_error": 2.9401397649841954e-08,
+        "modalities": [
+          {
+            "allocation_percent": 23.603815289392863,
+            "counterfactual_flip_rate_percent": 71.23287671232876,
+            "counterfactual_relevance_percent": 42.53777163562365,
+            "decision_change_relevance_percent": 31.137724550898206,
+            "decrease": {
+              "accuracy": 44.74885844748859,
+              "macro_auroc": 26.778418721446954,
+              "macro_f1": 52.749577731445896
+            },
+            "modality": "MRI",
+            "model_decision_evidence_percent": 21.975078627671284,
+            "strict_removal_metrics": {
+              "accuracy": 22.37442922374429,
+              "macro_auroc": 55.11491240840171,
+              "macro_f1": 12.189054726368159
+            }
+          },
+          {
+            "allocation_percent": 25.531327050842652,
+            "counterfactual_flip_rate_percent": 48.858447488584474,
+            "counterfactual_relevance_percent": 19.447755013422945,
+            "decision_change_relevance_percent": 21.357285429141715,
+            "decrease": {
+              "accuracy": 22.831050228310502,
+              "macro_auroc": 6.140557707079552,
+              "macro_f1": 42.382506413315916
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 26.108658194678014,
+            "strict_removal_metrics": {
+              "accuracy": 44.29223744292237,
+              "macro_auroc": 75.75277342276911,
+              "macro_f1": 22.556126044498136
+            }
+          },
+          {
+            "allocation_percent": 26.601885531318786,
+            "counterfactual_flip_rate_percent": 29.68036529680365,
+            "counterfactual_relevance_percent": 10.807205230480609,
+            "decision_change_relevance_percent": 12.974051896207586,
+            "decrease": {
+              "accuracy": 10.958904109589035,
+              "macro_auroc": 3.758785542765196,
+              "macro_f1": 17.966681580969045
+            },
+            "modality": "Clinical",
+            "model_decision_evidence_percent": 28.043628392154226,
+            "strict_removal_metrics": {
+              "accuracy": 56.16438356164384,
+              "macro_auroc": 78.13454558708347,
+              "macro_f1": 46.97195087684501
+            }
+          },
+          {
+            "allocation_percent": 24.26297396557516,
+            "counterfactual_flip_rate_percent": 78.99543378995433,
+            "counterfactual_relevance_percent": 27.207268120472783,
+            "decision_change_relevance_percent": 34.5309381237525,
+            "decrease": {
+              "accuracy": 31.963470319634702,
+              "macro_auroc": 9.369945771177754,
+              "macro_f1": 45.20096570161385
+            },
+            "modality": "Biospecimen",
+            "model_decision_evidence_percent": 23.87263523117048,
+            "strict_removal_metrics": {
+              "accuracy": 35.15981735159817,
+              "macro_auroc": 72.52338535867091,
+              "macro_f1": 19.7376667562002
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "40876686e1675384800d2ac87901a166301161a6c60d23ce967c3174e4e66d91",
+        "seed": 1,
+        "test_rows": 318
+      },
+      {
+        "checkpoint_sha256": "7c40674ba9113323421e560d606cb38bec3bc89cf56cd847341f6f040a884d8a",
+        "complete_test_rows": 219,
+        "decision_threshold": null,
+        "full_complete_case_metrics": {
+          "accuracy": 64.38356164383562,
+          "macro_auroc": 80.15563154143001,
+          "macro_f1": 63.0949165708524
+        },
+        "full_test_metrics": {
+          "accuracy": 64.46540880503144,
+          "macro_auroc": 80.57002703348091,
+          "macro_f1": 62.784778520520234
+        },
+        "maximum_reference_replay_error": 2.9724121053398278e-08,
+        "modalities": [
+          {
+            "allocation_percent": 22.72180449472715,
+            "counterfactual_flip_rate_percent": 68.0365296803653,
+            "counterfactual_relevance_percent": 33.05856003277101,
+            "decision_change_relevance_percent": 36.88118811881188,
+            "decrease": {
+              "accuracy": 42.00913242009133,
+              "macro_auroc": 15.59973441052206,
+              "macro_f1": 50.905861844484235
+            },
+            "modality": "MRI",
+            "model_decision_evidence_percent": 21.096425806278507,
+            "strict_removal_metrics": {
+              "accuracy": 22.37442922374429,
+              "macro_auroc": 64.55589713090795,
+              "macro_f1": 12.189054726368159
+            }
+          },
+          {
+            "allocation_percent": 26.240601237506084,
+            "counterfactual_flip_rate_percent": 32.42009132420091,
+            "counterfactual_relevance_percent": 20.797968363236357,
+            "decision_change_relevance_percent": 17.57425742574257,
+            "decrease": {
+              "accuracy": 6.392694063926939,
+              "macro_auroc": 1.1082846016479948,
+              "macro_f1": 10.590090759656512
+            },
+            "modality": "Genetics",
+            "model_decision_evidence_percent": 27.135560797638004,
+            "strict_removal_metrics": {
+              "accuracy": 57.99086757990868,
+              "macro_auroc": 79.04734693978202,
+              "macro_f1": 52.504825811195886
+            }
+          },
+          {
+            "allocation_percent": 25.75421747687745,
+            "counterfactual_flip_rate_percent": 15.981735159817351,
+            "counterfactual_relevance_percent": 11.67552648479829,
+            "decision_change_relevance_percent": 8.663366336633661,
+            "decrease": {
+              "accuracy": 2.2831050228310588,
+              "macro_auroc": 1.840667053465424,
+              "macro_f1": 4.92245839839422
+            },
+            "modality": "Clinical",
+            "model_decision_evidence_percent": 25.939965146045164,
+            "strict_removal_metrics": {
+              "accuracy": 62.10045662100456,
+              "macro_auroc": 78.31496448796459,
+              "macro_f1": 58.17245817245818
+            }
+          },
+          {
+            "allocation_percent": 25.283378144921777,
+            "counterfactual_flip_rate_percent": 68.0365296803653,
+            "counterfactual_relevance_percent": 34.46794511919434,
+            "decision_change_relevance_percent": 36.88118811881188,
+            "decrease": {
+              "accuracy": 42.00913242009133,
+              "macro_auroc": 33.497619081588496,
+              "macro_f1": 50.905861844484235
+            },
+            "modality": "Biospecimen",
+            "model_decision_evidence_percent": 25.828048069727476,
+            "strict_removal_metrics": {
+              "accuracy": 22.37442922374429,
+              "macro_auroc": 46.658012459841515,
+              "macro_f1": 12.189054726368159
+            }
+          }
+        ],
+        "reference_prediction_replay_mismatches": 0,
+        "reference_sha256": "de467786e8500ed5a913bffac44e32d1e88ae444e1f36c6199a0349e18756081",
+        "seed": 2,
+        "test_rows": 318
+      }
+    ],
+    "status": "PASS"
+  },
+  "schema": "cerd-three-seed-modality-audit-v3"
+}
