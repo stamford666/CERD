@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Three-seed CERD strict-removal modality faithfulness audit.
+"""Three-seed CERD model-native modality faithfulness audit.
 
 The audit replays the frozen validation-selected checkpoints.  For each seed,
 it evaluates the ordinary test input and then, on originally complete test
 participants, zeros one modality token block, marks that modality unavailable,
-and disables completion.  Seed-level metrics are aggregated by arithmetic
-mean and sample standard deviation; probabilities are never ensembled.
+and disables completion.  The audit separately records CERD's exact internal
+predicted-class evidence and a label-free strict-removal prediction-change share.
+The latter is compared with accuracy-drop share as an interventional faithfulness
+check. Seed-level metrics are aggregated by arithmetic mean and sample standard
+deviation; probabilities are never ensembled.
 """
 
 from __future__ import annotations
@@ -212,7 +215,7 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
         encoder.to(device).eval()
     model.eval()
 
-    all_probability, all_truth, all_allocation, all_observed = [], [], [], []
+    all_probability, all_truth, all_allocation, all_decision_evidence, all_observed = [], [], [], [], []
     complete_probability, complete_truth = [], []
     removed_probability: list[list[np.ndarray]] = [[], [], [], []]
     with torch.inference_mode():
@@ -230,11 +233,15 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
             )
             probability = torch.softmax(output["logits"], dim=1).detach().to(dtype=torch.float64, device="cpu").numpy()
             allocation = output["w"].detach().to(dtype=torch.float64, device="cpu").numpy()
+            decision_evidence = output["modality_decision_evidence"].detach().to(
+                dtype=torch.float64, device="cpu"
+            ).numpy()
             truth_np = truth.detach().cpu().numpy().astype(np.int64, copy=False)
             observed_np = observed_mask.detach().cpu().numpy().astype(bool, copy=False)
             all_probability.append(probability)
             all_truth.append(truth_np)
             all_allocation.append(allocation)
+            all_decision_evidence.append(decision_evidence)
             all_observed.append(observed_np)
             complete = observed_mask.all(dim=1)
             if complete.any():
@@ -249,6 +256,7 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
     probability = np.concatenate(all_probability)
     truth = np.concatenate(all_truth)
     allocation = np.concatenate(all_allocation)
+    decision_evidence = np.concatenate(all_decision_evidence)
     observed = np.concatenate(all_observed)
     complete_probability_np = np.concatenate(complete_probability)
     complete_truth_np = np.concatenate(complete_truth)
@@ -312,7 +320,9 @@ def run_seed(dataset: str, seed: int, checkpoint: Path, reference: Path, device:
         rows.append(
             {
                 "modality": name,
-                "allocation_percent": 100.0 * float(allocation[:, index].mean()),
+                "allocation_percent": 100.0 * float(allocation[complete_mask, index].mean()),
+                "model_decision_evidence_percent": 100.0
+                * float(decision_evidence[complete_mask, index].mean()),
                 "counterfactual_relevance_percent": 100.0
                 * float(relevance[:, index].mean()),
                 "counterfactual_flip_rate_percent": 100.0
@@ -385,6 +395,14 @@ def aggregate(dataset: str, records: list[dict[str, Any]]) -> dict[str, Any]:
             {
                 "modality": name,
                 "allocation_percent": mean_sd([record["modalities"][index]["allocation_percent"] for record in records]),
+                "model_decision_evidence_percent": mean_sd(
+                    [
+                        record["modalities"][index][
+                            "model_decision_evidence_percent"
+                        ]
+                        for record in records
+                    ]
+                ),
                 "counterfactual_relevance_percent": mean_sd(
                     [
                         record["modalities"][index][
@@ -430,11 +448,12 @@ def aggregate(dataset: str, records: list[dict[str, Any]]) -> dict[str, Any]:
         "dataset": dataset.upper(),
         "aggregation": "arithmetic mean and sample standard deviation across three independently trained seeds; no probability ensemble",
         "intervention": "originally complete test participants; selected input block zeroed, marked unavailable, and conditional completion disabled",
-        "allocation": "mean normalized CERD modality decision allocation over the full test cohort; four shares sum to 100% within each seed",
+        "allocation": "mean normalized CERD branch-weight allocation on the same originally complete participants used by strict removal; four shares sum to 100% within each seed",
+        "model_decision_evidence": "model-native predicted-class evidence from the ordinary forward pass: branch weight multiplied by that branch's predicted-class probability, with joint evidence divided over four modalities and pair evidence divided over its two modalities; four shares sum to 100% per participant",
         "counterfactual_relevance": "label-free positive decrease in the original predicted-class probability after strict modality removal, normalized across four removals per participant; zero-total rows receive a uniform share",
         "decision_change_relevance": "label-free strict-removal prediction-change rates normalized within each independently trained seed; four modality shares sum to 100%",
         "accuracy_drop_share": "positive complete-case accuracy decreases normalized within each independently trained seed before arithmetic aggregation; four shares sum to 100%",
-        "faithfulness_correspondence": {
+        "interventional_faithfulness_correspondence": {
             "pearson_r": float(
                 np.corrcoef(relevance_vector, drop_share_vector)[0, 1]
             ),
@@ -489,7 +508,7 @@ def plot(payload: dict[str, Any], output: Path) -> None:
             color="#355C7D",
             edgecolor="white",
             linewidth=0.45,
-            label="Decision-change relevance",
+            label="Prediction-change share",
         )
         axis.bar(
             x + width / 2,
@@ -526,7 +545,7 @@ def main() -> None:
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
     torch.set_float32_matmul_precision("high")
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    payload: dict[str, Any] = {"schema": "cerd-three-seed-modality-audit-v2"}
+    payload: dict[str, Any] = {"schema": "cerd-three-seed-modality-audit-v3"}
     original_cwd = Path.cwd()
     os.chdir(HERE)
     try:
@@ -538,7 +557,7 @@ def main() -> None:
             payload[dataset] = aggregate(dataset, records)
     finally:
         os.chdir(original_cwd)
-    output_json = args.output_dir / "cerd_three_seed_modality_audit_v2.json"
+    output_json = args.output_dir / "cerd_three_seed_modality_audit_v3.json"
     output_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     plot(payload, args.output_dir / "cerd_two_dataset_modality_drop_v1")
     print(output_json, flush=True)

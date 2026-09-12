@@ -14,6 +14,13 @@ symptom-positive/no-status, and current-full-ADHD groups. All aggregates are
 arithmetic means and sample standard deviations over seeds 31/32/33; no
 probability ensemble is used.
 
+## Current component and modality audits
+
+- [`current3_component_and_modality_audit_v2.md`](current3_component_and_modality_audit_v2.md): readable two-dataset component and strict-removal summary.
+- [`abcd_current3_component_suite_v1.json`](abcd_current3_component_suite_v1.json): nine ABCD cumulative/one-factor controls, all 100 epochs over seeds 31/32/33.
+- [`adni_single_expert_control_v1.json`](adni_single_expert_control_v1.json): ADNI one-expert control over seeds 0/1/2.
+- [`cerd_three_seed_modality_audit_v3.json`](cerd_three_seed_modality_audit_v3.json): frozen-checkpoint decision-change, exact decision-evidence, and removal-effect audit.
+
 ## Current ADNI task
 
 [`adni_matched_updated_cerd_v4.md`](adni_matched_updated_cerd_v4.md) and its

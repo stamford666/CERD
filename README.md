@@ -51,6 +51,24 @@ availability-stratified metrics, and frozen protocol are in
 The frozen ADNI receipt is
 [`results/adni_matched_updated_cerd_v4.md`](results/adni_matched_updated_cerd_v4.md).
 
+## Component and source-dependence checks
+
+The current three-seed controls use the same evaluation rules as the main tables.
+On ABCD, removing multigranular decomposition reduces Accuracy from 67.37 to
+61.07 and Macro-F1 from 54.38 to 50.14. Replacing the sparse pool by one expert
+gives 63.71 Accuracy and 52.14 Macro-F1. On ADNI, the corresponding single-expert
+control gives 64.05 Accuracy and 63.70 Macro-F1, compared with 65.72 and 64.56
+for full CERD.
+
+Frozen-checkpoint strict-removal audits normalize both prediction-change rates and
+positive Accuracy decreases across the four modalities. Their modality-level Pearson
+correlations are 0.979 on ADNI and 0.874 on ABCD (Spearman rho = 0.8 on both).
+All reference predictions are reproduced with zero label mismatches before the
+interventions are evaluated.
+
+The complete participant-free report is
+[`results/current3_component_and_modality_audit_v2.md`](results/current3_component_and_modality_audit_v2.md).
+
 ## ABCD labels and modalities
 
 | Class | Definition | Participants |
@@ -119,3 +137,12 @@ bash MoE/run_abcd_current3_n3000_missing15_formal_v1.sh
 ```
 
 Run `python scripts/validate_release.py` before publishing.
+
+The ABCD component suite, ADNI single-expert control, and frozen-checkpoint
+modality audit can be reproduced with:
+
+```bash
+bash MoE/run_abcd_current3_component_suite_v1.sh
+bash MoE/run_adni_single_expert_control_v1.sh
+python MoE/run_current_three_seed_modality_audit_v1.py
+```
