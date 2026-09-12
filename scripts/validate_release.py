@@ -33,31 +33,33 @@ def main() -> None:
             if len(values) != 3 or not all(0.0 <= float(value) <= 1.0 for value in values):
                 raise AssertionError(f"invalid matched ADNI values: {method}/{metric}")
 
-    current_main = json.loads(
-        (ROOT / "results/abcd_current_binary_cerd_v1.json").read_text()
+    current = json.loads(
+        (ROOT / "results/abcd_current3_n3000_missing15_formal_v1.json").read_text()
     )
-    for metric in ("accuracy", "macro_f1", "macro_auroc"):
-        values = [float(item[metric]) for item in current_main["seed_metrics"]]
-        close(statistics.mean(values), float(current_main["test"][metric]["mean"]))
-        close(statistics.stdev(values), float(current_main["test"][metric]["sd"]))
-
-    current_baselines = json.loads(
-        (ROOT / "results/abcd_current_binary_baselines_v1.json").read_text()
-    )
-    for method, block in current_baselines["methods"].items():
+    if current.get("schema") != "abcd-current3-n3000-missing15-full-rerun-v1":
+        raise AssertionError("unexpected current ABCD result schema")
+    if "no ensemble" not in current.get("aggregation", ""):
+        raise AssertionError("current ABCD receipt must use direct three-seed means")
+    if set(current["methods"]) != {
+        "our_moe", "flex_moe", "i2moe", "moepp_corrected",
+        "anymod", "agdic", "acadiff",
+    }:
+        raise AssertionError("current ABCD receipt does not contain all seven methods")
+    for method, block in current["methods"].items():
         for metric in ("accuracy", "macro_f1", "macro_auroc"):
             values = [float(item[metric]) for item in block["seed_metrics"]]
             close(statistics.mean(values), float(block["aggregate"][metric]["mean"]))
             close(statistics.stdev(values), float(block["aggregate"][metric]["sd"]))
+        if any(int(row["epochs_completed"]) != 100 for row in block["training"]):
+            raise AssertionError(f"incomplete 100-epoch run: {method}")
 
-    current_ablation = json.loads(
-        (ROOT / "results/abcd_current_binary_component_ablation_v1.json").read_text()
+    protocol = json.loads(
+        (ROOT / "results/abcd_current3_n3000_missing15_protocol_v1.json").read_text()
     )
-    for record in current_ablation["records"]:
-        for metric in ("accuracy", "macro_f1", "macro_auroc"):
-            values = [float(item[metric]) for item in record["seed_metrics"]]
-            close(statistics.mean(values), float(record["aggregate"][metric]["mean"]))
-            close(statistics.stdev(values), float(record["aggregate"][metric]["sd"]))
+    if protocol.get("status") != "complete":
+        raise AssertionError("current ABCD campaign is not complete")
+    if protocol["training_only_augmentation"].get("class_weight_power") != 0.75:
+        raise AssertionError("unexpected current ABCD class-weight rule")
 
     modality = json.loads(
         (ROOT / "results/cerd_three_seed_modality_audit_v2.json").read_text()

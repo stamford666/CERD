@@ -8,32 +8,33 @@ sources are maintained on `stamford666-paper`.
 
 ## Current matched results
 
-Every entry below is the arithmetic mean ± sample standard deviation of three
-independently trained models. No row is a probability ensemble.
+Every entry is the arithmetic mean ± sample standard deviation over three
+independently trained models. No probability ensemble is used.
 
-### ABCD: strict current-ADHD binary endpoint
+### ABCD: current-status ADHD three-class endpoint
 
-The endpoint is a strict low-symptom non-ADHD comparator versus current full
-parent K-SADS ADHD. The cohort has 2,120 participants (1,272/848), a
-family-disjoint 1,520/297/303 train/validation/test split, and the same fixed
-15% incomplete-input manifest for every method.
+The frozen cohort contains 3,000 participants and uses three clinically
+explicit baseline parent K-SADS groups: low-symptom participants without a
+recorded ADHD status; symptom-positive participants without a recorded ADHD
+status; and current full ADHD. The family-disjoint train/validation/test split
+contains 2,141/430/429 participants. A fixed, label-independent mask makes 15%
+of every split incomplete.
 
 | Method | Accuracy (%) | Macro-F1 (%) | Macro-AUROC (%) |
 |---|---:|---:|---:|
-| CERD | 78.44 ± 0.76 | 77.81 ± 0.35 | 85.12 ± 0.05 |
-| Flex-MoE | 78.22 ± 0.33 | 76.56 ± 0.67 | **86.23 ± 0.33** |
-| I2MoE | 78.33 ± 1.01 | 76.63 ± 1.28 | 86.08 ± 0.25 |
-| MoE++-corrected | 77.12 ± 0.69 | 76.34 ± 0.47 | 85.78 ± 0.21 |
-| AnyMod | 79.43 ± 1.66 | 78.51 ± 1.26 | 84.07 ± 1.62 |
-| AGDiC-inspired | **80.31 ± 1.01** | **79.21 ± 0.69** | 85.38 ± 0.52 |
-| ACADiff-inspired | 78.11 ± 2.10 | 76.80 ± 1.94 | 82.59 ± 1.44 |
+| **CERD** | **67.37 ± 1.07** | **54.38 ± 0.81** | 74.75 ± 0.92 |
+| Flex-MoE | 63.87 ± 3.03 | 51.27 ± 3.15 | 74.09 ± 2.93 |
+| I2MoE | 63.25 ± 3.10 | 53.90 ± 1.35 | 74.54 ± 1.01 |
+| MoE++ | 64.80 ± 0.62 | 53.58 ± 1.08 | 75.11 ± 0.76 |
+| AnyMod | 61.69 ± 4.00 | 53.57 ± 2.25 | 74.95 ± 1.29 |
+| AGDiC | 63.79 ± 0.75 | 52.52 ± 1.72 | **75.16 ± 0.53** |
+| ACADiff | 63.17 ± 2.69 | 51.68 ± 2.95 | 73.05 ± 1.03 |
 
-CERD is not first on the complete-plus-incomplete aggregate and the repository
-does not claim otherwise. On the 45 originally incomplete test participants,
-CERD ties the highest Accuracy (78.52%) and gives the highest Macro-F1 (76.70%)
-and AUC (85.70%) among these matched methods. Seed values, subset results, and
-the frozen protocol are in
-[`results/abcd_current_binary_matched_v1.md`](results/abcd_current_binary_matched_v1.md).
+CERD has the highest mean Accuracy and Macro-F1. Its Accuracy exceeds the
+strongest baseline by 2.57 points; the Macro-F1 margin is 0.48 points. AGDiC
+has the highest AUROC by 0.41 points. The complete result, per-seed values,
+availability-stratified metrics, and frozen protocol are in
+[`results/abcd_current3_n3000_missing15_formal_v1.md`](results/abcd_current3_n3000_missing15_formal_v1.md).
 
 ### ADNI: CN/MCI/AD endpoint
 
@@ -52,63 +53,43 @@ The frozen ADNI receipt is
 
 ## ABCD labels and modalities
 
-- Class 0 requires no current, past, partial-remission, or unspecified ADHD and
-  at most three current symptoms in each nine-item domain.
-- Class 1 requires current full ADHD, all 18 current symptoms explicitly coded
-  0/1, and at least six symptoms in one domain.
-- Past-only, remission-only, unspecified, and symptom-only participants are
-  excluded.
+| Class | Definition | Participants |
+|---|---|---:|
+| 0 | No current, past, partial-remission, or unspecified ADHD status; at most three current symptoms in each nine-item domain | 1,677 |
+| 1 | No recorded ADHD status; at least four current symptoms in either nine-item domain | 460 |
+| 2 | Current full ADHD; at least six current symptoms in either nine-item domain | 863 |
+
+Class 1 is symptom-positive without a recorded diagnosis, not mild diagnosed
+ADHD. All target-defining ADHD fields and CBCL ADHD/attention scores are
+excluded from predictors.
 
 The four model modalities are:
 
 - **I — Imaging (785):** rs-fMRI, SST/n-back/MID task-fMRI, regional T1 gray
   matter volume, and DTI FA;
-- **G — Genetics (1,150):** direct 0/1/2 dosages from 14 prespecified
-  ADHD-relevant gene windows after training-only variant QC and LD pruning;
+- **G — Genetics (1,184):** direct 0/1/2 SNP dosages after training-only
+  missingness/MAF QC and LD pruning in prespecified gene windows; no PCA, PRS,
+  or ancestry components;
 - **C — Cognition/health (90):** cognitive tasks, sleep, and physical activity;
-- **B — Behavior/environment (219 effective):** non-ADHD behavior,
-  temperament/impulsivity, family/neighborhood context, socioeconomic factors,
-  and residential/prenatal exposures.
+- **B — Behavior/environment (221 raw; 219 retained):** non-ADHD behavior,
+  temperament, family/neighborhood context, socioeconomic measures, and
+  residential/prenatal exposures.
 
-No CatBoost, external teacher, external PRS, ancestry PCs, test-set class
-offset, or probability ensemble is used. The detailed biological/data audit is
-[`docs/ABCD_CURRENT_ADHD_BINARY_SNP_V1_ZH.md`](docs/ABCD_CURRENT_ADHD_BINARY_SNP_V1_ZH.md).
+The Chinese label-selection and leakage audit is
+[`docs/ABCD_CURRENT3_LABEL_SELECTION_N3000_V1_ZH.md`](docs/ABCD_CURRENT3_LABEL_SELECTION_N3000_V1_ZH.md).
 
-## Missingness and preprocessing
+## Missingness, preprocessing, and evaluation
 
-A fixed label-independent seed-2026 mask makes approximately 15% of each ABCD
-split incomplete, usually by hiding one modality, sometimes two, rarely three,
-and never all four. The mask is applied before preprocessing. Column filtering,
-median imputation, and scaling use training statistics only and operate only
-inside modalities that remain observed. A wholly unavailable modality remains
-masked for CERD's conditional generator.
+ABCD uses a fixed seed-2026 label-independent mask. It hides one, two, or three
+modalities, never all four, and is applied before preprocessing. Feature
+filtering, median imputation, z-score scaling, SNP missingness/MAF filtering,
+and LD pruning use training participants only. ADNI retains its recorded
+source-table availability.
 
-ADNI uses its recorded source-table availability; 27.64%, 28.62%, and 31.13%
-of train/validation/test participants are incomplete.
-
-## Current ABCD protocol
-
-The validation-selected CERD configuration uses 16 tokens per modality,
-hidden width 128, one four-head fusion layer, eight experts with top-2 routing,
-dropout 0.30, and rank-4 patch adapters. Seeds 31/32/33 independently select a
-checkpoint. Each binary probability threshold is selected from validation
-labels, frozen, then replayed before one-time test evaluation.
-
-The full-test Dense FFN control is slightly above sparse CERD, so it is not
-reported as evidence of a universal MoE gain. In the incomplete stratum, CERD
-exceeds Dense by 2.22 Accuracy, 3.66 Macro-F1, and 1.33 AUC points, and exceeds
-E=1 by 4.45 Accuracy and 3.95 Macro-F1 points. See
-[`results/abcd_current_binary_component_ablation_v1.md`](results/abcd_current_binary_component_ablation_v1.md).
-
-## Modality faithfulness
-
-Internal branch allocation is a decomposition of the probability mixture, not
-an intervention score. The current audit therefore defines label-free model
-relevance by the strict-removal prediction-change rate, normalized over the
-four modalities within each seed. It is compared with normalized positive
-Accuracy decreases from the same removals. Their descriptive Pearson
-correspondence is 0.979 on ADNI and 0.947 on ABCD; ABCD's rank order matches
-exactly. See [`results/cerd_three_seed_modality_audit_v2.json`](results/cerd_three_seed_modality_audit_v2.json).
+For ABCD, every method trains for all 100 epochs under the same split, mask,
+and class-weight rule. The checkpoint with the best validation Macro-F1 is
+selected and evaluated on the test set once. Seeds 31/32/33 are aggregated by
+arithmetic mean and sample standard deviation.
 
 ## Repository map
 
@@ -116,30 +97,25 @@ exactly. See [`results/cerd_three_seed_modality_audit_v2.json`](results/cerd_thr
 MoE/                         model, sparse routing, unified runner, audits
 multimodal_data/             manifest loading and training-only transforms
 build_abcd_*.py              ABCD endpoint and feature construction
-prepare_abcd_missingness.py  fixed missing-input manifest
+derive_nested_abcd_missingness.py  fixed incomplete-input manifest
 docs/                        detailed method and data notes
 results/                     participant-free aggregate receipts
 scripts/validate_release.py  release consistency checks
 ```
 
-Raw cohort data, identifiers, predictions, and checkpoints are not distributed.
+Raw cohort data, identifiers, per-participant predictions, logs, and
+checkpoints are not distributed.
 
 ## Reproduction entry points
 
-Build the binary endpoint and modalities with
-`build_abcd_adhd_current_binary_snp_v1.py --endpoint current_binary`,
-then generate the fixed mask with `prepare_abcd_missingness.py`. The main,
-baseline, component, and modality entry points are:
+Build the selected endpoint with `build_abcd_adhd_current3_snp_v2.py`, create
+the fixed mask with `derive_nested_abcd_missingness.py`, and run the matched
+formal comparison with:
 
 ```bash
-bash MoE/run_abcd_current_binary_cerd_screen_v1.sh
-bash MoE/run_abcd_current_binary_baselines_v1.sh
-bash MoE/run_abcd_current_binary_component_ablation_v1.sh
-
-ABCD_MODALITY_AUDIT_CHECKPOINT_ROOT=/path/to/checkpoints/abcd \
-ABCD_MODALITY_AUDIT_REFERENCE_ROOT=/path/to/predictions/abcd \
-python MoE/run_current_three_seed_modality_audit_v1.py \
-  --device 0 --output-dir /path/to/audit-output
+DATASET_MANIFEST=/path/to/manifest.json \
+I2MOE_OFFICIAL_ROOT=/path/to/I2MoE \
+bash MoE/run_abcd_current3_n3000_missing15_formal_v1.sh
 ```
 
 Run `python scripts/validate_release.py` before publishing.

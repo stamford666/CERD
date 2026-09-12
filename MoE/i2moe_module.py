@@ -14,6 +14,7 @@ Official source pinned in this workspace:
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -22,7 +23,12 @@ import torch
 import torch.nn as nn
 
 
-OFFICIAL_ROOT = Path(__file__).resolve().parent.parent / "I2MoE"
+OFFICIAL_ROOT = Path(
+    os.environ.get(
+        "I2MOE_OFFICIAL_ROOT",
+        str(Path(__file__).resolve().parent.parent / "I2MoE"),
+    )
+).expanduser().resolve()
 OFFICIAL_COMMIT = "75b578e1f7ec20ebe990f6e6e5680b1a8860046f"
 OFFICIAL_REPOSITORY = "https://github.com/Raina-Xin/I2MoE"
 

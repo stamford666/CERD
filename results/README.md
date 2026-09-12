@@ -1,25 +1,18 @@
 # Result receipts
 
-Only participant-free aggregate receipts are published here. Raw data,
-identifiers, per-participant predictions, logs, and checkpoints are excluded.
+Only participant-free aggregate receipts are published. Raw data, identifiers,
+per-participant predictions, logs, and checkpoints are excluded.
 
-## Current ABCD binary task
+## Current ABCD three-class task
 
-- [`abcd_current_binary_matched_v1.md`](abcd_current_binary_matched_v1.md):
-  endpoint, cohort, full-test and incomplete-subset baseline comparisons,
-  seed-level CERD values, and protocol notes.
-- [`abcd_current_binary_cerd_v1.json`](abcd_current_binary_cerd_v1.json):
-  validation-only configuration ranking plus formal CERD result.
-- [`abcd_current_binary_baselines_v1.json`](abcd_current_binary_baselines_v1.json):
-  six matched baselines, including full and availability-stratified metrics.
-- [`abcd_current_binary_component_ablation_v1.md`](abcd_current_binary_component_ablation_v1.md):
-  full-test and incomplete-subset component controls; the JSON counterpart
-  preserves seed-level values.
-- [`cerd_three_seed_modality_audit_v2.json`](cerd_three_seed_modality_audit_v2.json):
-  two-dataset frozen-checkpoint modality intervention and correspondence audit.
+- [`abcd_current3_n3000_missing15_formal_v1.md`](abcd_current3_n3000_missing15_formal_v1.md): concise formal comparison and protocol.
+- [`abcd_current3_n3000_missing15_formal_v1.json`](abcd_current3_n3000_missing15_formal_v1.json): seed-level and aggregate results for CERD and six baselines, including complete and incomplete test strata.
+- [`abcd_current3_n3000_missing15_protocol_v1.json`](abcd_current3_n3000_missing15_protocol_v1.json): frozen data-manifest hash, seeds, training schedule, selection rule, and implementation hashes.
 
-All aggregates are arithmetic means and sample standard deviations over three
-independently trained seeds, never probability ensembles.
+The current endpoint has 3,000 participants in low-symptom/no-status,
+symptom-positive/no-status, and current-full-ADHD groups. All aggregates are
+arithmetic means and sample standard deviations over seeds 31/32/33; no
+probability ensemble is used.
 
 ## Current ADNI task
 
@@ -27,8 +20,8 @@ independently trained seeds, never probability ensembles.
 JSON receipt give the current seven-method CN/MCI/AD comparison. CERD obtains
 65.72 ± 1.09 Accuracy, 64.56 ± 2.09 Macro-F1, and 81.07 ± 0.55 Macro-AUROC.
 
-## Archived endpoint receipts
+## Archived ABCD endpoints
 
-Earlier course and presentation-three receipts remain only for provenance.
-They are not reused in the current binary tables; the current files are the
-five receipts listed at the top of this page.
+Earlier binary, clinical-course, and presentation-based receipts remain only
+as provenance. They must not be combined with the current three-class task in
+tables or analyses.

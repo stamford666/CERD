@@ -3532,9 +3532,12 @@ def evaluate(args_cli: argparse.Namespace) -> tuple[Path, Path]:
     replay_args.device = args_cli.device
     replay_args.torch_device = replay_device
 
-    # The legacy ADNI loader uses paths such as ``./data/adni`` relative to the
-    # MoE checkout.  Resolve CLI paths first, then replay from that exact root.
-    os.chdir(HERE)
+    # The legacy ADNI loader uses paths such as ``./data/adni``.  Most replays
+    # use this checkout, while release campaigns can point to the immutable
+    # data-bearing checkout without changing any checkpoint argument.
+    replay_workdir = Path(os.environ.get("CERD_REPLAY_WORKDIR", str(HERE))).resolve()
+    require(replay_workdir.is_dir(), f"Replay working directory does not exist: {replay_workdir}")
+    os.chdir(replay_workdir)
 
     modality_dict = resolve_modality_dict(replay_args)
     if hasattr(replay_args, "n_full_modalities"):

@@ -216,12 +216,11 @@ class AddtionalNoisyGate(NoisyGate):
         self.normalized_gate_loss = False
         self._normalized_loss_call_count = 0
 
-    @staticmethod
-    def cv_squared(x):
+    def cv_squared(self, x):
         """Return a graph-safe on-device zero for <=1-expert groups."""
         if x.ndim == 0 or x.numel() <= 1:
             return x.sum() * 0.0
-        return NoisyGate.cv_squared(x)
+        return super().cv_squared(x)
 
     def set_topk_logit(self, logit):
         self.topk_logits.append(logit)

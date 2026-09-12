@@ -2634,6 +2634,39 @@ class AGMGFlexMoE(nn.Module):
         modality_w = modality_w.masked_fill(~usable_mask, 0.0)
         modality_w = modality_w / modality_w.sum(dim=1, keepdim=True).clamp_min(1e-8)
 
+        # Exact class-specific evidence from the branch mixture used by the
+        # classifier. For the predicted class, branch_weight * branch_prob
+        # sums to that class probability. Projecting the joint and pair
+        # branches to their participating modalities yields a model-native
+        # modality decomposition rather than a post-hoc attribution score.
+        branch_probabilities = torch.softmax(branch_logits, dim=-1)
+        decision_class = logits.argmax(dim=1)
+        selected_branch_probability = branch_probabilities.gather(
+            2,
+            decision_class[:, None, None].expand(
+                -1, branch_probabilities.shape[1], 1
+            ),
+        ).squeeze(-1)
+        branch_decision_evidence = branch_weights * selected_branch_probability
+        modality_decision_evidence = branch_decision_evidence[
+            :, 1:1 + self.num_modalities
+        ].clone()
+        for pair_idx, (i, j) in enumerate(self.branch_fusion.pairs):
+            pair_evidence = 0.5 * branch_decision_evidence[
+                :, pair_offset + pair_idx
+            ]
+            modality_decision_evidence[:, i] += pair_evidence
+            modality_decision_evidence[:, j] += pair_evidence
+        modality_decision_evidence += (
+            branch_decision_evidence[:, 0:1] / float(self.num_modalities)
+        )
+        modality_decision_evidence = modality_decision_evidence.masked_fill(
+            ~usable_mask, 0.0
+        )
+        modality_decision_evidence = modality_decision_evidence / (
+            modality_decision_evidence.sum(dim=1, keepdim=True).clamp_min(1e-8)
+        )
+
         w_entropy = -(modality_w.clamp(min=1e-8) * torch.log(modality_w.clamp(min=1e-8))).sum(dim=1).mean()
 
         aux_loss = torch.tensor(0.0, device=device)
@@ -2645,7 +2678,9 @@ class AGMGFlexMoE(nn.Module):
         output = {
             "logits": logits,
             "branch_logits": branch_logits,
+            "branch_probabilities": branch_probabilities,
             "branch_weights": branch_weights,
+            "branch_decision_evidence": branch_decision_evidence,
             "branch_log_scores": branch_log_scores,
             "supervision_log_scores": supervision_log_scores,
             "branch_mask": branch_mask,
@@ -2660,6 +2695,7 @@ class AGMGFlexMoE(nn.Module):
             "generated_mask": generated_mask,
             "usable_mask": usable_mask,
             "w": modality_w,
+            "modality_decision_evidence": modality_decision_evidence,
             "token_importance": token_importance,
             "w_entropy": w_entropy,
             "recon_loss": recon_loss,
