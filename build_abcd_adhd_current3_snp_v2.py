@@ -587,6 +587,153 @@ def build_current_spectrum_labels(
     return labels, details
 
 
+def build_severity3_labels(
+    root: Path,
+    session: str,
+    cohort_seed: int,
+    control_count: int,
+) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Build a non-overlapping current ADHD-severity spectrum.
+
+    The endpoint is cross-sectional rather than longitudinal.  Its three
+    classes have disjoint current symptom-count ranges: minimal burden
+    (0--2), subthreshold burden (3--5), and current full ADHD (6--9 in at
+    least one DSM domain).  The full-ADHD class is also anchored by the
+    recorded current diagnosis, functional impairment, and the K-SADS
+    combined onset/cross-setting criterion.
+    """
+
+    path = root / ADHD_TARGET_TABLE
+    frame = pd.read_parquet(path)
+    frame = frame[frame["session_id"].astype(str).eq(session)].copy()
+    frame["participant_id"] = frame["participant_id"].astype(str)
+    if frame["participant_id"].duplicated().any():
+        raise ValueError("Duplicate participant in baseline ADHD target table")
+
+    present = "mh_p_ksads__adhd__pres_dx"
+    past = "mh_p_ksads__adhd__past_dx"
+    partial = "mh_p_ksads__adhd__partrem_dx"
+    unspecified = "mh_p_ksads__adhd__unspec_dx"
+    impairment = "mh_p_ksads__adhd__impfunct__pres_sx"
+    onset_cross_setting = "mh_p_ksads__adhd__symptmulti__before12__pres_sx"
+    status_columns = [present, past, partial, unspecified]
+    symptom_columns = [
+        *ADHD_CURRENT_INATTENTIVE_COLUMNS,
+        *ADHD_CURRENT_HYPERACTIVE_IMPULSIVE_COLUMNS,
+    ]
+    required = set(status_columns + symptom_columns + [impairment, onset_cross_setting])
+    missing = sorted(required - set(frame.columns))
+    if missing:
+        raise ValueError(f"Missing ADHD severity endpoint columns: {missing}")
+
+    values = frame[
+        [*status_columns, *symptom_columns, impairment, onset_cross_setting]
+    ].apply(pd.to_numeric, errors="coerce")
+    valid = values[[*status_columns, *symptom_columns]].isin(
+        set(ADHD_VALID_DIAGNOSIS_VALUES)
+    ).all(axis=1)
+    valid &= values[[impairment, onset_cross_setting]].isin({0, 1, 888}).all(axis=1)
+    inattentive = values[list(ADHD_CURRENT_INATTENTIVE_COLUMNS)].eq(1).sum(axis=1)
+    hyperactive = values[
+        list(ADHD_CURRENT_HYPERACTIVE_IMPULSIVE_COLUMNS)
+    ].eq(1).sum(axis=1)
+    max_domain = pd.concat([inattentive, hyperactive], axis=1).max(axis=1)
+
+    no_recorded_adhd = values[status_columns].ne(1).all(axis=1)
+    low_pool = (
+        valid
+        & no_recorded_adhd
+        & max_domain.le(2)
+        & values[impairment].ne(1)
+    )
+    subthreshold = (
+        valid
+        & values[present].ne(1)
+        & max_domain.between(3, 5)
+        & values[onset_cross_setting].eq(1)
+    )
+    current_full = (
+        valid
+        & values[present].eq(1)
+        & max_domain.ge(6)
+        & values[impairment].eq(1)
+        & values[onset_cross_setting].eq(1)
+    )
+    if (low_pool & subthreshold).any() or (low_pool & current_full).any() or (
+        subthreshold & current_full
+    ).any():
+        raise RuntimeError("Overlapping ADHD severity classes")
+
+    control_ids = stable_ids(
+        frame.loc[low_pool, "participant_id"].tolist(),
+        seed=cohort_seed,
+        namespace="adhd_severity3_minimal_control",
+        n=control_count,
+    )
+    if len(control_ids) != control_count:
+        raise ValueError("Insufficient minimal-symptom controls")
+    selected_control = frame["participant_id"].isin(control_ids)
+    included = selected_control | subthreshold | current_full
+    target = np.select(
+        [selected_control, subthreshold, current_full], [0, 1, 2], default=-1
+    ).astype(np.int64)
+    labels = pd.DataFrame(
+        {
+            "participant_id": frame.loc[included, "participant_id"].to_numpy(),
+            "target": target[included.to_numpy()],
+        }
+    ).sort_values("participant_id", kind="stable").reset_index(drop=True)
+    counts = labels["target"].value_counts().sort_index()
+
+    details = {
+        "name": "baseline parent K-SADS current ADHD severity spectrum",
+        "endpoint_type": "ordered cross-sectional current-severity spectrum",
+        "session": session,
+        "informant": "parent",
+        "severity_axis": "maximum current symptom count across the nine-item inattentive and hyperactive/impulsive domains",
+        "class_mapping": {
+            "0": "minimal current burden: no recorded ADHD status, <=2 symptoms in each domain, and no positive functional-impairment flag",
+            "1": "subthreshold current ADHD state: no current full ADHD and 3--5 symptoms in at least one domain",
+            "2": "current full ADHD: recorded current full ADHD, >=6 symptoms in at least one domain, functional impairment, and onset/cross-setting criterion",
+        },
+        "interpretation": {
+            "0": "minimal current ADHD symptom burden",
+            "1": "subthreshold current ADHD symptom state",
+            "2": "current full-syndrome ADHD",
+        },
+        "available_status_columns": status_columns,
+        "current_inattentive_columns": list(ADHD_CURRENT_INATTENTIVE_COLUMNS),
+        "current_hyperactive_impulsive_columns": list(
+            ADHD_CURRENT_HYPERACTIVE_IMPULSIVE_COLUMNS
+        ),
+        "label_auxiliary_columns": [impairment, onset_cross_setting],
+        "valid_codes": list(ADHD_VALID_DIAGNOSIS_VALUES),
+        "raw_baseline_participants": int(len(frame)),
+        "valid_participants": int(valid.sum()),
+        "minimal_pool": int(low_pool.sum()),
+        "sampled_minimal_controls": int(selected_control.sum()),
+        "subthreshold_3_to_5": int(subthreshold.sum()),
+        "subthreshold_with_functional_impairment": int(
+            (subthreshold & values[impairment].eq(1)).sum()
+        ),
+        "current_full_included": int(current_full.sum()),
+        "excluded_no_current_full_with_6_or_more": int(
+            (valid & values[present].ne(1) & max_domain.ge(6)).sum()
+        ),
+        "excluded_current_full_with_fewer_than_6": int(
+            (valid & values[present].eq(1) & max_domain.lt(6)).sum()
+        ),
+        "control_sampling": {
+            "seed": cohort_seed,
+            "method": "SHA256-stable random sample before family-disjoint splitting",
+            "target_count": control_count,
+        },
+        "class_counts": {str(k): int(counts.get(k, 0)) for k in (0, 1, 2)},
+        "materialized_label_columns": ["participant_id", "target"],
+    }
+    return labels, details
+
+
 def build_current_binary_labels(
     root: Path,
     session: str,
@@ -1383,6 +1530,7 @@ def main() -> None:
             "course3",
             "current3",
             "current_spectrum3",
+            "severity3",
             "presentation3",
             "presentation_extent3",
             "presentation_common3",
@@ -1399,6 +1547,12 @@ def main() -> None:
         help="Class-0 to class-1 sampling ratio; the default reproduces the frozen n=3000 cohort.",
     )
     parser.add_argument("--control-to-case-ratio", type=float, default=1.5)
+    parser.add_argument(
+        "--severity-control-count",
+        type=int,
+        default=1733,
+        help="Number of minimal-burden class-0 participants for severity3; 1733 gives N=3000.",
+    )
     parser.add_argument("--ld-r2", type=float, default=0.8)
     parser.add_argument("--plink", type=Path, default=Path("/home/shaowen/.local/bin/plink"))
     args = parser.parse_args()
@@ -1429,6 +1583,13 @@ def main() -> None:
             args.session,
             args.cohort_seed,
             args.control_to_remitted_ratio,
+        )
+    elif args.endpoint == "severity3":
+        labels, endpoint = build_severity3_labels(
+            root,
+            args.session,
+            args.cohort_seed,
+            args.severity_control_count,
         )
     elif args.endpoint == "presentation3":
         labels, endpoint = build_presentation_labels(
@@ -1555,6 +1716,7 @@ def main() -> None:
         *endpoint["current_hyperactive_impulsive_columns"],
         *endpoint.get("past_inattentive_columns", []),
         *endpoint.get("past_hyperactive_impulsive_columns", []),
+        *endpoint.get("label_auxiliary_columns", []),
     }
     predictor_columns = (
         set(imaging.columns)
@@ -1615,7 +1777,7 @@ def main() -> None:
             "target_definition": endpoint["name"],
             "class_meanings": endpoint["class_mapping"],
             "adhd_endpoint": endpoint,
-            "ordinal_target": args.endpoint == "course3",
+            "ordinal_target": args.endpoint in {"course3", "severity3"},
             "split_seed": args.split_seed,
             "cohort_seed": args.cohort_seed,
             "split_strategy": "stratified_group_by_genetic_family",

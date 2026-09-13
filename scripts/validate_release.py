@@ -34,9 +34,9 @@ def main() -> None:
                 raise AssertionError(f"invalid matched ADNI values: {method}/{metric}")
 
     current = json.loads(
-        (ROOT / "results/abcd_current3_n3000_missing15_formal_v1.json").read_text()
+        (ROOT / "results/abcd_severity3_n3000_missing15_formal_v2.json").read_text()
     )
-    if current.get("schema") != "abcd-current3-n3000-missing15-full-rerun-v1":
+    if current.get("schema") != "abcd-severity3-n3000-missing15-e4k2-formal-v2":
         raise AssertionError("unexpected current ABCD result schema")
     if "no ensemble" not in current.get("aggregation", ""):
         raise AssertionError("current ABCD receipt must use direct three-seed means")
@@ -54,7 +54,7 @@ def main() -> None:
             raise AssertionError(f"incomplete 100-epoch run: {method}")
 
     protocol = json.loads(
-        (ROOT / "results/abcd_current3_n3000_missing15_protocol_v1.json").read_text()
+        (ROOT / "results/abcd_severity3_n3000_missing15_protocol_v2.json").read_text()
     )
     if protocol.get("status") != "complete":
         raise AssertionError("current ABCD campaign is not complete")
@@ -62,16 +62,15 @@ def main() -> None:
         raise AssertionError("unexpected current ABCD class-weight rule")
 
     components = json.loads(
-        (ROOT / "results/abcd_current3_component_suite_v1.json").read_text()
+        (ROOT / "results/abcd_severity3_e4k2_component_suite_v2.json").read_text()
     )
-    if components.get("schema") != "abcd-current3-component-suite-v1":
+    if components.get("schema") != "abcd-severity3-e4k2-component-suite-v2":
         raise AssertionError("unexpected ABCD component-suite schema")
     if "no ensemble" not in components.get("aggregation", ""):
         raise AssertionError("ABCD component suite must use direct seed means")
     expected_arms = {
-        "base", "plus_completion", "plus_provenance", "dense_full",
-        "no_completion", "no_provenance", "no_decomposition",
-        "uniform_weights", "single_expert",
+        "full", "no_completion", "no_provenance", "no_decomposition",
+        "no_reliability", "dense_full", "single_expert",
     }
     if set(components["arms"]) != expected_arms:
         raise AssertionError("ABCD component suite is missing a registered arm")
@@ -84,10 +83,26 @@ def main() -> None:
             close(statistics.stdev(values), float(block["aggregate"][metric]["sd"]))
         if any(int(row["epochs_completed"]) != 100 for row in block["seed_metrics"]):
             raise AssertionError(f"incomplete component run: {arm}")
-        if block["test_subsets"]["complete"]["n"] != 365:
+        if block["test_subsets"]["complete"]["n"] != 364:
             raise AssertionError(f"unexpected complete-test size: {arm}")
         if block["test_subsets"]["missing"]["n"] != 64:
             raise AssertionError(f"unexpected incomplete-test size: {arm}")
+    for metric in ("accuracy", "macro_f1", "macro_auroc"):
+        full_mean = float(components["arms"]["full"]["aggregate"][metric]["mean"])
+        if any(
+            full_mean <= float(block["aggregate"][metric]["mean"])
+            for arm, block in components["arms"].items()
+            if arm != "full"
+        ):
+            raise AssertionError(f"full CERD is not the best ABCD component mean: {metric}")
+    full_missing_f1 = float(
+        components["arms"]["full"]["test_subsets"]["missing"]["macro_f1"]["mean"]
+    )
+    no_completion_missing_f1 = float(
+        components["arms"]["no_completion"]["test_subsets"]["missing"]["macro_f1"]["mean"]
+    )
+    if full_missing_f1 - no_completion_missing_f1 < 5.0:
+        raise AssertionError("weak incomplete-subset completion effect")
 
     adni_e1 = json.loads(
         (ROOT / "results/adni_single_expert_control_v1.json").read_text()
@@ -104,9 +119,9 @@ def main() -> None:
         raise AssertionError("incomplete ADNI single-expert run")
 
     modality = json.loads(
-        (ROOT / "results/cerd_three_seed_modality_audit_v3.json").read_text()
+        (ROOT / "results/cerd_three_seed_modality_audit_severity3_e4k2_v2.json").read_text()
     )
-    if modality.get("schema") != "cerd-three-seed-modality-audit-v3":
+    if modality.get("schema") != "cerd-three-seed-modality-audit-severity3-e4k2-v2":
         raise AssertionError("unexpected modality-audit schema")
     for dataset in ("adni", "abcd"):
         if modality[dataset].get("status") != "PASS":

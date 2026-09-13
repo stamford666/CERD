@@ -52,8 +52,18 @@ def sha256(path: Path) -> str:
 
 def members(dataset: str) -> list[tuple[int, Path, Path]]:
     if dataset == "adni":
-        checkpoint_root = HERE / "fair_two_dataset_tuning_20260910" / "runs" / "adni" / "p16_d030_lr125" / "checkpoints" / "adni"
-        reference_root = HERE / "fair_two_dataset_tuning_20260910" / "formal" / "predictions" / "adni"
+        checkpoint_root = Path(
+            os.environ.get(
+                "ADNI_MODALITY_AUDIT_CHECKPOINT_ROOT",
+                str(HERE / "fair_two_dataset_tuning_20260910" / "runs" / "adni" / "p16_d030_lr125" / "checkpoints" / "adni"),
+            )
+        )
+        reference_root = Path(
+            os.environ.get(
+                "ADNI_MODALITY_AUDIT_REFERENCE_ROOT",
+                str(HERE / "fair_two_dataset_tuning_20260910" / "formal" / "predictions" / "adni"),
+            )
+        )
         seeds = (0, 1, 2)
     else:
         checkpoint_root = Path(
@@ -490,7 +500,7 @@ def plot(payload: dict[str, Any], output: Path) -> None:
     )
     x = np.arange(4)
     width = 0.34
-    fig, axes = plt.subplots(1, 2, figsize=(7.05, 2.25), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(7.05, 2.35), sharey=True)
     for axis, dataset, title in zip(
         axes, ("adni", "abcd"), ("ADNI", "ABCD")
     ):
@@ -525,11 +535,12 @@ def plot(payload: dict[str, Any], output: Path) -> None:
         axis.set_axisbelow(True)
         axis.spines[["top", "right"]].set_visible(False)
     axes[0].set_ylabel("Normalized contribution (%)")
-    axes[1].legend(
+    axes[0].set_ylim(0, 62)
+    axes[0].legend(
         frameon=False,
         ncol=2,
-        loc="upper right",
-        bbox_to_anchor=(1.0, 1.02),
+        loc="upper center",
+        bbox_to_anchor=(0.52, 0.99),
     )
     fig.tight_layout(pad=0.45, w_pad=1.4)
     fig.savefig(output.with_suffix(".pdf"), bbox_inches="tight")
@@ -541,13 +552,28 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--schema", default="cerd-three-seed-modality-audit-v3"
+    )
+    parser.add_argument(
+        "--output-stem", default="cerd_three_seed_modality_audit_v3"
+    )
+    parser.add_argument(
+        "--figure-stem", default="cerd_two_dataset_modality_drop_v1"
+    )
+    parser.add_argument(
+        "--data-workdir",
+        type=Path,
+        default=HERE,
+        help="working directory that contains data/adni for the legacy ADNI loader",
+    )
     args = parser.parse_args()
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
     torch.set_float32_matmul_precision("high")
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    payload: dict[str, Any] = {"schema": "cerd-three-seed-modality-audit-v3"}
+    payload: dict[str, Any] = {"schema": args.schema}
     original_cwd = Path.cwd()
-    os.chdir(HERE)
+    os.chdir(args.data_workdir.resolve(strict=True))
     try:
         for dataset in ("adni", "abcd"):
             records = []
@@ -557,9 +583,9 @@ def main() -> None:
             payload[dataset] = aggregate(dataset, records)
     finally:
         os.chdir(original_cwd)
-    output_json = args.output_dir / "cerd_three_seed_modality_audit_v3.json"
+    output_json = args.output_dir / f"{args.output_stem}.json"
     output_json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    plot(payload, args.output_dir / "cerd_two_dataset_modality_drop_v1")
+    plot(payload, args.output_dir / args.figure_stem)
     print(output_json, flush=True)
 
 

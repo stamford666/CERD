@@ -460,6 +460,10 @@ def parse_args() -> argparse.Namespace:
         ("dense_backbone", "Replace sparse MoE MLP calls with aligned dense MLPs."),
         ("disable_provenance", "Bypass provenance flag embeddings."),
         ("uniform_branch_weights", "Use a uniform simplex over active branches."),
+        (
+            "disable_reliability_weighting",
+            "Set every usable modality reliability to one while retaining confidence and branch priors.",
+        ),
         ("joint_branch_only", "Use only the joint prediction branch."),
         ("mean_pooling_only", "Bypass learned attention mixing after computing it."),
         ("disable_stochastic_context_masking", "Use leave-one-out contexts while preserving configured RNG draws."),
@@ -3054,6 +3058,9 @@ def build_model(args, num_modalities: int, num_classes: int, full_modality_index
             dense_backbone=getattr(args, "dense_backbone", False),
             disable_provenance=getattr(args, "disable_provenance", False),
             uniform_branch_weights=getattr(args, "uniform_branch_weights", False),
+            disable_reliability_weighting=getattr(
+                args, "disable_reliability_weighting", False
+            ),
             joint_branch_only=getattr(args, "joint_branch_only", False),
             mean_pooling_only=getattr(args, "mean_pooling_only", False),
             disable_stochastic_context_masking=getattr(args, "disable_stochastic_context_masking", False),
@@ -8646,7 +8653,8 @@ def train(args) -> dict[str, Any]:
                     "matched_ablation_structure": {
                         name: bool(getattr(args, name, False)) for name in (
                             "dense_backbone", "disable_provenance",
-                            "uniform_branch_weights", "joint_branch_only",
+                            "uniform_branch_weights", "disable_reliability_weighting",
+                            "joint_branch_only",
                             "mean_pooling_only",
                             "disable_stochastic_context_masking",
                             "disable_completion", "no_output_gate"

@@ -1746,6 +1746,7 @@ class AGMGFlexMoE(nn.Module):
         dense_backbone: bool = False,
         disable_provenance: bool = False,
         uniform_branch_weights: bool = False,
+        disable_reliability_weighting: bool = False,
         joint_branch_only: bool = False,
         mean_pooling_only: bool = False,
         disable_stochastic_context_masking: bool = False,
@@ -1760,6 +1761,9 @@ class AGMGFlexMoE(nn.Module):
         self.dense_backbone = bool(dense_backbone)
         self.disable_provenance = bool(disable_provenance)
         self.uniform_branch_weights = bool(uniform_branch_weights)
+        self.disable_reliability_weighting = bool(
+            disable_reliability_weighting
+        )
         self.joint_branch_only = bool(joint_branch_only)
         self.mean_pooling_only = bool(mean_pooling_only)
         self.disable_stochastic_context_masking = bool(disable_stochastic_context_masking)
@@ -2480,6 +2484,10 @@ class AGMGFlexMoE(nn.Module):
 
         modality_reliability = torch.stack(reliability_scores, dim=1)
         usable_mask = observed_mask | generated_mask
+        if self.disable_reliability_weighting:
+            modality_reliability = usable_mask.to(
+                dtype=modality_reliability.dtype
+            )
         no_usable = ~usable_mask.any(dim=1)
         if no_usable.any():
             usable_mask[no_usable] = True
