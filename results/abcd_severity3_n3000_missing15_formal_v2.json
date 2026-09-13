@@ -1,0 +1,602 @@
+{
+  "schema": "abcd-severity3-n3000-missing15-e4k2-formal-v2",
+  "completed_at": "2026-09-13T14:45:22.302252+00:00",
+  "aggregation": "arithmetic mean and sample standard deviation across seeds 31/32/33; no ensemble",
+  "methods": {
+    "our_moe": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 66.35514018691589,
+          "macro_f1": 56.19858023392633,
+          "macro_auroc": 78.3432129714014
+        },
+        {
+          "seed": 32,
+          "accuracy": 69.1588785046729,
+          "macro_f1": 55.408205769030516,
+          "macro_auroc": 78.06488498352081
+        },
+        {
+          "seed": 33,
+          "accuracy": 64.95327102803739,
+          "macro_f1": 53.91891147797647,
+          "macro_auroc": 77.28314878246351
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 66.82242990654206,
+          "sd": 2.1413905116616045
+        },
+        "macro_f1": {
+          "mean": 55.175232493644444,
+          "sd": 1.1575533765216095
+        },
+        "macro_auroc": {
+          "mean": 77.89708224579523,
+          "sd": 0.5495928859240103
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 22
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 10
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 14
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 67.21611721611721,
+            "sd": 2.2205779584216376
+          },
+          "macro_f1": {
+            "mean": 54.8331095512602,
+            "sd": 2.1133127623052284
+          },
+          "macro_auroc": {
+            "mean": 77.51239979873743,
+            "sd": 1.3346841942524237
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 64.58333333333333,
+            "sd": 4.773516348912334
+          },
+          "macro_f1": {
+            "mean": 55.06217170066935,
+            "sd": 4.590394957492334
+          },
+          "macro_auroc": {
+            "mean": 80.1272968957698,
+            "sd": 3.813069866019998
+          }
+        }
+      }
+    },
+    "flex_moe": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 63.3177570093458,
+          "macro_f1": 53.86597235726129,
+          "macro_auroc": 73.83661732320364
+        },
+        {
+          "seed": 32,
+          "accuracy": 61.44859813084113,
+          "macro_f1": 51.1199720539495,
+          "macro_auroc": 74.06057640018521
+        },
+        {
+          "seed": 33,
+          "accuracy": 66.58878504672897,
+          "macro_f1": 49.346867384842064,
+          "macro_auroc": 76.18496896206878
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 63.78504672897196,
+          "sd": 2.6017590480514095
+        },
+        "macro_f1": {
+          "mean": 51.444270598684284,
+          "sd": 2.2769397439378745
+        },
+        "macro_auroc": {
+          "mean": 74.69405422848588,
+          "sd": 1.2960167723264782
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 13
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 10
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 3
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 64.28571428571429,
+            "sd": 3.0592111883681485
+          },
+          "macro_f1": {
+            "mean": 51.19058064002248,
+            "sd": 1.7813213583726895
+          },
+          "macro_auroc": {
+            "mean": 75.06574578042903,
+            "sd": 1.2300426859978426
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 60.9375,
+            "sd": 0.0
+          },
+          "macro_f1": {
+            "mean": 51.314015609991095,
+            "sd": 3.800013169202233
+          },
+          "macro_auroc": {
+            "mean": 72.98412698412699,
+            "sd": 1.98922430999692
+          }
+        }
+      }
+    },
+    "i2moe": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 62.383177570093466,
+          "macro_f1": 49.60765117460448,
+          "macro_auroc": 74.18094449080994
+        },
+        {
+          "seed": 32,
+          "accuracy": 64.01869158878505,
+          "macro_f1": 50.64603019613244,
+          "macro_auroc": 75.65482551561055
+        },
+        {
+          "seed": 33,
+          "accuracy": 63.3177570093458,
+          "macro_f1": 48.12730277225121,
+          "macro_auroc": 73.95362978472434
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 63.2398753894081,
+          "sd": 0.8205337813748197
+        },
+        "macro_f1": {
+          "mean": 49.46032804766272,
+          "sd": 1.2658100318577705
+        },
+        "macro_auroc": {
+          "mean": 74.59646659704828,
+          "sd": 0.9235857806808901
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 9
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 9
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 5
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 63.369963369963365,
+            "sd": 0.8831182015561275
+          },
+          "macro_f1": {
+            "mean": 49.491246129105754,
+            "sd": 0.34054477448079307
+          },
+          "macro_auroc": {
+            "mean": 75.1972297797384,
+            "sd": 0.6601168914399275
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 62.5,
+            "sd": 3.125
+          },
+          "macro_f1": {
+            "mean": 48.66557342944239,
+            "sd": 6.8009654229439125
+          },
+          "macro_auroc": {
+            "mean": 75.59689316339562,
+            "sd": 1.0341956072267153
+          }
+        }
+      }
+    },
+    "moepp_corrected": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 64.7196261682243,
+          "macro_f1": 50.68570732988654,
+          "macro_auroc": 73.3126191234482
+        },
+        {
+          "seed": 32,
+          "accuracy": 66.82242990654206,
+          "macro_f1": 56.925947128296606,
+          "macro_auroc": 76.52825450809894
+        },
+        {
+          "seed": 33,
+          "accuracy": 62.383177570093466,
+          "macro_f1": 48.55360325948561,
+          "macro_auroc": 73.4875024554988
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 64.64174454828661,
+          "sd": 2.2206506899350815
+        },
+        "macro_f1": {
+          "mean": 52.05508590588959,
+          "sd": 4.350911827159493
+        },
+        "macro_auroc": {
+          "mean": 74.44279202901531,
+          "sd": 1.8081790173283447
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 6
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 36
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 6
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 65.56776556776556,
+            "sd": 1.6785991556614779
+          },
+          "macro_f1": {
+            "mean": 52.148633967430136,
+            "sd": 2.8136752385930093
+          },
+          "macro_auroc": {
+            "mean": 75.32852767312751,
+            "sd": 1.1847577068006878
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 59.375,
+            "sd": 5.633673867912483
+          },
+          "macro_f1": {
+            "mean": 49.713979956646085,
+            "sd": 9.772723002846577
+          },
+          "macro_auroc": {
+            "mean": 73.32921521098861,
+            "sd": 1.600950353367582
+          }
+        }
+      }
+    },
+    "anymod": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 62.383177570093466,
+          "macro_f1": 49.10030910030911,
+          "macro_auroc": 71.0433715075929
+        },
+        {
+          "seed": 32,
+          "accuracy": 60.046728971962615,
+          "macro_f1": 48.48153114623486,
+          "macro_auroc": 63.83912466592147
+        },
+        {
+          "seed": 33,
+          "accuracy": 64.01869158878505,
+          "macro_f1": 49.7022725100762,
+          "macro_auroc": 72.62916378939978
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 62.14953271028037,
+          "sd": 1.9962625573171813
+        },
+        "macro_f1": {
+          "mean": 49.094704252206725,
+          "sd": 0.6103899819705372
+        },
+        "macro_auroc": {
+          "mean": 69.1705533209714,
+          "sd": 4.684739365020756
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 7
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 75
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 17
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 62.91208791208791,
+            "sd": 1.648351648351646
+          },
+          "macro_f1": {
+            "mean": 48.71135217134523,
+            "sd": 0.5966526905899571
+          },
+          "macro_auroc": {
+            "mean": 69.5126220630706,
+            "sd": 4.966941391257682
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 57.8125,
+            "sd": 4.133986423538423
+          },
+          "macro_f1": {
+            "mean": 48.52538680213848,
+            "sd": 2.761597770818719
+          },
+          "macro_auroc": {
+            "mean": 66.39950999556909,
+            "sd": 7.063632559338285
+          }
+        }
+      }
+    },
+    "agdic": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 65.65420560747664,
+          "macro_f1": 47.9902776468748,
+          "macro_auroc": 72.96076362588386
+        },
+        {
+          "seed": 32,
+          "accuracy": 59.57943925233645,
+          "macro_f1": 48.82948979342172,
+          "macro_auroc": 68.65984330916174
+        },
+        {
+          "seed": 33,
+          "accuracy": 62.850467289719624,
+          "macro_f1": 49.67925848239385,
+          "macro_auroc": 73.51663556464374
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 62.69470404984424,
+          "sd": 3.040377148900802
+        },
+        "macro_f1": {
+          "mean": 48.833008640896786,
+          "sd": 0.844495916155501
+        },
+        "macro_auroc": {
+          "mean": 71.71241416656311,
+          "sd": 2.65817419155842
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 1
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 16
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 4
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 63.827838827838825,
+            "sd": 3.0385824218016517
+          },
+          "macro_f1": {
+            "mean": 49.654318972056366,
+            "sd": 1.036571622255128
+          },
+          "macro_auroc": {
+            "mean": 72.36702897635014,
+            "sd": 2.5965313229223965
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 56.25,
+            "sd": 4.133986423538423
+          },
+          "macro_f1": {
+            "mean": 43.61385454357839,
+            "sd": 3.059909893317467
+          },
+          "macro_auroc": {
+            "mean": 69.85954075116636,
+            "sd": 3.6854221028409957
+          }
+        }
+      }
+    },
+    "acadiff": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 61.915887850467286,
+          "macro_f1": 48.080233664527434,
+          "macro_auroc": 70.19405842892557
+        },
+        {
+          "seed": 32,
+          "accuracy": 63.3177570093458,
+          "macro_f1": 48.22638594540474,
+          "macro_auroc": 71.73417210514096
+        },
+        {
+          "seed": 33,
+          "accuracy": 64.25233644859813,
+          "macro_f1": 50.858103457178196,
+          "macro_auroc": 70.76314899431223
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 63.161993769470406,
+          "sd": 1.1759866721605545
+        },
+        "macro_f1": {
+          "mean": 49.05490768903679,
+          "sd": 1.5633222175814276
+        },
+        "macro_auroc": {
+          "mean": 70.8971265094596,
+          "sd": 0.7787490063173185
+        }
+      },
+      "training": [
+        {
+          "seed": 31,
+          "epochs_completed": 100,
+          "best_epoch": 21
+        },
+        {
+          "seed": 32,
+          "epochs_completed": 100,
+          "best_epoch": 12
+        },
+        {
+          "seed": 33,
+          "epochs_completed": 100,
+          "best_epoch": 9
+        }
+      ],
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 63.369963369963365,
+            "sd": 1.1102889792108188
+          },
+          "macro_f1": {
+            "mean": 49.96159765355865,
+            "sd": 1.8089591067299342
+          },
+          "macro_auroc": {
+            "mean": 71.42187695174087,
+            "sd": 0.3545501249681032
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 61.979166666666664,
+            "sd": 2.386758174456167
+          },
+          "macro_f1": {
+            "mean": 44.37087924244435,
+            "sd": 2.2674925916889768
+          },
+          "macro_auroc": {
+            "mean": 71.59462558969948,
+            "sd": 3.366344732383158
+          }
+        }
+      }
+    }
+  }
+}

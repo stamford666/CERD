@@ -91,5 +91,5 @@ change the test labels or aggregation rule.
 
 The result is the raw softmax argmax from one independently trained model per
 seed. Reported means are arithmetic means of seed-level Accuracy, Macro-F1,
-and Macro-AUROC. No CatBoost stage, external teacher, class offset,
-checkpoint soup, or probability ensemble is part of the current method.
+and Macro-AUROC. Each seed-level prediction is produced directly by the CERD
+checkpoint selected on the validation split.

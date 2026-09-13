@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "dataset_manifest": {
+    "path": "/data/mi2/shaowen/miccai2026/data/abcd_adhd_severity3_snp_v1_n3000_random_missing15/manifest.json",
+    "sha256": "d02be48acbe655052b201ba7fbd061d8e6219ac8ffa2d3e3c40000c494de82af"
+  },
+  "implementation": {
+    "runner_sha256": "92dbf3f7402a744bfddcaf515e8699a9507d650fb81eb6749b4b050f56c39313",
+    "evaluator_sha256": "f59dd0cf491bc97e39f82187aea65fa6583fec7a75e203915aec42bfee773277"
+  },
+  "models": ["our_moe", "flex_moe", "i2moe", "moepp_corrected", "anymod", "agdic", "acadiff"],
+  "seeds": [31, 32, 33],
+  "aggregation": "arithmetic mean and sample standard deviation across three independent seeds; no ensemble",
+  "training_protocol": {
+    "epochs": 100,
+    "early_stopping": "disabled; every model/seed completes all 100 epochs",
+    "checkpoint_selection": "best validation Macro-F1; test evaluated once from the selected checkpoint",
+    "cerd_sparse_routing": {"num_experts": 4, "top_k": 2},
+    "cerd_configuration_selection": "4/top-2 selected over 8/top-2 by arithmetic three-seed validation Macro-F1 before formal evaluation"
+  },
+  "training_only_augmentation": {
+    "our_moe_modality_dropout_probability": 0.25,
+    "baseline_modality_dropout_probability": 0.25,
+    "class_weight_power": 0.75,
+    "note": "the same frozen dataset manifest and class-weight rule are used by every method"
+  }
+}

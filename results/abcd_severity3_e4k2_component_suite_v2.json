@@ -1,0 +1,533 @@
+{
+  "schema": "abcd-severity3-e4k2-component-suite-v2",
+  "completed_at": "2026-09-13T15:31:49.393534+00:00",
+  "dataset_manifest_sha256": "d02be48acbe655052b201ba7fbd061d8e6219ac8ffa2d3e3c40000c494de82af",
+  "aggregation": "arithmetic mean and sample standard deviation across seeds 31/32/33; no ensemble",
+  "selection": "best validation Macro-F1 after 100 complete epochs; test evaluated once",
+  "model_configuration": {
+    "full_and_one_factor_ablations": "four experts with top-2 routing",
+    "no_reliability": "all usable modality reliabilities fixed to one; confidence and branch priors retained",
+    "dense_full": "MoE feed-forward block replaced by a capacity-matched dense FFN",
+    "single_expert": "one expert with top-1 routing"
+  },
+  "arms": {
+    "full": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "accuracy": 66.35514018691589,
+          "macro_f1": 56.19858023392633,
+          "macro_auroc": 78.3432129714014,
+          "best_epoch": 22,
+          "epochs_completed": 100
+        },
+        {
+          "seed": 32,
+          "accuracy": 69.1588785046729,
+          "macro_f1": 55.408205769030516,
+          "macro_auroc": 78.06488498352081,
+          "best_epoch": 10,
+          "epochs_completed": 100
+        },
+        {
+          "seed": 33,
+          "accuracy": 64.95327102803739,
+          "macro_f1": 53.91891147797647,
+          "macro_auroc": 77.28314878246351,
+          "best_epoch": 14,
+          "epochs_completed": 100
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 66.82242990654206,
+          "sd": 2.1413905116616045
+        },
+        "macro_f1": {
+          "mean": 55.175232493644444,
+          "sd": 1.1575533765216095
+        },
+        "macro_auroc": {
+          "mean": 77.89708224579523,
+          "sd": 0.5495928859240103
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 67.21611721611721,
+            "sd": 2.2205779584216376
+          },
+          "macro_f1": {
+            "mean": 54.8331095512602,
+            "sd": 2.1133127623052284
+          },
+          "macro_auroc": {
+            "mean": 77.51239979873743,
+            "sd": 1.3346841942524237
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 64.58333333333333,
+            "sd": 4.773516348912334
+          },
+          "macro_f1": {
+            "mean": 55.06217170066935,
+            "sd": 4.590394957492334
+          },
+          "macro_auroc": {
+            "mean": 80.1272968957698,
+            "sd": 3.813069866019998
+          }
+        }
+      }
+    },
+    "no_completion": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 14,
+          "epochs_completed": 100,
+          "accuracy": 66.1214953271028,
+          "macro_f1": 56.07677551961713,
+          "macro_auroc": 77.83767225181583
+        },
+        {
+          "seed": 32,
+          "best_epoch": 10,
+          "epochs_completed": 100,
+          "accuracy": 65.88785046728972,
+          "macro_f1": 52.50228815824096,
+          "macro_auroc": 76.34774211513836
+        },
+        {
+          "seed": 33,
+          "best_epoch": 37,
+          "epochs_completed": 100,
+          "accuracy": 61.21495327102804,
+          "macro_f1": 51.44802292240968,
+          "macro_auroc": 71.91329112754029
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 64.40809968847351,
+          "sd": 2.767812405594529
+        },
+        "macro_f1": {
+          "mean": 53.34236220008925,
+          "sd": 2.4260319347401804
+        },
+        "macro_auroc": {
+          "mean": 75.3662351648315,
+          "sd": 3.08173487609554
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 65.47619047619047,
+            "sd": 2.9631299793705947
+          },
+          "macro_f1": {
+            "mean": 54.5856586407622,
+            "sd": 2.80718642194149
+          },
+          "macro_auroc": {
+            "mean": 75.52406473667565,
+            "sd": 3.1984165292993825
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 58.333333333333336,
+            "sd": 2.386758174456167
+          },
+          "macro_f1": {
+            "mean": 45.87123972889672,
+            "sd": 1.1065295948317413
+          },
+          "macro_auroc": {
+            "mean": 75.08142414053744,
+            "sd": 2.789487123598681
+          }
+        }
+      }
+    },
+    "no_provenance": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 19,
+          "epochs_completed": 100,
+          "accuracy": 66.58878504672897,
+          "macro_f1": 51.83818899839617,
+          "macro_auroc": 78.73854590371792
+        },
+        {
+          "seed": 32,
+          "best_epoch": 11,
+          "epochs_completed": 100,
+          "accuracy": 66.1214953271028,
+          "macro_f1": 53.49931810911848,
+          "macro_auroc": 77.39685616755493
+        },
+        {
+          "seed": 33,
+          "best_epoch": 23,
+          "epochs_completed": 100,
+          "accuracy": 62.383177570093466,
+          "macro_f1": 53.88232407071122,
+          "macro_auroc": 75.27610366457303
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 65.03115264797508,
+          "sd": 2.305085449680486
+        },
+        "macro_f1": {
+          "mean": 53.07327705940863,
+          "sd": 1.0866256395353093
+        },
+        "macro_auroc": {
+          "mean": 77.13716857861529,
+          "sd": 1.745767681491622
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 65.20146520146521,
+            "sd": 3.0878599450709445
+          },
+          "macro_f1": {
+            "mean": 52.9253027915027,
+            "sd": 0.1797105180380418
+          },
+          "macro_auroc": {
+            "mean": 76.98390935523697,
+            "sd": 2.1033781737288
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 64.0625,
+            "sd": 4.133986423538423
+          },
+          "macro_f1": {
+            "mean": 53.166151084298576,
+            "sd": 6.37100608780425
+          },
+          "macro_auroc": {
+            "mean": 79.02499543878854,
+            "sd": 2.5372646676728605
+          }
+        }
+      }
+    },
+    "no_decomposition": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 9,
+          "epochs_completed": 100,
+          "accuracy": 63.55140186915887,
+          "macro_f1": 53.48784603156814,
+          "macro_auroc": 77.01736435617224
+        },
+        {
+          "seed": 32,
+          "best_epoch": 11,
+          "epochs_completed": 100,
+          "accuracy": 65.65420560747664,
+          "macro_f1": 54.469490820616095,
+          "macro_auroc": 77.15356559091542
+        },
+        {
+          "seed": 33,
+          "best_epoch": 11,
+          "epochs_completed": 100,
+          "accuracy": 61.6822429906542,
+          "macro_f1": 53.23789800519663,
+          "macro_auroc": 76.00776526973934
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 63.62928348909657,
+          "sd": 1.987126296288645
+        },
+        "macro_f1": {
+          "mean": 53.73174495246028,
+          "sd": 0.651014768233009
+        },
+        "macro_auroc": {
+          "mean": 76.72623173894233,
+          "sd": 0.6259259098432933
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 63.553113553113555,
+            "sd": 2.368592885783433
+          },
+          "macro_f1": {
+            "mean": 53.94751586801624,
+            "sd": 0.9158580209391
+          },
+          "macro_auroc": {
+            "mean": 77.06682194823402,
+            "sd": 0.9191588546393976
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 64.0625,
+            "sd": 2.7063293868263707
+          },
+          "macro_f1": {
+            "mean": 52.225431477964214,
+            "sd": 2.112137544779337
+          },
+          "macro_auroc": {
+            "mean": 78.18839106523836,
+            "sd": 1.938726294274649
+          }
+        }
+      }
+    },
+    "no_reliability": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 19,
+          "epochs_completed": 100,
+          "accuracy": 66.35514018691589,
+          "macro_f1": 53.05415957050011,
+          "macro_auroc": 78.4053524011599
+        },
+        {
+          "seed": 32,
+          "best_epoch": 10,
+          "epochs_completed": 100,
+          "accuracy": 69.1588785046729,
+          "macro_f1": 56.071885527088426,
+          "macro_auroc": 78.04736015489647
+        },
+        {
+          "seed": 33,
+          "best_epoch": 20,
+          "epochs_completed": 100,
+          "accuracy": 62.616822429906534,
+          "macro_f1": 52.61191184320902,
+          "macro_auroc": 75.86235308453242
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 66.04361370716511,
+          "sd": 3.2821351254993005
+        },
+        "macro_f1": {
+          "mean": 53.91265231359918,
+          "sd": 1.8829795048671758
+        },
+        "macro_auroc": {
+          "mean": 77.43835521352959,
+          "sd": 1.3765451845286143
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 66.3003663003663,
+            "sd": 3.219486415979299
+          },
+          "macro_f1": {
+            "mean": 53.59783082002,
+            "sd": 0.7658348369903352
+          },
+          "macro_auroc": {
+            "mean": 77.17714628401879,
+            "sd": 1.6531364238517698
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 64.58333333333333,
+            "sd": 6.505206248331665
+          },
+          "macro_f1": {
+            "mean": 53.93886597422639,
+            "sd": 9.28269614426918
+          },
+          "macro_auroc": {
+            "mean": 79.52156801417885,
+            "sd": 2.911656071583745
+          }
+        }
+      }
+    },
+    "dense_full": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 10,
+          "epochs_completed": 100,
+          "accuracy": 68.92523364485982,
+          "macro_f1": 54.475012762829124,
+          "macro_auroc": 78.01585490137526
+        },
+        {
+          "seed": 32,
+          "best_epoch": 9,
+          "epochs_completed": 100,
+          "accuracy": 66.1214953271028,
+          "macro_f1": 52.96548386909833,
+          "macro_auroc": 77.43566630512996
+        },
+        {
+          "seed": 33,
+          "best_epoch": 26,
+          "epochs_completed": 100,
+          "accuracy": 64.25233644859813,
+          "macro_f1": 53.986715651169746,
+          "macro_auroc": 76.45607194996535
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 66.43302180685359,
+          "sd": 2.3519733443211077
+        },
+        "macro_f1": {
+          "mean": 53.80907076103241,
+          "sd": 0.7702841362094655
+        },
+        "macro_auroc": {
+          "mean": 77.30253105215685,
+          "sd": 0.7883682265067603
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 67.03296703296702,
+            "sd": 2.197802197802197
+          },
+          "macro_f1": {
+            "mean": 54.16270555424021,
+            "sd": 0.18066456430602548
+          },
+          "macro_auroc": {
+            "mean": 77.5160510671347,
+            "sd": 0.3922391998101481
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 63.020833333333336,
+            "sd": 3.608439182435161
+          },
+          "macro_f1": {
+            "mean": 50.92833092833093,
+            "sd": 3.9363093953788524
+          },
+          "macro_auroc": {
+            "mean": 77.47129043188157,
+            "sd": 4.315019503300855
+          }
+        }
+      }
+    },
+    "single_expert": {
+      "seed_metrics": [
+        {
+          "seed": 31,
+          "best_epoch": 19,
+          "epochs_completed": 100,
+          "accuracy": 65.18691588785047,
+          "macro_f1": 55.273878945666134,
+          "macro_auroc": 78.19781260802773
+        },
+        {
+          "seed": 32,
+          "best_epoch": 15,
+          "epochs_completed": 100,
+          "accuracy": 66.58878504672897,
+          "macro_f1": 52.243315498897104,
+          "macro_auroc": 77.90863045856314
+        },
+        {
+          "seed": 33,
+          "best_epoch": 18,
+          "epochs_completed": 100,
+          "accuracy": 63.084112149532714,
+          "macro_f1": 50.94165345478173,
+          "macro_auroc": 77.27408264159017
+        }
+      ],
+      "aggregate": {
+        "accuracy": {
+          "mean": 64.95327102803738,
+          "sd": 1.763980008240828
+        },
+        "macro_f1": {
+          "mean": 52.81961596644832,
+          "sd": 2.222866639643946
+        },
+        "macro_auroc": {
+          "mean": 77.79350856939368,
+          "sd": 0.47250296268716024
+        }
+      },
+      "test_subsets": {
+        "complete": {
+          "n": 364,
+          "accuracy": {
+            "mean": 65.56776556776556,
+            "sd": 2.2205779584216434
+          },
+          "macro_f1": {
+            "mean": 52.9508741527981,
+            "sd": 2.845472869849187
+          },
+          "macro_auroc": {
+            "mean": 78.20951518618814,
+            "sd": 1.0872181653144097
+          }
+        },
+        "missing": {
+          "n": 64,
+          "accuracy": {
+            "mean": 61.458333333333336,
+            "sd": 0.9021097956087902
+          },
+          "macro_f1": {
+            "mean": 50.64950622559318,
+            "sd": 2.1738375033958866
+          },
+          "macro_auroc": {
+            "mean": 76.87765527667004,
+            "sd": 1.904397252733195
+          }
+        }
+      }
+    }
+  }
+}
