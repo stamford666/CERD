@@ -102,8 +102,8 @@ The four model modalities are:
 
 The detailed Chinese endpoint and data audit is
 [`docs/ABCD_SEVERITY3_LABEL_N3000_V1_ZH.md`](docs/ABCD_SEVERITY3_LABEL_N3000_V1_ZH.md).
-The exact Chinese normalization and missing-value protocol for both ABCD and
-ADNI is [`docs/NORMALIZATION_ZH.md`](docs/NORMALIZATION_ZH.md).
+The exact Chinese ABCD MRI-space, normalization, and missing-value protocol is
+[`docs/ABCD_NORMALIZATION_ZH.md`](docs/ABCD_NORMALIZATION_ZH.md).
 
 ## Missingness, preprocessing, and evaluation
 
